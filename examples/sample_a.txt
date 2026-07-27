@@ -1,0 +1,5 @@
+The quick brown fox jumps over the lazy dog.
+This is line two, unchanged.
+This line will differ between the two files.
+Another shared line goes here.
+Final line of file A.

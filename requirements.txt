@@ -1,0 +1,1 @@
+# No third-party dependencies yet — comparator.py uses only the standard library.

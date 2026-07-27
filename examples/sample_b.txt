@@ -1,0 +1,6 @@
+The quick brown fox jumps over the lazy dog.
+This is line two, unchanged.
+This line has been changed in file B.
+Another shared line goes here.
+Final line of file A.
+This extra line only exists in file B.
