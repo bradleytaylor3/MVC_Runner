@@ -1,0 +1,20 @@
+{
+  "kind": "work",
+  "id": "task-006",
+  "title": "Route non-subject/non-landscape and blurry photos to review",
+  "file": "organizer.py",
+  "goal": "In process_images(), the existing routing block is:\n        if is_blurry(img_path):\n            target_base = Path(REVIEW_DIR)\n            status = \"BLURRY\"\n        else:\n            target_base = target_dir\n            status = \"OK\"\n\nReplace it so that non-blurry photos are additionally classified with classify_subject_or_landscape(img_path). If the result is 'unclear', route to REVIEW_DIR with status 'UNCLEAR'; if it's 'subject' or 'landscape', route to target_dir with status set to that category uppercased. Result:\n        if is_blurry(img_path):\n            target_base = Path(REVIEW_DIR)\n            status = \"BLURRY\"\n        else:\n            category = classify_subject_or_landscape(img_path)\n            if category == \"unclear\":\n                target_base = Path(REVIEW_DIR)\n                status = \"UNCLEAR\"\n            else:\n                target_base = target_dir\n                status = category.upper()",
+  "change_type": "modify",
+  "anchor": {
+    "type": "marker",
+    "text": "if is_blurry(img_path):",
+    "text_end": "status = \"OK\""
+  },
+  "acceptance_criteria": [
+    "Blurry images still route to REVIEW_DIR with status 'BLURRY'",
+    "Non-blurry images are classified via classify_subject_or_landscape(img_path)",
+    "Images classified 'unclear' route to REVIEW_DIR with status 'UNCLEAR'",
+    "Images classified 'subject' or 'landscape' route to target_dir with status 'SUBJECT' or 'LANDSCAPE'",
+    "The rest of the loop (collision handling, shutil.move, print, processed_count) is unchanged and still works with the target_base/status variables"
+  ]
+}

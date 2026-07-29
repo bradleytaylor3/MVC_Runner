@@ -1,0 +1,19 @@
+{
+  "kind": "work",
+  "id": "task-005",
+  "title": "Add classify_subject_or_landscape function",
+  "file": "organizer.py",
+  "goal": "Add a new function immediately after is_blurry, implemented exactly as follows:\n\ndef classify_subject_or_landscape(image_path):\n    \"\"\"Classifies an image as 'subject', 'landscape', or 'unclear' using CLIP embeddings.\"\"\"\n    try:\n        image = Image.open(image_path).convert(\"RGB\")\n        image_embedding = model.encode(image)\n        label_keys = list(CLASSIFICATION_LABELS.keys())\n        label_embeddings = model.encode([CLASSIFICATION_LABELS[k] for k in label_keys])\n        scores = util.cos_sim(image_embedding, label_embeddings)[0]\n        best_idx = int(scores.argmax())\n        best_score = float(scores[best_idx])\n        if best_score < CLASSIFICATION_CONFIDENCE_THRESHOLD:\n            return \"unclear\"\n        return label_keys[best_idx]\n    except Exception:\n        return \"unclear\"",
+  "change_type": "add",
+  "anchor": {
+    "type": "marker",
+    "text": "return variance < BLUR_THRESHOLD",
+    "position": "after"
+  },
+  "acceptance_criteria": [
+    "classify_subject_or_landscape(image_path) is defined and returns one of the strings 'subject', 'landscape', or 'unclear'",
+    "It uses the existing global model (SentenceTransformer) and util.cos_sim rather than loading a new model",
+    "It returns 'unclear' instead of raising on an unreadable/corrupt image (wrapped in try/except)",
+    "The best-scoring label is only accepted if its score is >= CLASSIFICATION_CONFIDENCE_THRESHOLD"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "kind": "init",
+  "batch_id": "organizer-subject-landscape",
+  "repo_root": "/home/bradleyt/media_pipeline",
+  "language": "python",
+  "conventions": [
+    "Procedural top-level functions, no classes",
+    "Configuration lives as module-level constants near the top of the file",
+    "Use print() for status output, not logging",
+    "REVIEW_DIR ('review_required') is the existing folder for photos needing manual review; reuse it, do not invent a new folder"
+  ]
+}

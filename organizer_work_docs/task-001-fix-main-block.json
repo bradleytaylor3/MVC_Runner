@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Fix corrupted __main__ block",
+  "file": "organizer.py",
+  "goal": "The file currently ends with a truncated call `process_` followed by stray shell script lines (__ollama_status=$?, a pwd -P redirect, exit $__ollama_status) that are not valid Python. Replace this entire block with a correct __main__ guard that simply calls process_images(): \nif __name__ == \"__main__\":\n    process_images()",
+  "change_type": "modify",
+  "anchor": {
+    "type": "marker",
+    "text": "if __name__ == \"__main__\":",
+    "text_end": "exit $__ollama_status"
+  },
+  "acceptance_criteria": [
+    "File ends with a valid if __name__ == '__main__': block that calls process_images()",
+    "No shell script lines (__ollama_status, pwd -P, exit) remain anywhere in the file",
+    "The file parses as valid Python"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "kind": "init",
+  "batch_id": "example-python-demo",
+  "repo_root": ".",
+  "language": "python",
+  "conventions": []
+}

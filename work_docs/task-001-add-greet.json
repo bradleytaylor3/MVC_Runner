@@ -1,0 +1,17 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Add a greet function",
+  "file": "work_docs/example_target.py",
+  "goal": "Add a function `greet(name: str) -> str` that returns the string 'Hello, {name}!'.",
+  "change_type": "add",
+  "anchor": {
+    "type": "marker",
+    "text": "# Starter file for work_docs/example_task.json — safe to overwrite/experiment with.",
+    "position": "after"
+  },
+  "acceptance_criteria": [
+    "The file defines a function named greet taking one argument, name",
+    "greet('World') returns 'Hello, World!'"
+  ]
+}

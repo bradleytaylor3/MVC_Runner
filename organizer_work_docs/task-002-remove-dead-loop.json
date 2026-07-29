@@ -1,0 +1,19 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Remove dead/broken first collision-handling loop",
+  "file": "organizer.py",
+  "goal": "process_images() contains a leftover, broken first attempt at a for-loop over files_to_process (it references an undefined function target_dir_or_review and never actually moves any files), followed by a comment '# Re-implementing cleaner loop:' before the real, working loop. Delete this entire dead block, including its 'for img_path in files_to_process:' header and the trailing 'Re-implementing cleaner loop' comment, leaving only the real working loop that follows. This is a deletion: output an empty fragment, i.e. output exactly ===FRAGMENT===\\n===END FRAGMENT=== with nothing in between, to confirm the block should be removed entirely.",
+  "change_type": "delete",
+  "anchor": {
+    "type": "marker",
+    "text": "for img_path in files_to_process:",
+    "text_end": "# Re-implementing cleaner loop:",
+    "occurrence": 1
+  },
+  "acceptance_criteria": [
+    "No reference to target_dir_or_review remains anywhere in the file",
+    "The file contains exactly one for-loop over files_to_process (the working one, with the collision-handling while loop and shutil.move call)",
+    "No leftover comments about 'the manual check' or 're-implementing' remain"
+  ]
+}

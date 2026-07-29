@@ -1,0 +1,17 @@
+{
+  "kind": "work",
+  "id": "task-004",
+  "title": "Add subject/landscape classification constants",
+  "file": "organizer.py",
+  "goal": "Immediately after the line 'model = SentenceTransformer(CLIP_MODEL_NAME)', add these two module-level constants exactly:\nCLASSIFICATION_LABELS = {\n    \"subject\": \"a photo with a clear person, pet, or main subject in focus\",\n    \"landscape\": \"a wide landscape or scenery photo with no clear subject\",\n}\nCLASSIFICATION_CONFIDENCE_THRESHOLD = 0.22",
+  "change_type": "add",
+  "anchor": {
+    "type": "marker",
+    "text": "model = SentenceTransformer(CLIP_MODEL_NAME)",
+    "position": "after"
+  },
+  "acceptance_criteria": [
+    "A module-level dict CLASSIFICATION_LABELS exists with exactly the keys 'subject' and 'landscape'",
+    "A module-level float CLASSIFICATION_CONFIDENCE_THRESHOLD exists"
+  ]
+}
