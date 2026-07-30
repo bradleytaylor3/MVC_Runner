@@ -3,12 +3,11 @@
   "id": "task-003",
   "title": "Import util from sentence_transformers",
   "file": "organizer.py",
-  "goal": "Update the import line 'from sentence_transformers import SentenceTransformer' to also import util, needed later for cosine similarity scoring: from sentence_transformers import SentenceTransformer, util",
+  "structure_type": "import",
   "change_type": "modify",
-  "anchor": {
-    "type": "marker",
-    "text": "from sentence_transformers import SentenceTransformer"
-  },
+  "start_anchor": "from sentence_transformers import SentenceTransformer",
+  "exact_code": "from sentence_transformers import SentenceTransformer, util",
+  "description": "also import util, needed later for cosine similarity scoring",
   "acceptance_criteria": [
     "The line still imports SentenceTransformer",
     "The same line (or an added line) also imports util from sentence_transformers"

@@ -5,10 +5,16 @@ import subprocess
 import sys
 from pathlib import Path
 
-from runner import executor, ollama_client
+from runner import adb_agent, adb_client, executor, ollama_client, work_builder
+from runner.adb_task import AdbTaskError, load_adb_batch
 from runner.work_doc import WorkDocError, load_batch
 
 DEFAULT_MODEL = "qwen3:4b"
+# test-adb picks one discrete action per turn from a small enum (closer to
+# classification than free-form generation), which a small model handles
+# comfortably once output is schema-constrained (see adb_agent.ACTION_SCHEMA)
+# — so it defaults to something smaller/faster than code-editing's `run`.
+DEFAULT_ADB_MODEL = "qwen2.5:1.5b"
 
 
 def _is_worktree_dirty(repo_root: Path) -> bool:
@@ -60,6 +66,45 @@ def cmd_run(args: argparse.Namespace) -> int:
     return 0 if all(e["status"] in ok_statuses for e in log_data["entries"]) else 1
 
 
+def cmd_test_adb(args: argparse.Namespace) -> int:
+    work_dir = args.work_dir.resolve()
+
+    try:
+        init, tasks = load_adb_batch(work_dir)
+    except AdbTaskError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 2
+
+    try:
+        serial = adb_client.require_device(args.device or init.default_serial)
+    except adb_client.AdbError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 2
+
+    try:
+        log_data = adb_agent.run_adb_batch(
+            init=init,
+            tasks=tasks,
+            model=args.model,
+            host=args.host,
+            serial=serial,
+            dry_run=args.dry_run,
+            logs_dir=args.logs_dir.resolve(),
+            think=args.think,
+        )
+    except ollama_client.OllamaError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 3
+
+    ok_statuses = ("pass", "init")
+    return 0 if all(e["status"] in ok_statuses for e in log_data["entries"]) else 1
+
+
+def cmd_build(args: argparse.Namespace) -> int:
+    work_builder.run_wizard(args.work_dir.resolve(), model=args.model)
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -86,6 +131,33 @@ def main() -> int:
     run_parser.add_argument("--context-lines", type=int, default=3,
                              help="Lines of read-only context shown before/after each anchor (default: 3)")
     run_parser.set_defaults(func=cmd_run)
+
+    test_adb_parser = subparsers.add_parser("test-adb", help="Run an ADB-driven UI test batch against a connected device/emulator")
+    test_adb_parser.add_argument("--work-dir", type=Path, default=Path("work_docs_adb"),
+                                  help="Directory containing ADB test batch *.json files (default: work_docs_adb/)")
+    test_adb_parser.add_argument("--model", default=DEFAULT_ADB_MODEL,
+                                  help=f"Ollama model tag to use (default: {DEFAULT_ADB_MODEL})")
+    test_adb_parser.add_argument("--host", default=ollama_client.DEFAULT_HOST,
+                                  help=f"Ollama server host:port (default: {ollama_client.DEFAULT_HOST})")
+    test_adb_parser.add_argument("--logs-dir", type=Path, default=Path("logs"),
+                                  help="Directory to write run logs to (default: logs/)")
+    test_adb_parser.add_argument("--device", default=None,
+                                  help="adb device serial to target (default: the init doc's default_serial, "
+                                       "or the sole connected device if there's exactly one)")
+    test_adb_parser.add_argument("--dry-run", action="store_true",
+                                  help="Dump real on-device UI and ask the model for each action, but don't "
+                                       "actually tap/swipe/type on the device")
+    test_adb_parser.add_argument("--think", action="store_true",
+                                  help="Allow reasoning-capable models (e.g. qwen3) to use their thinking mode "
+                                       "(default: off, for faster/more deterministic per-step actions)")
+    test_adb_parser.set_defaults(func=cmd_test_adb)
+
+    build_parser = subparsers.add_parser("build", help="Interactively build a work_docs/ batch, one task at a time")
+    build_parser.add_argument("--work-dir", type=Path, default=Path("work_docs"),
+                               help="Directory to build the batch in (default: work_docs/)")
+    build_parser.add_argument("--model", default=DEFAULT_MODEL,
+                               help=f"Model tag shown in the closing 'run it with' hint (default: {DEFAULT_MODEL})")
+    build_parser.set_defaults(func=cmd_build)
 
     args = parser.parse_args()
     return args.func(args)

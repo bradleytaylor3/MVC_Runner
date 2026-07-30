@@ -1,18 +1,50 @@
 """Load and validate a batch: one init doc plus a sequence of work docs, the
-structured JSON tasks a cloud model writes and this runner executes against
-a local model."""
+structured JSON tasks a cloud model (or a human, or an AI assistant
+following AUTHORING_PROMPT.md) writes and this runner executes against a
+local model.
+
+Work docs are `structure_type`-driven: `structure_type` names the kind of
+thing being added/changed (function, class, method, docstring, import,
+constant, or the generic `block` fallback), and together with `change_type`
+determines which location field(s) are required and how anchor.py resolves
+them. See schema.md for the full field-requirement table."""
 
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
 CHANGE_TYPES = ("add", "modify", "delete")
-ANCHOR_TYPES = ("symbol", "marker", "file_start", "file_end")
-SYMBOL_TYPES = ("function", "class")
-POSITIONS = ("before", "after")
+STRUCTURE_TYPES = ("function", "class", "method", "docstring", "import", "constant", "block")
+SYMBOL_STRUCTURE_TYPES = ("function", "class")  # resolvable by name alone, whole-span (anchor.py's symbol resolution)
 
 REQUIRED_INIT_FIELDS = ("batch_id", "repo_root", "language")
-REQUIRED_WORK_FIELDS = ("id", "title", "file", "goal", "change_type", "acceptance_criteria")
+REQUIRED_WORK_FIELDS = ("id", "title", "file", "structure_type", "change_type", "description", "acceptance_criteria")
+
+# (structure_type, change_type) -> (required location fields, optional location fields).
+# Single source of truth for both _validate_location below and work_builder.py's
+# wizard (which prompts exactly these fields) — a combination with no entry here
+# isn't supported (e.g. docstring only supports "add").
+LOCATION_FIELD_SPEC: dict[tuple[str, str], tuple[list[str], list[str]]] = {
+    ("function", "add"): (["start_anchor"], []),
+    ("function", "modify"): (["name"], []),
+    ("function", "delete"): (["name"], []),
+    ("class", "add"): (["start_anchor"], []),
+    ("class", "modify"): (["name"], []),
+    ("class", "delete"): (["name"], []),
+    ("method", "add"): (["parent"], ["start_anchor"]),
+    ("method", "modify"): (["name", "parent"], []),
+    ("method", "delete"): (["name", "parent"], []),
+    ("docstring", "add"): (["target_name"], []),
+    ("import", "add"): (["start_anchor"], []),
+    ("import", "modify"): (["start_anchor"], []),
+    ("import", "delete"): (["start_anchor"], ["end_anchor"]),
+    ("constant", "add"): (["start_anchor"], []),
+    ("constant", "modify"): (["start_anchor"], ["end_anchor"]),
+    ("constant", "delete"): (["start_anchor"], ["end_anchor"]),
+    ("block", "add"): (["start_anchor"], []),
+    ("block", "modify"): (["start_anchor"], ["end_anchor"]),
+    ("block", "delete"): (["start_anchor"], ["end_anchor"]),
+}
 
 
 class WorkDocError(ValueError):
@@ -43,60 +75,21 @@ class InitTask:
 
 
 @dataclass
-class Anchor:
-    type: str
-    symbol_type: str | None = None
-    name: str | None = None
-    parent: str | None = None
-    text: str | None = None
-    text_end: str | None = None
-    occurrence: int | None = None
-    position: str | None = None
-
-    @classmethod
-    def from_dict(cls, data: dict, source_path: Path, task_id: str) -> "Anchor":
-        anchor_type = data.get("type")
-        if anchor_type not in ANCHOR_TYPES:
-            raise WorkDocError(
-                f"{source_path}: task {task_id}: anchor.type must be one of {ANCHOR_TYPES}, got {anchor_type!r}"
-            )
-        if anchor_type == "symbol":
-            if "name" not in data or "symbol_type" not in data:
-                raise WorkDocError(
-                    f"{source_path}: task {task_id}: symbol anchor requires 'name' and 'symbol_type'"
-                )
-            if data["symbol_type"] not in SYMBOL_TYPES:
-                raise WorkDocError(
-                    f"{source_path}: task {task_id}: anchor.symbol_type must be one of {SYMBOL_TYPES}"
-                )
-        if anchor_type == "marker" and "text" not in data:
-            raise WorkDocError(f"{source_path}: task {task_id}: marker anchor requires 'text'")
-
-        position = data.get("position")
-        if position is not None and position not in POSITIONS:
-            raise WorkDocError(f"{source_path}: task {task_id}: anchor.position must be one of {POSITIONS}")
-
-        return cls(
-            type=anchor_type,
-            symbol_type=data.get("symbol_type"),
-            name=data.get("name"),
-            parent=data.get("parent"),
-            text=data.get("text"),
-            text_end=data.get("text_end"),
-            occurrence=data.get("occurrence"),
-            position=position,
-        )
-
-
-@dataclass
 class WorkTask:
     id: str
     title: str
     file: str
-    goal: str
+    structure_type: str
     change_type: str
+    description: str
     acceptance_criteria: list[str]
-    anchor: Anchor | None = None
+    name: str | None = None
+    parent: str | None = None
+    target_name: str | None = None
+    start_anchor: str | None = None
+    end_anchor: str | None = None
+    occurrence: int | None = None
+    exact_code: str | None = None
     new_file: bool = False
     context_files: list[str] = field(default_factory=list)
     source_path: Path | None = None
@@ -108,49 +101,72 @@ class WorkTask:
             raise WorkDocError(f"{source_path}: missing required field(s): {', '.join(missing)}")
 
         task_id = data["id"]
+
+        def err(message: str) -> None:
+            raise WorkDocError(f"{source_path}: task {task_id}: {message}")
+
+        structure_type = data["structure_type"]
+        if structure_type not in STRUCTURE_TYPES:
+            err(f"structure_type must be one of {STRUCTURE_TYPES}, got {structure_type!r}")
+
         change_type = data["change_type"]
         if change_type not in CHANGE_TYPES:
-            raise WorkDocError(
-                f"{source_path}: task {task_id}: change_type must be one of {CHANGE_TYPES}, got {change_type!r}"
-            )
+            err(f"change_type must be one of {CHANGE_TYPES}, got {change_type!r}")
+
+        if not isinstance(data["acceptance_criteria"], list) or not data["acceptance_criteria"]:
+            err("'acceptance_criteria' must be a non-empty list")
 
         new_file = data.get("new_file", False)
-        anchor_data = data.get("anchor")
+        name = data.get("name")
+        parent = data.get("parent")
+        target_name = data.get("target_name")
+        start_anchor = data.get("start_anchor")
+        end_anchor = data.get("end_anchor")
+        occurrence = data.get("occurrence")
+        exact_code = data.get("exact_code")
 
         if change_type == "delete" and new_file:
-            raise WorkDocError(f"{source_path}: task {task_id}: change_type 'delete' is incompatible with new_file: true")
+            err("change_type 'delete' is incompatible with new_file: true")
+        if exact_code is not None and change_type == "delete":
+            err("'exact_code' is not valid with change_type 'delete'")
 
-        if anchor_data is None:
-            if not (change_type == "add" and new_file):
-                raise WorkDocError(
-                    f"{source_path}: task {task_id}: 'anchor' is required unless change_type is 'add' "
-                    "with new_file: true"
-                )
-            anchor = None
+        if new_file:
+            if change_type != "add":
+                err("new_file requires change_type 'add'")
         else:
-            anchor = Anchor.from_dict(anchor_data, source_path, task_id)
-            if change_type == "add" and anchor.type in ("symbol", "marker") and not anchor.position:
-                raise WorkDocError(
-                    f"{source_path}: task {task_id}: change_type 'add' with a symbol/marker anchor requires "
-                    "anchor.position ('before' or 'after')"
-                )
-            if anchor.type in ("file_start", "file_end") and change_type != "add":
-                raise WorkDocError(
-                    f"{source_path}: task {task_id}: anchor.type '{anchor.type}' is only valid with change_type 'add'"
-                )
+            _validate_location(err, structure_type, change_type, name, parent, target_name, start_anchor)
 
         return cls(
             id=task_id,
             title=data["title"],
             file=data["file"],
-            goal=data["goal"],
+            structure_type=structure_type,
             change_type=change_type,
+            description=data["description"],
             acceptance_criteria=data["acceptance_criteria"],
-            anchor=anchor,
+            name=name,
+            parent=parent,
+            target_name=target_name,
+            start_anchor=start_anchor,
+            end_anchor=end_anchor,
+            occurrence=occurrence,
+            exact_code=exact_code,
             new_file=new_file,
             context_files=data.get("context_files", []),
             source_path=source_path,
         )
+
+
+def _validate_location(err, structure_type, change_type, name, parent, target_name, start_anchor) -> None:
+    spec = LOCATION_FIELD_SPEC.get((structure_type, change_type))
+    if spec is None:
+        err(f"structure_type {structure_type!r} does not support change_type {change_type!r}")
+        return
+    required, _optional = spec
+    values = {"name": name, "parent": parent, "target_name": target_name, "start_anchor": start_anchor}
+    missing = [f for f in required if not values.get(f)]
+    if missing:
+        err(f"structure_type {structure_type!r} with change_type {change_type!r} requires: {', '.join(missing)}")
 
 
 def load_batch(work_dir: Path) -> tuple[InitTask, list[WorkTask]]:

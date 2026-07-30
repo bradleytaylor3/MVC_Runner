@@ -1,0 +1,9 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Adding 2 + 2 shows 4",
+  "goal": "Open the Calculator app and confirm that entering 2 + 2 produces a result of 4.",
+  "acceptance_criteria": [
+    "After tapping 2, +, 2, and equals (or the result updates live), the on-screen result reads 4"
+  ]
+}

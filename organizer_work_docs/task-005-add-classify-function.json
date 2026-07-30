@@ -3,13 +3,11 @@
   "id": "task-005",
   "title": "Add classify_subject_or_landscape function",
   "file": "organizer.py",
-  "goal": "Add a new function immediately after is_blurry, implemented exactly as follows:\n\ndef classify_subject_or_landscape(image_path):\n    \"\"\"Classifies an image as 'subject', 'landscape', or 'unclear' using CLIP embeddings.\"\"\"\n    try:\n        image = Image.open(image_path).convert(\"RGB\")\n        image_embedding = model.encode(image)\n        label_keys = list(CLASSIFICATION_LABELS.keys())\n        label_embeddings = model.encode([CLASSIFICATION_LABELS[k] for k in label_keys])\n        scores = util.cos_sim(image_embedding, label_embeddings)[0]\n        best_idx = int(scores.argmax())\n        best_score = float(scores[best_idx])\n        if best_score < CLASSIFICATION_CONFIDENCE_THRESHOLD:\n            return \"unclear\"\n        return label_keys[best_idx]\n    except Exception:\n        return \"unclear\"",
+  "structure_type": "function",
   "change_type": "add",
-  "anchor": {
-    "type": "marker",
-    "text": "return variance < BLUR_THRESHOLD",
-    "position": "after"
-  },
+  "start_anchor": "return variance < BLUR_THRESHOLD",
+  "exact_code": "def classify_subject_or_landscape(image_path):\n    \"\"\"Classifies an image as 'subject', 'landscape', or 'unclear' using CLIP embeddings.\"\"\"\n    try:\n        image = Image.open(image_path).convert(\"RGB\")\n        image_embedding = model.encode(image)\n        label_keys = list(CLASSIFICATION_LABELS.keys())\n        label_embeddings = model.encode([CLASSIFICATION_LABELS[k] for k in label_keys])\n        scores = util.cos_sim(image_embedding, label_embeddings)[0]\n        best_idx = int(scores.argmax())\n        best_score = float(scores[best_idx])\n        if best_score < CLASSIFICATION_CONFIDENCE_THRESHOLD:\n            return \"unclear\"\n        return label_keys[best_idx]\n    except Exception:\n        return \"unclear\"",
+  "description": "classifies an image as subject/landscape/unclear using the existing CLIP model and util.cos_sim, returning 'unclear' below the confidence threshold or on error",
   "acceptance_criteria": [
     "classify_subject_or_landscape(image_path) is defined and returns one of the strings 'subject', 'landscape', or 'unclear'",
     "It uses the existing global model (SentenceTransformer) and util.cos_sim rather than loading a new model",

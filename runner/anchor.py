@@ -1,19 +1,23 @@
-"""Resolve a work task's anchor against the real current content of its
-target file: find the line span (for symbol/marker anchors used with
-change_type modify/delete) or insertion point (for change_type add) that the
-model's fragment applies to.
+"""Resolve a work task's location against the real current content of its
+target file: find the line span (for change_type modify/delete) or
+insertion point (for change_type add) that the model's fragment applies to.
+
+Dispatch is driven directly by the task's `structure_type` (see
+work_doc.py's field-requirement table) rather than a generic anchor object
+— each structure_type picks its own resolution strategy (symbol-by-name,
+marker text, or a symbol's body bounds).
 
 This is regex + brace/indentation heuristics, not a real parser. Ambiguous
 cases raise AnchorError rather than guessing silently — a wrong silent
-anchor is worse than a loud failure the planning model can fix by adding
-`parent` or switching to a marker anchor.
+anchor is worse than a loud failure the author can fix by narrowing
+`start_anchor` or adding `parent`.
 """
 
 import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from runner.work_doc import Anchor, WorkTask
+from runner.work_doc import WorkTask
 
 EXTENSION_LANGUAGE_MODE = {
     ".py": "indentation",
@@ -55,14 +59,14 @@ def _language_mode(file_path: str, default_language: str) -> str:
     return LANGUAGE_MODE.get(default_language.lower(), "brace")
 
 
-def _brace_span_end(lines: list[str], decl_line: int) -> int | None:
+def _brace_span(lines: list[str], decl_line: int) -> tuple[int, int] | None:
     """Scan forward from decl_line tracking brace depth, treating quoted
     strings and comments as opaque so interior braces (e.g. inside a Kotlin
-    string template) never get counted. Returns the 0-indexed line the
-    matching closing brace is on, or None if no '{' was ever found."""
+    string template) never get counted. Returns (open_line, close_line),
+    0-indexed, or None if no '{' was ever found."""
     text = "\n".join(lines[decl_line:])
     depth = 0
-    found_open = False
+    open_line = None
     i = 0
     n = len(text)
     while i < n:
@@ -90,23 +94,31 @@ def _brace_span_end(lines: list[str], decl_line: int) -> int | None:
             i = end + 2 if end != -1 else n
             continue
         if c == "{":
+            if open_line is None:
+                open_line = decl_line + text.count("\n", 0, i)
             depth += 1
-            found_open = True
             i += 1
             continue
         if c == "}":
             depth -= 1
             i += 1
-            if found_open and depth == 0:
-                return decl_line + text.count("\n", 0, i)
+            if open_line is not None and depth == 0:
+                close_line = decl_line + text.count("\n", 0, i)
+                return (open_line, close_line)
             continue
         i += 1
     return None
 
 
+def _brace_span_end(lines: list[str], decl_line: int) -> int | None:
+    span = _brace_span(lines, decl_line)
+    return span[1] if span else None
+
+
 def _logical_line_end(lines: list[str], decl_line: int) -> int:
     """Fallback for one-line/no-body declarations: extend while parens are
-    unclosed or the line looks like it continues onto the next."""
+    unclosed or the line looks like it continues onto the next. Also used
+    to find where a (possibly multi-line) Python signature's `:` line is."""
     depth = 0
     i = decl_line
     while i < len(lines):
@@ -142,22 +154,29 @@ def _find_span_end(lines: list[str], decl_line: int, mode: str) -> int:
     return end if end is not None else _logical_line_end(lines, decl_line)
 
 
-def _resolve_symbol(lines: list[str], anchor: Anchor, search_start: int, search_end: int, mode: str) -> tuple[int, int]:
-    patterns = FUNCTION_PATTERNS if anchor.symbol_type == "function" else CLASS_PATTERNS
-    name_re = re.escape(anchor.name)
+def _resolve_symbol_by_name(
+    lines: list[str], symbol_type: str | None, name: str, search_start: int, search_end: int, mode: str
+) -> tuple[int, int, int]:
+    """Returns (start, end, decl_line). symbol_type of None searches both
+    function and class patterns combined (used for docstring's target_name,
+    which doesn't say which kind it is)."""
+    if symbol_type == "function":
+        patterns = FUNCTION_PATTERNS
+    elif symbol_type == "class":
+        patterns = CLASS_PATTERNS
+    else:
+        patterns = FUNCTION_PATTERNS + CLASS_PATTERNS
+    name_re = re.escape(name)
     compiled = [re.compile(p.format(name=name_re)) for p in patterns]
 
-    matches = []
-    for i in range(search_start, search_end):
-        if any(pat.match(lines[i]) for pat in compiled):
-            matches.append(i)
+    matches = [i for i in range(search_start, search_end) if any(pat.match(lines[i]) for pat in compiled)]
 
     if not matches:
-        raise AnchorError(f"symbol not found: {anchor.symbol_type} '{anchor.name}'")
+        raise AnchorError(f"symbol not found: {symbol_type or 'function/class'} '{name}'")
     if len(matches) > 1:
         raise AnchorError(
-            f"ambiguous symbol '{anchor.name}': matched at lines {[m + 1 for m in matches]}; "
-            "use 'parent' to scope the search or switch to a marker anchor"
+            f"ambiguous symbol '{name}': matched at lines {[m + 1 for m in matches]}; "
+            "scope the search with 'parent' or use a more specific name"
         )
 
     decl_line = matches[0]
@@ -168,68 +187,93 @@ def _resolve_symbol(lines: list[str], anchor: Anchor, search_start: int, search_
         j -= 1
 
     end = _find_span_end(lines, decl_line, mode)
-    return start, end
+    return start, end, decl_line
 
 
-def _resolve_marker(lines: list[str], anchor: Anchor) -> tuple[int, int]:
-    target = anchor.text.strip()
+def _resolve_body_bounds(lines: list[str], decl_line: int, end: int, mode: str) -> tuple[int, int]:
+    """Returns (body_start, body_end): the 0-indexed line to insert at for
+    'first statement of the body', and for 'last statement of the body'
+    (pushed-down content ends up just before the symbol's own closing
+    point)."""
+    if mode == "indentation":
+        sig_end = _logical_line_end(lines, decl_line)
+        return sig_end + 1, end + 1
+
+    span = _brace_span(lines, decl_line)
+    if span is None:
+        raise AnchorError(
+            "no brace-delimited body found (expression-bodied or abstract declaration) — "
+            "body_start/body_end require a '{ ... }' body"
+        )
+    open_line, close_line = span
+    if open_line == close_line:
+        raise AnchorError("body is entirely on one line — body_start/body_end can't target a line inside it")
+    return open_line + 1, close_line
+
+
+def _resolve_marker(lines: list[str], text: str, text_end: str | None, occurrence: int | None = None) -> tuple[int, int]:
+    target = text.strip()
     matches = [i for i, line in enumerate(lines) if line.strip() == target]
     if not matches:
-        raise AnchorError(f"marker text not found: {anchor.text!r}")
-
+        raise AnchorError(f"marker text not found: {text!r}")
     if len(matches) > 1:
-        if anchor.occurrence is None:
+        if occurrence is None:
             raise AnchorError(
-                f"marker text {anchor.text!r} matches multiple lines: {[m + 1 for m in matches]}; "
-                "set anchor.occurrence to disambiguate"
+                f"marker text {text!r} matches multiple lines: {[m + 1 for m in matches]}; "
+                "set 'occurrence' (1-based) or narrow the marker text to make it unique"
             )
-        idx = anchor.occurrence - 1
+        idx = occurrence - 1
         if idx < 0 or idx >= len(matches):
-            raise AnchorError(f"anchor.occurrence {anchor.occurrence} out of range ({len(matches)} matches)")
+            raise AnchorError(f"occurrence {occurrence} out of range ({len(matches)} matches for {text!r})")
         start = matches[idx]
     else:
         start = matches[0]
 
     end = start
-    if anchor.text_end:
-        end_target = anchor.text_end.strip()
+    if text_end:
+        end_target = text_end.strip()
         end_matches = [i for i in range(start, len(lines)) if lines[i].strip() == end_target]
         if not end_matches:
-            raise AnchorError(f"marker text_end not found on or after line {start + 1}: {anchor.text_end!r}")
+            raise AnchorError(f"end_anchor not found on or after line {start + 1}: {text_end!r}")
         end = end_matches[0]
 
     return start, end
 
 
 def resolve_anchor(task: WorkTask, lines: list[str], default_language: str) -> ResolvedAnchor:
-    anchor = task.anchor
-    if anchor is None:
-        raise AnchorError("resolve_anchor called with no anchor (new_file task)")
+    lang_mode = _language_mode(task.file, default_language)
 
-    if anchor.type == "file_start":
-        start, end = 0, -1
-    elif anchor.type == "file_end":
-        start, end = len(lines), len(lines) - 1
-    elif anchor.type == "symbol":
-        lang_mode = _language_mode(task.file, default_language)
-        search_start, search_end = 0, len(lines)
-        if anchor.parent:
-            parent_anchor = Anchor(type="symbol", symbol_type="class", name=anchor.parent)
-            parent_start, parent_end = _resolve_symbol(lines, parent_anchor, 0, len(lines), lang_mode)
-            search_start, search_end = parent_start, parent_end + 1
-        start, end = _resolve_symbol(lines, anchor, search_start, search_end, lang_mode)
-    elif anchor.type == "marker":
-        start, end = _resolve_marker(lines, anchor)
-    else:
-        raise AnchorError(f"unknown anchor type: {anchor.type}")
+    if task.structure_type == "docstring":
+        _, end, decl_line = _resolve_symbol_by_name(lines, None, task.target_name, 0, len(lines), lang_mode)
+        body_start, _ = _resolve_body_bounds(lines, decl_line, end, lang_mode)
+        return ResolvedAnchor(mode="insert", start_line=body_start)
 
+    if task.structure_type == "method":
+        parent_start, parent_end, parent_decl_line = _resolve_symbol_by_name(
+            lines, "class", task.parent, 0, len(lines), lang_mode
+        )
+        if task.change_type != "add":
+            start, end, _ = _resolve_symbol_by_name(
+                lines, "function", task.name, parent_start, parent_end + 1, lang_mode
+            )
+            return ResolvedAnchor(mode="replace", start_line=start, end_line=end)
+        if task.start_anchor:
+            m_start, m_end = _resolve_marker(lines, task.start_anchor, None, task.occurrence)
+            if not (parent_start <= m_start <= parent_end):
+                raise AnchorError(f"start_anchor {task.start_anchor!r} is not inside class {task.parent!r}")
+            return ResolvedAnchor(mode="insert", start_line=m_end + 1)
+        _, body_end = _resolve_body_bounds(lines, parent_decl_line, parent_end, lang_mode)
+        return ResolvedAnchor(mode="insert", start_line=body_end)
+
+    if task.structure_type in ("function", "class"):
+        if task.change_type == "add":
+            _, m_end = _resolve_marker(lines, task.start_anchor, None, task.occurrence)
+            return ResolvedAnchor(mode="insert", start_line=m_end + 1)
+        start, end, _ = _resolve_symbol_by_name(lines, task.structure_type, task.name, 0, len(lines), lang_mode)
+        return ResolvedAnchor(mode="replace", start_line=start, end_line=end)
+
+    # import, constant, block: always marker-based
+    m_start, m_end = _resolve_marker(lines, task.start_anchor, task.end_anchor, task.occurrence)
     if task.change_type == "add":
-        if anchor.type == "file_start":
-            insert_at = 0
-        elif anchor.type == "file_end":
-            insert_at = len(lines)
-        else:
-            insert_at = end + 1 if anchor.position == "after" else start
-        return ResolvedAnchor(mode="insert", start_line=insert_at)
-
-    return ResolvedAnchor(mode="replace", start_line=start, end_line=end)
+        return ResolvedAnchor(mode="insert", start_line=m_end + 1)
+    return ResolvedAnchor(mode="replace", start_line=m_start, end_line=m_end)

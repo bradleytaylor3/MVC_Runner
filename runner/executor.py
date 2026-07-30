@@ -1,7 +1,8 @@
-"""Core loop: for each work task in a batch, resolve its anchor against the
-real file, build a fragment-only prompt, call the local model, parse and
-validate its fragment, splice it into the real file, and (unless dry-run)
-write the result. Stops the batch on the first task that doesn't succeed."""
+"""Core loop: for each work task in a batch, resolve its location against the
+real file, build a structure_type-specific fragment-only prompt, call the
+local model, parse and validate its fragment, splice it into the real file,
+and (unless dry-run) write the result. Stops the batch on the first task
+that doesn't succeed."""
 
 import json
 import re
@@ -16,18 +17,50 @@ from runner.work_doc import InitTask, WorkTask
 
 FRAGMENT_RE = re.compile(r"===FRAGMENT===(.*?)===END FRAGMENT===", re.DOTALL)
 
-FRAGMENT_SYSTEM_PREAMBLE = """You are a code-editing assistant. You will be given a goal, a change type, \
-and (if applicable) the exact current content at one location in one file. Output ONLY the replacement \
-content for that location, using exactly this format, with no other commentary before, between, or after \
-the block:
+# Passed as `format` to ollama_client.generate() so Ollama constrains decoding
+# to this shape — reliable JSON output (including correct escaping of a
+# multi-line code fragment) even on small models that won't reliably follow
+# free-form delimiter instructions on their own.
+FRAGMENT_SCHEMA = {
+    "type": "object",
+    "properties": {"fragment": {"type": "string"}},
+    "required": ["fragment"],
+}
 
-===FRAGMENT===
-<the replacement content>
-===END FRAGMENT===
+FRAGMENT_SYSTEM_PREAMBLE = """You are a code-editing assistant. You will be given an instruction, a \
+change type, and (if applicable) the exact current content at one location in one file. Respond with a \
+single JSON object of the form {"fragment": "<the replacement content>"} — the complete replacement \
+content for that location, as a JSON string (encode newlines as \\n).
 
-For change_type "delete", output an empty fragment (nothing between the markers) to confirm the deletion. \
-Do not include the surrounding read-only context lines in your output — only the replacement for the \
-location itself."""
+For change_type "delete", set "fragment" to an empty string to confirm the deletion. Do not include the \
+surrounding read-only context lines in the fragment — only the replacement for the location itself."""
+
+# One-line, structure_type-specific reminder appended to the preamble — this
+# is what replaced the old single generic "goal describes intent" framing:
+# each kind of edit gets instructions tailored to the mistake it's actually
+# prone to (echoing a signature, reproducing a whole function to insert one
+# line, etc.), instead of one paragraph trying to cover every case.
+STRUCTURE_TYPE_FRAMING = {
+    "function": "Write a complete function definition, including its full signature and body — "
+                "never just restate a signature or name as the fragment.",
+    "class": "Write a complete class definition, including its signature/bases and full body — "
+             "never just restate a name or signature.",
+    "method": "Write a complete method definition, including its full signature and body, indented to "
+              "match the surrounding class body — never just restate a signature or name.",
+    "docstring": "Output only the docstring itself (a single string/comment literal appropriate to the "
+                 "language) as the fragment — nothing else: no signature, no surrounding code.",
+    "import": "Keep the fragment to just the import statement(s) needed.",
+    "constant": "Keep the fragment to just the constant/variable declaration(s) needed.",
+    "block": "Write the code needed to satisfy the instruction.",
+}
+
+EXACT_CODE_PREAMBLE = """You are a code-editing assistant. The code given below is the exact, \
+already-decided final content — your only job is fitting it into the fragment slot, adjusting *only* \
+whitespace/indentation to match the surrounding context. Do not alter identifiers, logic, literals, or \
+structure, and do not add or remove anything. Respond with a single JSON object of the form \
+{"fragment": "<the exact code, reindented>"} — encode newlines as \\n.
+
+For change_type "delete", set "fragment" to an empty string to confirm the deletion."""
 
 OK_STATUSES = ("success", "dry_run")
 
@@ -49,18 +82,64 @@ def _read_context_file(repo_root: Path, rel_path: str) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def _describe_anchor(task: WorkTask, resolved: anchor_mod.ResolvedAnchor) -> str:
-    anchor = task.anchor
-    if anchor.type == "symbol":
-        where = f"{anchor.symbol_type} '{anchor.name}'"
-        if anchor.parent:
-            where += f" inside '{anchor.parent}'"
-    elif anchor.type == "marker":
-        where = f'marker "{anchor.text}"'
-        if anchor.text_end:
-            where += f' .. "{anchor.text_end}"'
+def _instruction_sentence(task: WorkTask) -> str:
+    d = task.description
+
+    if task.structure_type == "docstring":
+        return f"Add a one-line docstring as the first statement of {task.target_name}'s body: {d}"
+
+    if task.structure_type == "method":
+        if task.change_type == "add":
+            if task.start_anchor:
+                return f"Inside class {task.parent!r}, starting after {task.start_anchor!r}, add a method that {d}"
+            return f"Add a method to the end of class {task.parent!r}'s body that {d}"
+        verb = "Modify" if task.change_type == "modify" else "Delete"
+        tail = f" so that {d}" if task.change_type == "modify" else f" ({d})"
+        return f"{verb} the method named {task.name!r} inside class {task.parent!r}{tail}"
+
+    if task.structure_type in ("function", "class"):
+        if task.change_type == "add":
+            return f"Starting after {task.start_anchor!r}, add a {task.structure_type} that {d}"
+        verb = "Modify" if task.change_type == "modify" else "Delete"
+        tail = f" so that {d}" if task.change_type == "modify" else f" ({d})"
+        return f"{verb} the {task.structure_type} named {task.name!r}{tail}"
+
+    # import, constant, block
+    where = f"{task.start_anchor!r} through {task.end_anchor!r}" if task.end_anchor else f"{task.start_anchor!r}"
+    if task.change_type == "add":
+        noun = "an import" if task.structure_type == "import" else f"a {task.structure_type}"
+        return f"Starting after {where}, add {noun} that {d}"
+    verb = "Modify" if task.change_type == "modify" else "Delete"
+    tail = f" so that {d}" if task.change_type == "modify" else f" ({d})"
+    return f"{verb} the code at {where}{tail}"
+
+
+def _reference_indent(task: WorkTask, lines: list[str], resolved: anchor_mod.ResolvedAnchor) -> int | None:
+    """The exact indentation (in spaces) the fragment should use, computed
+    from real adjacent content rather than left for the model to eyeball —
+    docstring/body_start's sibling is the existing line it pushes down
+    (start_line); every other insert's sibling is the line right before it
+    (the anchor/marker line itself, or the last existing body statement for
+    a body_end append). Returns None when there's no non-blank line to
+    measure (e.g. inserting into a currently-empty body)."""
+    if resolved.mode != "insert":
+        return None
+    ref_idx = resolved.start_line if task.structure_type == "docstring" else resolved.start_line - 1
+    if 0 <= ref_idx < len(lines) and lines[ref_idx].strip():
+        line = lines[ref_idx]
+        return len(line) - len(line.lstrip())
+    return None
+
+
+def _describe_resolved_location(task: WorkTask, resolved: anchor_mod.ResolvedAnchor) -> str:
+    if task.structure_type == "docstring":
+        where = f"start of {task.target_name}'s body"
+    elif task.structure_type == "method":
+        where = f"class {task.parent!r}" + (f", method {task.name!r}" if task.name else "")
+    elif task.structure_type in ("function", "class"):
+        where = f"{task.structure_type} {task.name!r}" if task.name else f"after {task.start_anchor!r}"
     else:
-        where = anchor.type.replace("_", " ")
+        where = f"{task.start_anchor!r}" + (f" .. {task.end_anchor!r}" if task.end_anchor else "")
 
     if resolved.mode == "replace":
         return f"{where} (lines {resolved.start_line + 1}-{resolved.end_line + 1})"
@@ -75,30 +154,48 @@ def build_prompt(
     resolved: anchor_mod.ResolvedAnchor | None,
     context_lines: int,
 ) -> str:
-    parts = [FRAGMENT_SYSTEM_PREAMBLE, "", f"Target language: {init.language}"]
+    if task.exact_code is not None:
+        preamble = EXACT_CODE_PREAMBLE
+    else:
+        preamble = FRAGMENT_SYSTEM_PREAMBLE + "\n\n" + STRUCTURE_TYPE_FRAMING[task.structure_type]
+
+    parts = [preamble, "", f"Target language: {init.language}"]
     parts.extend(f"- {c}" for c in init.conventions)
 
     parts.append(f"\n# Task {task.id}: {task.title}")
-    parts.append(f"\nGoal: {task.goal}")
+    if task.exact_code is not None:
+        parts.append(f"\nWhy (context only): {task.description}")
+        parts.append("\n## Exact code to insert (reindent only, do not alter)")
+        parts.append(task.exact_code)
+    else:
+        parts.append(f"\nInstruction: {_instruction_sentence(task)}")
     parts.append(f"change_type: {task.change_type}")
 
     if task.acceptance_criteria:
         parts.append("\n## Acceptance criteria")
         parts.extend(f"- {c}" for c in task.acceptance_criteria)
+        if task.exact_code is not None:
+            parts.append("(context only — describes the code above; never a reason to alter it)")
 
     if task.context_files:
         parts.append("\n## Reference files (read-only, do not include these in your output)")
         for rel_path in task.context_files:
             parts.append(f"\n### {rel_path}\n{_read_context_file(repo_root, rel_path)}")
 
-    if task.anchor is None:
+    if task.new_file:
         parts.append(f"\n## New file: {task.file}")
         parts.append("This file does not exist yet. Author its complete content as the fragment.")
         return "\n".join(parts)
 
     parts.append("\n## Location")
     parts.append(f"File: {task.file}")
-    parts.append(f"Anchor: {_describe_anchor(task, resolved)}")
+    parts.append(f"Location: {_describe_resolved_location(task, resolved)}")
+
+    ref_indent = _reference_indent(task, lines, resolved)
+    if ref_indent is not None:
+        parts.append(f"Required indentation: the fragment's first line must start with exactly {ref_indent} "
+                      f"leading spaces (matching the surrounding code — count them, don't estimate); indent any "
+                      f"further lines relative to that base level as normal for the language.")
 
     before, after = patch.context_window(lines, resolved, context_lines)
     if before:
@@ -118,6 +215,17 @@ def build_prompt(
 
 
 def parse_fragment(text: str) -> str | None:
+    # With `format=FRAGMENT_SCHEMA` passed to generate(), `text` should already
+    # be exactly one conforming JSON object. Fall back to the older
+    # ===FRAGMENT===...===END FRAGMENT=== delimiter style (handles a host/model
+    # that doesn't honor `format`) rather than assuming that.
+    try:
+        data = json.loads(text.strip())
+    except json.JSONDecodeError:
+        data = None
+    if isinstance(data, dict) and isinstance(data.get("fragment"), str):
+        return data["fragment"]
+
     matches = FRAGMENT_RE.findall(text)
     if len(matches) != 1:
         return None
@@ -157,7 +265,7 @@ def execute_work_task(
     crlf = False
     resolved: anchor_mod.ResolvedAnchor | None = None
 
-    if task.anchor is None:
+    if task.new_file:
         if file_path.exists():
             entry.update(
                 status="error",
@@ -184,7 +292,7 @@ def execute_work_task(
     prompt = build_prompt(task, init, repo_root, lines, resolved, context_lines)
 
     try:
-        result = ollama_client.generate(prompt, model=model, host=host, think=think)
+        result = ollama_client.generate(prompt, model=model, host=host, think=think, format=FRAGMENT_SCHEMA)
     except ollama_client.OllamaError as e:
         entry.update(status="error", error=str(e), elapsed_seconds=time.monotonic() - start)
         return entry
@@ -207,10 +315,10 @@ def execute_work_task(
     if task.change_type in ("add", "modify") and is_empty:
         return fail_parse(f"change_type '{task.change_type}' requires a non-empty fragment")
 
-    if task.anchor is None:
+    if task.new_file:
         new_text = fragment
     else:
-        bleed = patch.detect_trailing_bleed(lines, resolved, fragment)
+        bleed = patch.detect_trailing_bleed(lines, resolved, fragment) or patch.detect_leading_bleed(lines, resolved, fragment)
         if bleed:
             return fail_parse(bleed)
         try:

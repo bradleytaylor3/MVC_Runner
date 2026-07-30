@@ -1,0 +1,13 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Add a docstring to greet",
+  "file": "work_docs/example_target.py",
+  "structure_type": "docstring",
+  "change_type": "add",
+  "target_name": "greet",
+  "description": "explains that it returns a greeting for the given name",
+  "acceptance_criteria": [
+    "greet has a one-line docstring as its first statement"
+  ]
+}

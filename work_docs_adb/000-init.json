@@ -1,0 +1,6 @@
+{
+  "kind": "init",
+  "batch_id": "calculator-example",
+  "default_package": "com.google.android.calculator",
+  "default_max_steps": 20
+}

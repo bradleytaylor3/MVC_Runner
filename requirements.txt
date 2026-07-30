@@ -1,3 +1,10 @@
 # comparator.py uses only the standard library.
 # runner/ (the local-model execution pipeline) needs:
 requests
+
+# Dev dependency for tests/ (runner/ itself has no test-time-only deps):
+pytest
+
+# Non-pip prerequisite for `runner.cli test-adb`: the `adb` binary (Android
+# SDK Platform Tools) must be on PATH, with a device/emulator connected.
+# adb_client.py shells out to it via subprocess; there's no pip package for it.

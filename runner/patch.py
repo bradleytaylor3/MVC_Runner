@@ -34,21 +34,43 @@ def context_window(lines: list[str], resolved: ResolvedAnchor, n: int = 3) -> tu
 
 def detect_trailing_bleed(lines: list[str], resolved: ResolvedAnchor, fragment: str) -> str | None:
     """Heuristic guard: if the model's fragment ends with a line that exactly
-    duplicates the line immediately following the anchor in the real file, the
-    model likely spilled over into read-only context it was told to omit —
-    a small local model doing this silently produces a duplicated/corrupted
-    file (e.g. two consecutive closing braces) if left unchecked."""
-    if resolved.mode != "replace":
-        return None
-    next_line_idx = resolved.end_line + 1
+    duplicates the line immediately following the edit point in the real
+    file, the model likely spilled over into read-only context it was told
+    to omit — a small local model doing this silently produces a
+    duplicated/corrupted file (e.g. two consecutive closing braces) if left
+    unchecked. For insert-mode anchors (e.g. body_end, where the following
+    line is the symbol's own closing brace), this is exactly how the
+    fragment could otherwise duplicate that closing line."""
+    next_line_idx = resolved.end_line + 1 if resolved.mode == "replace" else resolved.start_line
     if next_line_idx >= len(lines):
         return None
     fragment_lines = fragment.split("\n")
     trailing = next((line for line in reversed(fragment_lines) if line.strip() != ""), None)
     if trailing is not None and trailing.strip() == lines[next_line_idx].strip():
         return (
-            f"model fragment's last non-blank line duplicates the line immediately after the anchor "
+            f"model fragment's last non-blank line duplicates the line immediately after the edit point "
             f"({lines[next_line_idx].strip()!r}) — it likely included read-only context it was told to omit"
+        )
+    return None
+
+
+def detect_leading_bleed(lines: list[str], resolved: ResolvedAnchor, fragment: str) -> str | None:
+    """Symmetric guard for insert-mode anchors: if the fragment's first line
+    duplicates the line immediately before the insertion point (e.g.
+    body_start's preceding `def`/`fun` line), the model likely re-echoed
+    read-only 'before' context instead of omitting it — structurally how the
+    docstring-placed-outside-the-function bug happened live."""
+    if resolved.mode != "insert":
+        return None
+    prev_line_idx = resolved.start_line - 1
+    if prev_line_idx < 0:
+        return None
+    fragment_lines = fragment.split("\n")
+    leading = next((line for line in fragment_lines if line.strip() != ""), None)
+    if leading is not None and leading.strip() == lines[prev_line_idx].strip():
+        return (
+            f"model fragment's first non-blank line duplicates the line immediately before the insertion point "
+            f"({lines[prev_line_idx].strip()!r}) — it likely included read-only context it was told to omit"
         )
     return None
 
