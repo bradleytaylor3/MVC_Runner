@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-041",
+  "title": "Localize loot-item label",
+  "file": "app/src/main/java/com/example/ui/components/SpecialDialogs.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Localize loot-item label: replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by a stringResource/pluralStringResource call referencing the resource added earlier in this batch",
+    "No other line is modified",
+    "The file still compiles as valid Kotlin (balanced braces/parens)"
+  ],
+  "start_anchor": "Text(\"Loot: ${nextTask.lootItem}\", fontStyle = FontStyle.Italic, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))",
+  "exact_code": "                        Text(stringResource(R.string.loot_label, nextTask.lootItem), fontStyle = FontStyle.Italic, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))"
+}

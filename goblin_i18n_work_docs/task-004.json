@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-004",
+  "title": "Add string resource gold_amount",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the 'gold_amount' string resource for the localized SpecialDialogs.kt UI copy.",
+  "acceptance_criteria": [
+    "A <string name=\"gold_amount\"> entry with the exact given text exists",
+    "No other entry in the file is modified"
+  ],
+  "start_anchor": "<string name=\"keep_momentum_going\">Keep the momentum going:</string>",
+  "exact_code": "    <string name=\"gold_amount\">%1$d gold</string>"
+}

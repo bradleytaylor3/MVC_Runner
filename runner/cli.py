@@ -57,6 +57,7 @@ def cmd_run(args: argparse.Namespace) -> int:
             logs_dir=args.logs_dir.resolve(),
             think=args.think,
             context_lines=args.context_lines,
+            max_retries=args.max_retries,
         )
     except ollama_client.OllamaError as e:
         print(f"Error: {e}", file=sys.stderr)
@@ -130,6 +131,11 @@ def main() -> int:
                              help="Proceed even if the repo has uncommitted changes")
     run_parser.add_argument("--context-lines", type=int, default=3,
                              help="Lines of read-only context shown before/after each anchor (default: 3)")
+    run_parser.add_argument("--max-retries", type=int, default=0,
+                             help="Extra attempts for a task whose output fails validation on model-quality "
+                                  "grounds (parse failure, exact_code mismatch) before giving up on it "
+                                  "(default: 0 — no retry). Anchor/splice errors are never retried since "
+                                  "they're deterministic given the task and repo state.")
     run_parser.set_defaults(func=cmd_run)
 
     test_adb_parser = subparsers.add_parser("test-adb", help="Run an ADB-driven UI test batch against a connected device/emulator")

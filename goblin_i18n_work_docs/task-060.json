@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-060",
+  "title": "Localize JackpotDialog title",
+  "file": "app/src/main/java/com/example/ui/components/SpecialDialogs.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Localize JackpotDialog title: replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by a stringResource/pluralStringResource call referencing the resource added earlier in this batch",
+    "No other line is modified",
+    "The file still compiles as valid Kotlin (balanced braces/parens)"
+  ],
+  "start_anchor": "if (jackpotResult is JackpotResult.Success) \"Jackpot!\" else \"Goblin's Gamble\",",
+  "exact_code": "                if (jackpotResult is JackpotResult.Success) stringResource(R.string.jackpot_title) else stringResource(R.string.goblins_gamble_title),"
+}

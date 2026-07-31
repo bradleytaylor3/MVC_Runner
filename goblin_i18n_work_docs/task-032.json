@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-032",
+  "title": "Add string resource gamble_button",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the 'gamble_button' string resource for the localized SpecialDialogs.kt UI copy.",
+  "acceptance_criteria": [
+    "A <string name=\"gamble_button\"> entry with the exact given text exists",
+    "No other entry in the file is modified"
+  ],
+  "start_anchor": "<string name=\"no_gold_to_multiply\">No gold to multiply yet — come back once your hoard has some coin.</string>",
+  "exact_code": "    <string name=\"gamble_button\">Gamble</string>"
+}

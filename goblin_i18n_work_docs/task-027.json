@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-027",
+  "title": "Add string resource no_relics_yet",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the 'no_relics_yet' string resource for the localized SpecialDialogs.kt UI copy.",
+  "acceptance_criteria": [
+    "A <string name=\"no_relics_yet\"> entry with the exact given text exists",
+    "No other entry in the file is modified"
+  ],
+  "start_anchor": "<string name=\"toss_relics_description\">Toss some relics to the goblin and he’ll multiply your hoard — a guaranteed +30% to +110% gold surge. The bigger the surge, the more relics it costs.</string>",
+  "exact_code": "    <string name=\"no_relics_yet\">No relics to gamble yet — find them by completing quests.</string>"
+}

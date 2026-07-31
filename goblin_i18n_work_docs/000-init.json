@@ -1,0 +1,10 @@
+{
+  "kind": "init",
+  "batch_id": "goblin-i18n-2026-07-31",
+  "repo_root": "/home/bradleyt/Documents/Documentation/goblin-loot-engine",
+  "language": "kotlin",
+  "conventions": [
+    "4-space indentation",
+    "Android string resources live in app/src/main/res/values/strings.xml"
+  ]
+}

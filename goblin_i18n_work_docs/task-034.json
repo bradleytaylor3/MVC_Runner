@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-034",
+  "title": "Add string resource daily_cleanup_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the 'daily_cleanup_description' string resource for the localized SpecialDialogs.kt UI copy.",
+  "acceptance_criteria": [
+    "A <string name=\"daily_cleanup_description\"> entry with the exact given text exists",
+    "No other entry in the file is modified"
+  ],
+  "start_anchor": "<string name=\"clear_out_old_loot_title\">Clear Out the Old Loot?</string>",
+  "exact_code": "    <string name=\"daily_cleanup_description\">These one-off quests are still sitting in your pile. Keep the ones still worth doing — uncheck any the goblin should toss.</string>"
+}

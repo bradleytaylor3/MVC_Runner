@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-016",
+  "title": "Add string resource claim_a_reward_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the 'claim_a_reward_title' string resource for the localized SpecialDialogs.kt UI copy.",
+  "acceptance_criteria": [
+    "A <string name=\"claim_a_reward_title\"> entry with the exact given text exists",
+    "No other entry in the file is modified"
+  ],
+  "start_anchor": "<string name=\"not_now\">Not now</string>",
+  "exact_code": "    <string name=\"claim_a_reward_title\">Claim a Reward</string>"
+}

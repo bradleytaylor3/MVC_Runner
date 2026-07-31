@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-020",
+  "title": "Add string resource claim_button",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the 'claim_button' string resource for the localized SpecialDialogs.kt UI copy.",
+  "acceptance_criteria": [
+    "A <string name=\"claim_button\"> entry with the exact given text exists",
+    "No other entry in the file is modified"
+  ],
+  "start_anchor": "<string name=\"no_rewards_yet\">No rewards set up yet — add some in Settings.</string>",
+  "exact_code": "    <string name=\"claim_button\">Claim</string>"
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Add string resource next_up",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the 'next_up' string resource for the localized SpecialDialogs.kt UI copy.",
+  "acceptance_criteria": [
+    "A <string name=\"next_up\"> entry with the exact given text exists",
+    "No other entry in the file is modified"
+  ],
+  "start_anchor": "<string name=\"app_name\">Goblin Loot Engine</string>",
+  "exact_code": "    <string name=\"next_up\">Next up!</string>"
+}

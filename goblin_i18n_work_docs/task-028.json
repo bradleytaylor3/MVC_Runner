@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-028",
+  "title": "Add string resource rolling_the_bones",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the 'rolling_the_bones' string resource for the localized SpecialDialogs.kt UI copy.",
+  "acceptance_criteria": [
+    "A <string name=\"rolling_the_bones\"> entry with the exact given text exists",
+    "No other entry in the file is modified"
+  ],
+  "start_anchor": "<string name=\"no_relics_yet\">No relics to gamble yet — find them by completing quests.</string>",
+  "exact_code": "    <string name=\"rolling_the_bones\">Rolling the bones...</string>"
+}

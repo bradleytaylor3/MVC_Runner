@@ -1,0 +1,17 @@
+{
+  "kind": "work",
+  "id": "task-061",
+  "title": "Localize JackpotDialog intro text",
+  "file": "app/src/main/java/com/example/ui/components/SpecialDialogs.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Localize JackpotDialog intro text: replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by a stringResource/pluralStringResource call referencing the resource added earlier in this batch",
+    "No other line is modified",
+    "The file still compiles as valid Kotlin (balanced braces/parens)"
+  ],
+  "start_anchor": "\"Toss some relics to the goblin and he'll multiply your hoard — \" +",
+  "exact_code": "                        stringResource(R.string.toss_relics_description),",
+  "end_anchor": "\"the more relics it costs.\","
+}

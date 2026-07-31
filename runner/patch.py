@@ -10,6 +10,26 @@ class SpliceError(ValueError):
     pass
 
 
+def reindent_to(content: str, target_indent: int) -> str:
+    """Re-anchor a known-final code fragment's indentation to target_indent
+    spaces, preserving each line's indentation *relative to the fragment's
+    own first line*. Purely mechanical — no model involved — since exact_code
+    means the content itself is already fully decided; the only remaining
+    unknown is how deep the surrounding file nests at the splice point, and
+    that's measured directly from the file (see executor._reference_indent),
+    not guessed by a model doing a verbatim copy."""
+    lines = content.split("\n")
+    first_indent = len(lines[0]) - len(lines[0].lstrip())
+    out = []
+    for line in lines:
+        if line.strip() == "":
+            out.append("")
+            continue
+        relative = max(len(line) - len(line.lstrip()) - first_indent, 0)
+        out.append(" " * (target_indent + relative) + line.lstrip())
+    return "\n".join(out)
+
+
 def extract_fragment(lines: list[str], resolved: ResolvedAnchor) -> str | None:
     """The exact current content at a replace-mode anchor, or None for an
     insert-mode anchor (nothing exists there yet)."""
@@ -75,8 +95,24 @@ def detect_leading_bleed(lines: list[str], resolved: ResolvedAnchor, fragment: s
     return None
 
 
+def _strip_wrapping_blank_lines(fragment_lines: list[str]) -> list[str]:
+    """Small models reliably pad a fragment with a stray leading/trailing
+    blank line even when asked for exactly one line. Left unchecked, every
+    'add' task in a chained batch pushes one more blank line down the file
+    (each task's insertion point is the line the previous task just added),
+    so a long batch ends with a growing wall of blank lines before whatever
+    followed the last insertion. Blank lines *inside* a real multi-line
+    fragment are untouched — only ones wrapping the whole fragment are noise."""
+    start, end = 0, len(fragment_lines)
+    while end - start > 1 and fragment_lines[end - 1] == "":
+        end -= 1
+    while end - start > 1 and fragment_lines[start] == "":
+        start += 1
+    return fragment_lines[start:end]
+
+
 def splice(lines: list[str], resolved: ResolvedAnchor, change_type: str, model_fragment: str) -> list[str]:
-    fragment_lines = model_fragment.split("\n") if model_fragment else []
+    fragment_lines = _strip_wrapping_blank_lines(model_fragment.split("\n")) if model_fragment else []
 
     if change_type == "delete":
         if resolved.mode != "replace":

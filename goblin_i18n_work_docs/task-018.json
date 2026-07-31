@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-018",
+  "title": "Add string resource available_gold_summary",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the 'available_gold_summary' string resource for the localized SpecialDialogs.kt UI copy.",
+  "acceptance_criteria": [
+    "A <string name=\"available_gold_summary\"> entry with the exact given text exists",
+    "No other entry in the file is modified"
+  ],
+  "start_anchor": "<string name=\"reward_claimed_title\">Reward Claimed!</string>",
+  "exact_code": "    <string name=\"available_gold_summary\">Available: %1$d g · claiming costs 6-12%% of that</string>"
+}

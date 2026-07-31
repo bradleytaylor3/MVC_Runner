@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-023",
+  "title": "Add string resource no_gold_available",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the 'no_gold_available' string resource for the localized SpecialDialogs.kt UI copy.",
+  "acceptance_criteria": [
+    "A <string name=\"no_gold_available\"> entry with the exact given text exists",
+    "No other entry in the file is modified"
+  ],
+  "start_anchor": "<string name=\"reward_claimed_summary\">Spent %1$d gold (%2$d%%) on %3$s!</string>",
+  "exact_code": "    <string name=\"no_gold_available\">No gold available right now.</string>"
+}

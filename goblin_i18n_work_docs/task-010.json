@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-010",
+  "title": "Add string resource bonus_gold_amount",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the 'bonus_gold_amount' string resource for the localized SpecialDialogs.kt UI copy.",
+  "acceptance_criteria": [
+    "A <string name=\"bonus_gold_amount\"> entry with the exact given text exists",
+    "No other entry in the file is modified"
+  ],
+  "start_anchor": "<string name=\"bonus_relic\">+1 relic</string>",
+  "exact_code": "    <string name=\"bonus_gold_amount\">+%1$d gold</string>"
+}

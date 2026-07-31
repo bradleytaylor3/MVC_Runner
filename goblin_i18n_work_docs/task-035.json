@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-035",
+  "title": "Add string resource sort_the_pile_button",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the 'sort_the_pile_button' string resource for the localized SpecialDialogs.kt UI copy.",
+  "acceptance_criteria": [
+    "A <string name=\"sort_the_pile_button\"> entry with the exact given text exists",
+    "No other entry in the file is modified"
+  ],
+  "start_anchor": "<string name=\"daily_cleanup_description\">These one-off quests are still sitting in your pile. Keep the ones still worth doing — uncheck any the goblin should toss.</string>",
+  "exact_code": "    <string name=\"sort_the_pile_button\">Sort the Pile</string>"
+}
