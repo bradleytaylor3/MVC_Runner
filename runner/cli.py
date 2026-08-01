@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from runner import adb_agent, adb_client, executor, ollama_client, work_builder
+from runner import adb_agent, adb_client, executor, ollama_client, token_savings, work_builder
 from runner.adb_task import AdbTaskError, load_adb_batch
 from runner.work_doc import WorkDocError, load_batch
 
@@ -62,6 +62,8 @@ def cmd_run(args: argparse.Namespace) -> int:
     except ollama_client.OllamaError as e:
         print(f"Error: {e}", file=sys.stderr)
         return 3
+
+    token_savings.update_summary(args.logs_dir.resolve())
 
     ok_statuses = ("success", "dry_run", "init")
     return 0 if all(e["status"] in ok_statuses for e in log_data["entries"]) else 1

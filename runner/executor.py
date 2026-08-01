@@ -293,6 +293,7 @@ def _attempt_work_task(
             status="dry_run" if dry_run else "success",
             file_written=task.file,
             model_called=False,
+            fragment_chars=len(task.exact_code),
             elapsed_seconds=time.monotonic() - start,
         )
         return entry
@@ -347,6 +348,7 @@ def _attempt_work_task(
         status="dry_run" if dry_run else "success",
         file_written=task.file,
         model_called=True,
+        fragment_chars=len(fragment),
         elapsed_seconds=time.monotonic() - start,
     )
     return entry
