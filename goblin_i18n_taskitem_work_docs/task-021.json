@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-021",
+  "title": "Add string resource delete_record_content_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Delete record\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"delete_record_content_description\">Delete record</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"revert_to_active_content_description\">Revert to active</string>",
+  "exact_code": "    <string name=\"delete_record_content_description\">Delete record</string>"
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-006",
+  "title": "Add string resource quest_waiting_body",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"%1$s quest is waiting — get that loot!\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"quest_waiting_body\">%1$s quest is waiting — get that loot!</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"time_to_start_title\">Time to start: %1$s</string>",
+  "exact_code": "    <string name=\"quest_waiting_body\">%1$s quest is waiting — get that loot!</string>"
+}

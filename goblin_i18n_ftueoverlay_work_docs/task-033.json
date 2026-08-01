@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-033",
+  "title": "Localize 'Skip' button",
+  "file": "app/src/main/java/com/example/ui/FtueOverlay.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.ftue_skip_button)",
+    "No other line is modified"
+  ],
+  "start_anchor": "Text(\"Skip\", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))",
+  "exact_code": "Text(stringResource(R.string.ftue_skip_button), color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))"
+}

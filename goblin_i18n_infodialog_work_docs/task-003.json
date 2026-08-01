@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Add a ResolvedInfoSection holder for the search-filtered, locale-resolved copy",
+  "file": "app/src/main/java/com/example/ui/InfoDialog.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "description": "InfoSection was just changed (previous task) to hold resource IDs instead of resolved text, since the top-level infoSections list can't call stringResource() directly. The dialog's search box filters on actual displayed text, so InfoDialog needs a resolved (String-holding) counterpart built inside its @Composable body — this is that holder type. Declared on a single line so its title/body fields can never be mistaken for InfoSection's (now-renamed) fields by later anchor-based edits.",
+  "acceptance_criteria": [
+    "A new private data class ResolvedInfoSection(val title: String, val body: String) is added, declared on one line",
+    "No existing declaration is modified by this task"
+  ],
+  "start_anchor": "import com.example.R",
+  "exact_code": "\nprivate data class ResolvedInfoSection(val title: String, val body: String)"
+}

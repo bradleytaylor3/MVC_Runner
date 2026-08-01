@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-025",
+  "title": "Add string resource clear_date_content_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Clear date\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"clear_date_content_description\">Clear date</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"today_starts_right_away\">Today — starts right away</string>",
+  "exact_code": "    <string name=\"clear_date_content_description\">Clear date</string>"
+}

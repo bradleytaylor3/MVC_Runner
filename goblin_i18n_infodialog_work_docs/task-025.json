@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-025",
+  "title": "Add string resource info_repeated_tasks_body",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Set a quest to repeat daily, weekly, or monthly, at whatever interval you like. Once completed, it reappears automatically at the time you've set in Settings, so recurring habits don't need to be recreated by hand.\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"info_repeated_tasks_body\">Set a quest to repeat daily, weekly, or monthly, at whatever interval you like. Once completed, it reappears automatically at the time you\\'ve set in Settings, so recurring habits don\\'t need to be recreated by hand.</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"info_repeated_tasks_title\">Repeated Tasks</string>",
+  "exact_code": "    <string name=\"info_repeated_tasks_body\">Set a quest to repeat daily, weekly, or monthly, at whatever interval you like. Once completed, it reappears automatically at the time you\\'ve set in Settings, so recurring habits don\\'t need to be recreated by hand.</string>"
+}

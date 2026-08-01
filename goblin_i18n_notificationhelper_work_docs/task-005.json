@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-005",
+  "title": "Add string resource time_to_start_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Time to start: %1$s\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"time_to_start_title\">Time to start: %1$s</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"stop_reminding_action\">Stop reminding</string>",
+  "exact_code": "    <string name=\"time_to_start_title\">Time to start: %1$s</string>"
+}

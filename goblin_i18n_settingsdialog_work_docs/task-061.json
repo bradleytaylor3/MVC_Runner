@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-061",
+  "title": "Add string resource claiming_reward_cost_message",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Claiming any reward costs a random 6-12% of the gold you have banked at the time.\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"claiming_reward_cost_message\">Claiming any reward costs a random 6-12% of the gold you have banked at the time.</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"edit_reward_title\">Edit Reward</string>",
+  "exact_code": "    <string name=\"claiming_reward_cost_message\">Claiming any reward costs a random 6-12% of the gold you have banked at the time.</string>"
+}

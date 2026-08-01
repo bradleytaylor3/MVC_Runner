@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-004",
+  "title": "Add string resource interval_weekly",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Weekly\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"interval_weekly\">Weekly</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"interval_daily\">Daily</string>",
+  "exact_code": "    <string name=\"interval_weekly\">Weekly</string>"
+}

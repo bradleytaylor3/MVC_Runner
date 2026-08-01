@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-012",
+  "title": "Add plural resource repeat_count_weeks",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "block",
+  "change_type": "add",
+  "description": "Add the plural resource used to localize the repeat-interval count stepper (weeks) (\"%1$d week\" / \"%1$d weeks\").",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains a <plurals name=\"repeat_count_weeks\"> with \"one\" item \"%1$d week\" and \"other\" item \"%1$d weeks\"",
+    "No other resource is modified"
+  ],
+  "start_anchor": "</plurals>",
+  "exact_code": "    <plurals name=\"repeat_count_weeks\">\n        <item quantity=\"one\">%1$d week</item>\n        <item quantity=\"other\">%1$d weeks</item>\n    </plurals>",
+  "occurrence": 6
+}

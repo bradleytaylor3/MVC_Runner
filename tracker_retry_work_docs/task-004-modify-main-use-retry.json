@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-004",
+  "title": "Wire main() to use check_site_with_retry",
+  "file": "tracker.py",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "def main():",
+  "end_anchor": "    webbrowser.open(report_path.as_uri())",
+  "exact_code": "def main():\n    headless = \"--show\" not in sys.argv\n    sites = load_config()\n    all_results = []\n\n    with sync_playwright() as p:\n        browser = p.chromium.launch(headless=headless)\n        for site in sites:\n            print(f\"Checking {site['name']}...\")\n            all_results.extend(check_site_with_retry(browser, site, headless))\n        browser.close()\n\n    all_results.extend(load_manual_entries())\n\n    save_csv(all_results)\n    report_path = save_html(all_results)\n    print(f\"\\nOpening report: {report_path}\")\n    webbrowser.open(report_path.as_uri())",
+  "description": "main() currently opens a context/page per site and inline try/except/finally's a single check_site call. Replace that per-site block with a call to check_site_with_retry(browser, site, headless), which now owns context/page creation, retrying, and the error-result fallback, so main() no longer needs its own try/except/finally or manual context management for this part. Everything outside the sites loop (manual entries, CSV/HTML report saving, opening the browser) is unchanged.",
+  "acceptance_criteria": [
+    "main()'s per-site loop calls check_site_with_retry(browser, site, headless) and extends all_results with its return value",
+    "The old manual context = browser.new_context() / page = context.new_page() / try/except Exception/finally: context.close() block is gone from main() - that responsibility now lives entirely in check_site_with_retry",
+    "The 'Checking {site[\"name\"]}...' progress print still happens once per site before the call",
+    "Behavior after the sites loop (load_manual_entries, save_csv, save_html, printing/opening the report path) is byte-for-byte unchanged from before"
+  ]
+}

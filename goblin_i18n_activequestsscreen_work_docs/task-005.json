@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-005",
+  "title": "Add string resource forge_new_quest",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Forge New Quest\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"forge_new_quest\">Forge New Quest</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"forge_new_quest_content_description\">Forge new quest</string>",
+  "exact_code": "    <string name=\"forge_new_quest\">Forge New Quest</string>"
+}

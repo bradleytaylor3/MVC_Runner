@@ -1,0 +1,11 @@
+{
+  "kind": "init",
+  "batch_id": "goblin-i18n-goblinwidget-2026-07-31",
+  "repo_root": "C:\\Users\\bradl\\StudioProjects\\goblin-loot-engine",
+  "language": "kotlin",
+  "conventions": [
+    "4-space indentation",
+    "Android string resources live in app/src/main/res/values/strings.xml",
+    "This file is a Jetpack Glance widget, not Compose UI — it has no access to androidx.compose.ui.res.stringResource. Use context.getString(...)/context.resources.getQuantityString(...) instead, where context is either the provideGlance(context, ...) parameter (captured by closure inside provideContent) or androidx.glance.LocalContext.current for composables that don't receive it directly."
+  ]
+}

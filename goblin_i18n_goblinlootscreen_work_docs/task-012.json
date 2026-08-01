@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-012",
+  "title": "Add string resource day_streak_label",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Day Streak\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"day_streak_label\">Day Streak</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"relics_label\">Relics</string>",
+  "exact_code": "    <string name=\"day_streak_label\">Day Streak</string>"
+}

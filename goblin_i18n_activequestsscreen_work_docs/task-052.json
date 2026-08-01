@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-052",
+  "title": "Localize 'Launch Quest!' confirm button",
+  "file": "app/src/main/java/com/example/ui/screens/ActiveQuestsScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.launch_quest_button)",
+    "No other line is modified"
+  ],
+  "start_anchor": "Text(\"Launch Quest!\", fontWeight = FontWeight.ExtraBold)",
+  "exact_code": "Text(stringResource(R.string.launch_quest_button), fontWeight = FontWeight.ExtraBold)"
+}

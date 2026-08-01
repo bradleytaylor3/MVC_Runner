@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-020",
+  "title": "Add string resource reminder_notify_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Get notified when it's time to start\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"reminder_notify_description\">Get notified when it\\'s time to start</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"set_a_reminder_label\">Set a reminder</string>",
+  "exact_code": "    <string name=\"reminder_notify_description\">Get notified when it\\'s time to start</string>"
+}

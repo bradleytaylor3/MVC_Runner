@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-092",
+  "title": "Localize 'Rewards' section header (reuse)",
+  "file": "app/src/main/java/com/example/ui/screens/SettingsDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with the shared info_rewards_title resource (already introduced by InfoDialog.kt's batch — identical exact text).",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by the referenced stringResource/pluralStringResource call",
+    "No other line is modified"
+  ],
+  "start_anchor": "SettingsSectionHeader(\"Rewards\")",
+  "exact_code": "SettingsSectionHeader(stringResource(R.string.info_rewards_title))"
+}

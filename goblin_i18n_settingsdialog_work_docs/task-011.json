@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-011",
+  "title": "Add string resource milestone_celebrations_label",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Milestone celebrations\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"milestone_celebrations_label\">Milestone celebrations</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"streak_warning_description\">Alert when your streak is at risk</string>",
+  "exact_code": "    <string name=\"milestone_celebrations_label\">Milestone celebrations</string>"
+}

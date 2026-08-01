@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-004",
+  "title": "Add string resource collapse_calendar_content_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Collapse calendar\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"collapse_calendar_content_description\">Collapse calendar</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"prev_day_content_description\">Previous Day</string>",
+  "exact_code": "    <string name=\"collapse_calendar_content_description\">Collapse calendar</string>"
+}

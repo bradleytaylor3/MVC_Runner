@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-044",
+  "title": "Add string resource paste_clipboard_placeholder",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Tap 'Paste from Clipboard' below...\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"paste_clipboard_placeholder\">Tap \\'Paste from Clipboard\\' below...</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"paste_json_message\">Paste the JSON from your AI assistant below.</string>",
+  "exact_code": "    <string name=\"paste_clipboard_placeholder\">Tap \\'Paste from Clipboard\\' below...</string>"
+}

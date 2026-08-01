@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-037",
+  "title": "Localize GoblinTimePickerDialog's Cancel button (reuse)",
+  "file": "app/src/main/java/com/example/ui/components/Selectors.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with the shared action_cancel resource. GoblinDatePickerDialog's dismiss button has this exact same text, but that copy was already converted to a stringResource call earlier in this batch, so this is the only literal match remaining by the time this task runs.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.action_cancel)",
+    "No other line is modified"
+  ],
+  "start_anchor": "TextButton(onClick = onDismiss) { Text(\"Cancel\") }",
+  "exact_code": "TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }"
+}

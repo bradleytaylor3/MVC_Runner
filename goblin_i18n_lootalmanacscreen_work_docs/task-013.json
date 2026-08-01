@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-013",
+  "title": "Localize Next Month/Day content description",
+  "file": "app/src/main/java/com/example/ui/screens/LootAlmanacScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded ternary content-description literals with resource-backed lookups.",
+  "acceptance_criteria": [
+    "The 'Next Month' branch is replaced by stringResource(R.string.next_month_content_description)",
+    "The 'Next Day' branch is replaced by stringResource(R.string.next_day_content_description)",
+    "No other line is modified"
+  ],
+  "start_anchor": "contentDescription = if (calendarExpanded) \"Next Month\" else \"Next Day\"",
+  "exact_code": "contentDescription = if (calendarExpanded) stringResource(R.string.next_month_content_description) else stringResource(R.string.next_day_content_description)"
+}

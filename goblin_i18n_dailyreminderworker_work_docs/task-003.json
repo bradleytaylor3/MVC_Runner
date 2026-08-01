@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Add plural resource quests_waiting_body",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "block",
+  "change_type": "add",
+  "description": "Add the plural resource used to localize the daily unfinished-quests reminder body (\"You have %1$d quest waiting. Don't let the loot slip away!\" / \"You have %1$d quests waiting. Don't let the loot slip away!\").",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains a <plurals name=\"quests_waiting_body\"> with \"one\" item \"You have %1$d quest waiting. Don\\'t let the loot slip away!\" and \"other\" item \"You have %1$d quests waiting. Don\\'t let the loot slip away!\"",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"unfinished_business_title\">Unfinished Goblin Business!</string>",
+  "exact_code": "    <plurals name=\"quests_waiting_body\">\n        <item quantity=\"one\">You have %1$d quest waiting. Don\\'t let the loot slip away!</item>\n        <item quantity=\"other\">You have %1$d quests waiting. Don\\'t let the loot slip away!</item>\n    </plurals>"
+}

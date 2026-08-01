@@ -1,0 +1,19 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Move goldFindMessages literals into strings.xml",
+  "file": "app/src/main/java/com/example/data/TaskCompletion.kt",
+  "structure_type": "constant",
+  "change_type": "modify",
+  "start_anchor": "    private val goldFindMessages = listOf(",
+  "end_anchor": "    )",
+  "occurrence": 1,
+  "exact_code": "    private val goldFindMessages = listOf(\n        context.getString(R.string.bonus_find_gold_1),\n        context.getString(R.string.bonus_find_gold_2),\n        context.getString(R.string.bonus_find_gold_3)\n    )",
+  "description": "goldFindMessages was a hardcoded list of 3 flavor-text strings shown when a completed task rolls a bonus gold find. The 3 strings already exist verbatim as string resources bonus_find_gold_1/2/3 in strings.xml (added in this same i18n pass). context is already an existing constructor property of TaskCompleter (private val context: Context), so no new parameter is needed.",
+  "acceptance_criteria": [
+    "goldFindMessages is still a private val of type List<String>",
+    "It resolves its 3 entries via context.getString(R.string.bonus_find_gold_1), _gold_2, _gold_3 in that order",
+    "No string literals remain in this declaration",
+    "Nothing else in the file changes"
+  ]
+}

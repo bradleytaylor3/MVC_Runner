@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-113",
+  "title": "Localize 'Copy Data as JSON' button",
+  "file": "app/src/main/java/com/example/ui/screens/SettingsDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by the referenced stringResource/pluralStringResource call",
+    "No other line is modified"
+  ],
+  "start_anchor": "Text(\"Copy Data as JSON\", fontWeight = FontWeight.Bold)",
+  "exact_code": "Text(stringResource(R.string.copy_data_json_button), fontWeight = FontWeight.Bold)"
+}

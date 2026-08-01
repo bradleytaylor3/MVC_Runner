@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-005",
+  "title": "Add string resource goblin_settings_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Goblin Settings\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"goblin_settings_title\">Goblin Settings</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"press_hold_unlock_message\">Press and hold to unlock — advanced options that can delete your data.</string>",
+  "exact_code": "    <string name=\"goblin_settings_title\">Goblin Settings</string>"
+}

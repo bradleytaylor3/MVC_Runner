@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-023",
+  "title": "Localize 'Relics' stat item label",
+  "file": "app/src/main/java/com/example/ui/GoblinLootScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded label literal with a resource-backed lookup (the numeric value itself is left as a plain formatted number, not translatable text).",
+  "acceptance_criteria": [
+    "The label comes from stringResource(R.string.relics_label)",
+    "No other line is modified"
+  ],
+  "start_anchor": "StatItem(value = \"$relicCount\", label = \"Relics\")",
+  "exact_code": "StatItem(value = \"$relicCount\", label = stringResource(R.string.relics_label))"
+}

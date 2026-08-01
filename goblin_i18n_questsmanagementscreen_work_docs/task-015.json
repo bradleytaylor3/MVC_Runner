@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-015",
+  "title": "Localize 'Edit Schedule' dialog title",
+  "file": "app/src/main/java/com/example/ui/screens/QuestsManagementScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.edit_schedule_title)",
+    "No other line is modified"
+  ],
+  "start_anchor": "title = { Text(\"Edit Schedule\", fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary) },",
+  "exact_code": "title = { Text(stringResource(R.string.edit_schedule_title), fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary) },"
+}

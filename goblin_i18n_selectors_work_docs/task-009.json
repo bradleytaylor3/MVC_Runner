@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-009",
+  "title": "Add plural resource repeat_every_months",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "block",
+  "change_type": "add",
+  "description": "Add the plural resource used to localize the schedule-summary label for a monthly-repeat task (\"Every %1$d month\" / \"Every %1$d months\").",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains a <plurals name=\"repeat_every_months\"> with \"one\" item \"Every %1$d month\" and \"other\" item \"Every %1$d months\"",
+    "No other resource is modified"
+  ],
+  "start_anchor": "</plurals>",
+  "exact_code": "    <plurals name=\"repeat_every_months\">\n        <item quantity=\"one\">Every %1$d month</item>\n        <item quantity=\"other\">Every %1$d months</item>\n    </plurals>",
+  "occurrence": 4
+}

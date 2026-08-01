@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-049",
+  "title": "Add string resource bullet_item_template",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"• %1$s\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"bullet_item_template\">• %1$s</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "</plurals>",
+  "exact_code": "    <string name=\"bullet_item_template\">• %1$s</string>",
+  "occurrence": 13
+}

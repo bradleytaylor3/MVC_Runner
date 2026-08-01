@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-026",
+  "title": "Add string resource end_series_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"End this series?\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"end_series_title\">End this series?</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"delete_quest_content_description\">Delete quest</string>",
+  "exact_code": "    <string name=\"end_series_title\">End this series?</string>"
+}

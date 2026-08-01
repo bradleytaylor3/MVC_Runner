@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-065",
+  "title": "Localize RepeatQuestItem's 'Edit schedule' content description (2nd of 2 occurrences, reuse)",
+  "file": "app/src/main/java/com/example/ui/components/TaskItem.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with the shared edit_schedule_content_description resource. By the time this task runs, UpcomingQuestItem's earlier copy of this same literal has already been replaced, so occurrence=1 now resolves to this one.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.edit_schedule_content_description)",
+    "No other line is modified"
+  ],
+  "start_anchor": "Icon(Icons.Filled.Edit, contentDescription = \"Edit schedule\", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))",
+  "occurrence": 1,
+  "exact_code": "Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.edit_schedule_content_description), tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))"
+}

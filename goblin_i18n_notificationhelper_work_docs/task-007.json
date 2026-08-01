@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-007",
+  "title": "Remove the compile-time-constant channel name",
+  "file": "app/src/main/java/com/example/notifications/NotificationHelper.kt",
+  "structure_type": "constant",
+  "change_type": "modify",
+  "description": "CHANNEL_NAME is a `const val`, which must be a compile-time constant — it can't hold the result of context.getString(). It's only used inside createNotificationChannel(context: Context), which already has a Context, so its usage site (next task) reads the resource directly instead. Uses change_type=modify with an empty exact_code (rather than change_type=delete) so the splice is deterministic — delete has no exact_code path and always requires the local model to correctly return an empty fragment, which qwen3:4b did not do reliably for this exact task.",
+  "acceptance_criteria": [
+    "The 'private const val CHANNEL_NAME = \"Goblin Loot Reminders\"' line is removed",
+    "No other declaration is affected"
+  ],
+  "start_anchor": "private const val CHANNEL_NAME = \"Goblin Loot Reminders\"",
+  "exact_code": ""
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-019",
+  "title": "Point ftueSteps' 'Welcome, goblin!' entry at its title resource",
+  "file": "app/src/main/java/com/example/ui/FtueOverlay.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded title literal with the matching string-resource ID (a plain Int constant, safe to reference from this top-level, non-composable list).",
+  "acceptance_criteria": [
+    "title = \"Welcome, goblin!\", becomes titleRes = R.string.ftue_welcome_title,",
+    "No other line is modified"
+  ],
+  "start_anchor": "title = \"Welcome, goblin!\",",
+  "exact_code": "titleRes = R.string.ftue_welcome_title,"
+}

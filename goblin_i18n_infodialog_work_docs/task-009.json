@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-009",
+  "title": "Point infoSections' 'Rewards' entry at its title resource",
+  "file": "app/src/main/java/com/example/ui/InfoDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded title literal with the matching string-resource ID.",
+  "acceptance_criteria": [
+    "title = \"Rewards\", becomes titleRes = R.string.info_rewards_title,",
+    "No other line is modified"
+  ],
+  "start_anchor": "title = \"Rewards\",",
+  "exact_code": "titleRes = R.string.info_rewards_title,"
+}

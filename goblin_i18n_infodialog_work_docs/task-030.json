@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-030",
+  "title": "Add string resource info_rewards_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Rewards\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"info_rewards_title\">Rewards</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"info_treasury_body\">Your gold, relics, and day streak are tracked at the top of the screen. Keep completing at least one quest a day to grow your streak — and keep an eye out, because every so often a completed quest turns up a bit of bonus loot.</string>",
+  "exact_code": "    <string name=\"info_rewards_title\">Rewards</string>"
+}

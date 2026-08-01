@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-018",
+  "title": "Point infoSections' settings_data entry at its body resource",
+  "file": "app/src/main/java/com/example/ui/InfoDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded body literal (single- or multi-line concatenation) with the matching string-resource ID.",
+  "acceptance_criteria": [
+    "The body expression becomes bodyRes = R.string.info_settings_data_body",
+    "No other line is modified"
+  ],
+  "start_anchor": "body = \"The gear icon covers reminders, repeat timing, and notifications.\"",
+  "exact_code": "bodyRes = R.string.info_settings_data_body"
+}

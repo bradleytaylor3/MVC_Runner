@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Add the R import",
+  "file": "app/src/main/java/com/example/notifications/DailyReminderWorker.kt",
+  "structure_type": "import",
+  "change_type": "add",
+  "description": "R.string.xxx/R.plurals.xxx references need com.example.R imported.",
+  "acceptance_criteria": [
+    "com.example.R is imported",
+    "No existing import is duplicated or removed"
+  ],
+  "start_anchor": "import com.example.data.SettingsRepository",
+  "exact_code": "import com.example.R"
+}

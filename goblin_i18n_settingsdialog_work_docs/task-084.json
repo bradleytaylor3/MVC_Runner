@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-084",
+  "title": "Localize 'Advanced' label",
+  "file": "app/src/main/java/com/example/ui/screens/SettingsDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by the referenced stringResource/pluralStringResource call",
+    "No other line is modified"
+  ],
+  "start_anchor": "\"Advanced\",",
+  "exact_code": "stringResource(R.string.advanced_label),"
+}

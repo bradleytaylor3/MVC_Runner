@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-058",
+  "title": "Localize UpcomingQuestItem's date fallback text",
+  "file": "app/src/main/java/com/example/ui/components/TaskItem.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded fallback literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.unknown_label)",
+    "No other line is modified"
+  ],
+  "start_anchor": "task.scheduledDateEpochDay?.let { java.time.LocalDate.ofEpochDay(it).toString() } ?: \"Unknown\",",
+  "exact_code": "task.scheduledDateEpochDay?.let { java.time.LocalDate.ofEpochDay(it).toString() } ?: stringResource(R.string.unknown_label),"
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-017",
+  "title": "Add string resource remove_step_content_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Remove step\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"remove_step_content_description\">Remove step</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"gold_amount_compact\">%1$dg</string>",
+  "exact_code": "    <string name=\"remove_step_content_description\">Remove step</string>"
+}

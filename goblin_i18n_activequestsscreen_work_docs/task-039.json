@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-039",
+  "title": "Localize quest-notes placeholder",
+  "file": "app/src/main/java/com/example/ui/screens/ActiveQuestsScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded placeholder literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.quest_notes_placeholder)",
+    "No other line is modified"
+  ],
+  "start_anchor": "placeholder = { Text(\"Any extra detail for this quest?\") },",
+  "exact_code": "placeholder = { Text(stringResource(R.string.quest_notes_placeholder)) },"
+}

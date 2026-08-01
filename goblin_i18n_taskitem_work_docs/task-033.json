@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-033",
+  "title": "Localize DeleteConfirmDialog's default confirm label",
+  "file": "app/src/main/java/com/example/ui/components/TaskItem.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded default-parameter literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The default value of confirmLabel comes from stringResource(R.string.action_delete)",
+    "No other line is modified"
+  ],
+  "start_anchor": "confirmLabel: String = \"Delete\",",
+  "exact_code": "confirmLabel: String = stringResource(R.string.action_delete),"
+}

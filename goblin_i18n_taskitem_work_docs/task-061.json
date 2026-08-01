@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-061",
+  "title": "Localize RepeatQuestItem's 'End this series?' title",
+  "file": "app/src/main/java/com/example/ui/components/TaskItem.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.end_series_title)",
+    "No other line is modified"
+  ],
+  "start_anchor": "title = \"End this series?\",",
+  "exact_code": "title = stringResource(R.string.end_series_title),"
+}

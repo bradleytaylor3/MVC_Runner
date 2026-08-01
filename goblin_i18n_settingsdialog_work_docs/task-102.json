@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-102",
+  "title": "Localize dev-options unlock warning message",
+  "file": "app/src/main/java/com/example/ui/screens/SettingsDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by the referenced stringResource/pluralStringResource call",
+    "No other line is modified"
+  ],
+  "start_anchor": "\"This section can permanently delete or overwrite all your quests, \" +",
+  "exact_code": "stringResource(R.string.dev_options_warning_message)",
+  "end_anchor": "\"gold, and settings. Only continue if that's what you meant to do.\""
+}

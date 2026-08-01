@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-012",
+  "title": "Add string resource discard_quest_content_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Discard quest\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"discard_quest_content_description\">Discard quest</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"acquire_loot_content_description\">Acquire loot!</string>",
+  "exact_code": "    <string name=\"discard_quest_content_description\">Discard quest</string>"
+}

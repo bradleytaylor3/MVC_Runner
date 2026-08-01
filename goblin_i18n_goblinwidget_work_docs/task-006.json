@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-006",
+  "title": "Localize the widget header's active-quest count and fix its pluralization",
+  "file": "app/src/main/java/com/example/widget/GoblinWidget.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the manually-pluralized template with context.resources.getQuantityString() using the new quest_count_active plural resource. context is captured by closure from the enclosing provideGlance(context, ...) parameter.",
+  "acceptance_criteria": [
+    "The hardcoded string template is replaced by context.resources.getQuantityString(R.plurals.quest_count_active, activeTasks.size, activeTasks.size)",
+    "No other line is modified"
+  ],
+  "start_anchor": "\"${activeTasks.size} quest${if (activeTasks.size == 1) \"\" else \"s\"} active\",",
+  "exact_code": "context.resources.getQuantityString(R.plurals.quest_count_active, activeTasks.size, activeTasks.size),"
+}

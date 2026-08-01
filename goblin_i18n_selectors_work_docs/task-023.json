@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-023",
+  "title": "Add string resource hidden_until_date",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Hidden until %1$s\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"hidden_until_date\">Hidden until %1$s</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"set_for_later_label\">Set for later</string>",
+  "exact_code": "    <string name=\"hidden_until_date\">Hidden until %1$s</string>"
+}

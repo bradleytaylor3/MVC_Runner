@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-063",
+  "title": "Add string resource description_optional_label",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Description (optional)\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"description_optional_label\">Description (optional)</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"name_label\">Name</string>",
+  "exact_code": "    <string name=\"description_optional_label\">Description (optional)</string>"
+}

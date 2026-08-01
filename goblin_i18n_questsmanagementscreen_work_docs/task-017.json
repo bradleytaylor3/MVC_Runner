@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-017",
+  "title": "Localize 'Active days' label (reuse)",
+  "file": "app/src/main/java/com/example/ui/screens/QuestsManagementScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with the shared label_active_days resource (already introduced by ActiveQuestsScreen.kt's batch).",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.label_active_days)",
+    "No other line is modified"
+  ],
+  "start_anchor": "Text(\"Active days\", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))",
+  "exact_code": "Text(stringResource(R.string.label_active_days), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))"
+}

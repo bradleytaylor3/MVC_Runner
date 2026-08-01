@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-012",
+  "title": "Localize the 'Stop reminding' notification action label",
+  "file": "app/src/main/java/com/example/notifications/NotificationHelper.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded action-label literal with context.getString().",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by context.getString(R.string.stop_reminding_action)",
+    "No other line is modified"
+  ],
+  "start_anchor": "R.drawable.ic_close, \"Stop reminding\", stopPending",
+  "exact_code": "R.drawable.ic_close, context.getString(R.string.stop_reminding_action), stopPending"
+}

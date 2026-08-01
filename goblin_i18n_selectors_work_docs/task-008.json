@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-008",
+  "title": "Add plural resource repeat_every_weeks",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "block",
+  "change_type": "add",
+  "description": "Add the plural resource used to localize the schedule-summary label for a weekly-repeat task (\"Every %1$d week\" / \"Every %1$d weeks\").",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains a <plurals name=\"repeat_every_weeks\"> with \"one\" item \"Every %1$d week\" and \"other\" item \"Every %1$d weeks\"",
+    "No other resource is modified"
+  ],
+  "start_anchor": "</plurals>",
+  "exact_code": "    <plurals name=\"repeat_every_weeks\">\n        <item quantity=\"one\">Every %1$d week</item>\n        <item quantity=\"other\">Every %1$d weeks</item>\n    </plurals>",
+  "occurrence": 3
+}

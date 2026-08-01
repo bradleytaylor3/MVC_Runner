@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Move relicFindMessages literals into strings.xml",
+  "file": "app/src/main/java/com/example/data/TaskCompletion.kt",
+  "structure_type": "constant",
+  "change_type": "modify",
+  "start_anchor": "    private val relicFindMessages = listOf(",
+  "end_anchor": "    )",
+  "exact_code": "    private val relicFindMessages = listOf(\n        context.getString(R.string.bonus_find_relic_1),\n        context.getString(R.string.bonus_find_relic_2),\n        context.getString(R.string.bonus_find_relic_3)\n    )",
+  "description": "relicFindMessages was a hardcoded list of 3 flavor-text strings shown when a completed task rolls a bonus relic find. The 3 strings already exist verbatim as string resources bonus_find_relic_1/2/3 in strings.xml (added in this same i18n pass). context is already an existing constructor property of TaskCompleter (private val context: Context), so no new parameter is needed.",
+  "acceptance_criteria": [
+    "relicFindMessages is still a private val of type List<String>",
+    "It resolves its 3 entries via context.getString(R.string.bonus_find_relic_1), _relic_2, _relic_3 in that order",
+    "No string literals remain in this declaration",
+    "This is the last member of the TaskCompleter class body — the closing brace of the class must remain immediately after it"
+  ]
+}

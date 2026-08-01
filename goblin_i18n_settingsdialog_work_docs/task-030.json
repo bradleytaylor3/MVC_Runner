@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-030",
+  "title": "Add string resource dev_options_warning_message",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"This section can permanently delete or overwrite all your quests, gold, and settings. Only continue if that's what you meant to do.\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"dev_options_warning_message\">This section can permanently delete or overwrite all your quests, gold, and settings. Only continue if that\\'s what you meant to do.</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"open_dev_options_title\">Open Developer Options?</string>",
+  "exact_code": "    <string name=\"dev_options_warning_message\">This section can permanently delete or overwrite all your quests, gold, and settings. Only continue if that\\'s what you meant to do.</string>"
+}

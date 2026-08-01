@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-012",
+  "title": "Add string resource ftue_streak_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Build your streak\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"ftue_streak_title\">Build your streak</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"ftue_spend_body\">Set up rewards you can redeem with gold in Settings. Every so often you\\'ll get a prompt to spend some — claiming one always costs a small slice of what you\\'ve got, so it\\'s always within reach.</string>",
+  "exact_code": "    <string name=\"ftue_streak_title\">Build your streak</string>"
+}

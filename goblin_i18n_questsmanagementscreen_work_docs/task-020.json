@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-020",
+  "title": "Localize 'Pick day' button text (reuse)",
+  "file": "app/src/main/java/com/example/ui/screens/QuestsManagementScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with the shared action_pick_day resource (already introduced by ActiveQuestsScreen.kt's batch).",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.action_pick_day)",
+    "No other line is modified"
+  ],
+  "start_anchor": "Text(\"Pick day\", fontWeight = FontWeight.Bold, fontSize = 13.sp)",
+  "exact_code": "Text(stringResource(R.string.action_pick_day), fontWeight = FontWeight.Bold, fontSize = 13.sp)"
+}

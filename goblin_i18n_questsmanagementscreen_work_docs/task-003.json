@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Add string resource tab_upcoming",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Upcoming\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"tab_upcoming\">Upcoming</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"tab_repeating\">Repeating</string>",
+  "exact_code": "    <string name=\"tab_upcoming\">Upcoming</string>"
+}

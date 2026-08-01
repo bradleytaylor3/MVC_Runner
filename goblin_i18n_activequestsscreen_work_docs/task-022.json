@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-022",
+  "title": "Add string resource pester_me_toggle",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Pester me until I do it\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"pester_me_toggle\">Pester me until I do it</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"label_alert_at\">Alert at</string>",
+  "exact_code": "    <string name=\"pester_me_toggle\">Pester me until I do it</string>"
+}

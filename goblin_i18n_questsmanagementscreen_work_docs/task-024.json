@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-024",
+  "title": "Localize 'Save' confirm button",
+  "file": "app/src/main/java/com/example/ui/screens/QuestsManagementScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.action_save)",
+    "No other line is modified"
+  ],
+  "start_anchor": "Text(\"Save\", fontWeight = FontWeight.Bold)",
+  "exact_code": "Text(stringResource(R.string.action_save), fontWeight = FontWeight.Bold)"
+}

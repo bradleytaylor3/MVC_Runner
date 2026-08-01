@@ -1,0 +1,17 @@
+{
+  "kind": "work",
+  "id": "task-029",
+  "title": "Localize repeatScheduleLabel and make it plural-aware",
+  "file": "app/src/main/java/com/example/ui/components/Selectors.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "description": "Convert this plain function to @Composable so it can read string/plural resources instead of deriving display text from the English enum constant name. Preserves existing behavior exactly (including the pre-existing 'None' vs 'Once' inconsistency between the count<=1 NONE case and the RepeatIntervalSelector's NONE label) while fixing the underlying non-localizable interval.name-derived text and adding real plural support for the count>=2 case. Both call sites in TaskItem.kt already invoke this from within Composable Text(...) calls, so no caller changes are needed.",
+  "acceptance_criteria": [
+    "Function is annotated @Composable",
+    "count<=1 branch returns stringResource-backed text per interval: interval_daily/interval_weekly/interval_monthly for DAILY/WEEKLY/MONTHLY, and repeat_label_none for NONE (preserving the prior 'None' text, not 'Once')",
+    "count>=2 branch returns pluralStringResource-backed text per interval via repeat_every_days/repeat_every_weeks/repeat_every_months, and falls back to interval_once for the defensive NONE case",
+    "Return type remains String; no other function in the file is modified"
+  ],
+  "name": "repeatScheduleLabel",
+  "exact_code": "@Composable\nfun repeatScheduleLabel(interval: RepeatInterval, count: Int): String {\n    if (count <= 1) {\n        return when (interval) {\n            RepeatInterval.DAILY -> stringResource(R.string.interval_daily)\n            RepeatInterval.WEEKLY -> stringResource(R.string.interval_weekly)\n            RepeatInterval.MONTHLY -> stringResource(R.string.interval_monthly)\n            RepeatInterval.NONE -> stringResource(R.string.repeat_label_none)\n        }\n    }\n    return when (interval) {\n        RepeatInterval.DAILY -> pluralStringResource(R.plurals.repeat_every_days, count, count)\n        RepeatInterval.WEEKLY -> pluralStringResource(R.plurals.repeat_every_weeks, count, count)\n        RepeatInterval.MONTHLY -> pluralStringResource(R.plurals.repeat_every_months, count, count)\n        RepeatInterval.NONE -> stringResource(R.string.interval_once)\n    }\n}"
+}

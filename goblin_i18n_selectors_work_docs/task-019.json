@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-019",
+  "title": "Add string resource select_time_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Select time\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"select_time_title\">Select time</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"pm_label\">PM</string>",
+  "exact_code": "    <string name=\"select_time_title\">Select time</string>"
+}

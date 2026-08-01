@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Add plural resource quest_count_active",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "block",
+  "change_type": "add",
+  "description": "Add the plural resource used to localize the widget header's active-quest count (\"%1$d quest active\" / \"%1$d quests active\").",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains a <plurals name=\"quest_count_active\"> with \"one\" item \"%1$d quest active\" and \"other\" item \"%1$d quests active\"",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"replace_everything_button\">Replace Everything</string>",
+  "exact_code": "    <plurals name=\"quest_count_active\">\n        <item quantity=\"one\">%1$d quest active</item>\n        <item quantity=\"other\">%1$d quests active</item>\n    </plurals>"
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-037",
+  "title": "Localize 'Toggle notes' content description",
+  "file": "app/src/main/java/com/example/ui/screens/ActiveQuestsScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded contentDescription literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.toggle_notes_content_description)",
+    "No other line is modified"
+  ],
+  "start_anchor": "contentDescription = \"Toggle notes\",",
+  "exact_code": "contentDescription = stringResource(R.string.toggle_notes_content_description),"
+}

@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-050",
+  "title": "Localize ActiveTaskItem's reminder-chip AM/PM markers (reuse)",
+  "file": "app/src/main/java/com/example/ui/components/TaskItem.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded AM/PM literals with the shared am_label/pm_label resources (already introduced by Selectors.kt's batch).",
+  "acceptance_criteria": [
+    "AM comes from stringResource(R.string.am_label)",
+    "PM comes from stringResource(R.string.pm_label)",
+    "No other line is modified"
+  ],
+  "start_anchor": "if (task.reminderHour < 12) \"AM\" else \"PM\"",
+  "exact_code": "if (task.reminderHour < 12) stringResource(R.string.am_label) else stringResource(R.string.pm_label)"
+}

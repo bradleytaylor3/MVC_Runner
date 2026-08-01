@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-014",
+  "title": "Point infoSections' repeated_tasks entry at its body resource",
+  "file": "app/src/main/java/com/example/ui/InfoDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded body literal (single- or multi-line concatenation) with the matching string-resource ID.",
+  "acceptance_criteria": [
+    "The body expression becomes bodyRes = R.string.info_repeated_tasks_body",
+    "No other line is modified"
+  ],
+  "start_anchor": "body = \"Set a quest to repeat daily, weekly, or monthly, at whatever interval you like. \" +",
+  "exact_code": "bodyRes = R.string.info_repeated_tasks_body",
+  "end_anchor": "\"recurring habits don't need to be recreated by hand.\""
+}

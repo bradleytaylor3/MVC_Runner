@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Add string resource notes_optional_label",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Notes (optional)\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"notes_optional_label\">Notes (optional)</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"edit_quest_title\">Edit Quest</string>",
+  "exact_code": "    <string name=\"notes_optional_label\">Notes (optional)</string>"
+}

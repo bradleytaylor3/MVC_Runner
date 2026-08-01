@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-024",
+  "title": "Add string resource info_repeated_tasks_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Repeated Tasks\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"info_repeated_tasks_title\">Repeated Tasks</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"info_habit_stacking_body\">Stack quests together from the Active Quests tab using the \"Stack habit\" button. Completing one step unlocks the next, so you can build a routine — like a morning stack of wake up, stretch, then journal — that only lets you move forward in order.</string>",
+  "exact_code": "    <string name=\"info_repeated_tasks_title\">Repeated Tasks</string>"
+}

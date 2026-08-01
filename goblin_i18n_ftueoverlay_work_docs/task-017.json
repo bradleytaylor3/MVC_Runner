@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-017",
+  "title": "Add string resource ftue_next_button",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Next\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"ftue_next_button\">Next</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"ftue_get_started_button\">Get Started</string>",
+  "exact_code": "    <string name=\"ftue_next_button\">Next</string>"
+}

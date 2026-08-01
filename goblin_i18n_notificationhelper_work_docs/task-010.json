@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-010",
+  "title": "Localize the notification channel description at its use site",
+  "file": "app/src/main/java/com/example/notifications/NotificationHelper.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the now-removed CHANNEL_DESC constant reference with a direct context.getString() call.",
+  "acceptance_criteria": [
+    "The CHANNEL_DESC reference is replaced by context.getString(R.string.channel_description)",
+    "No other line is modified"
+  ],
+  "start_anchor": "description = CHANNEL_DESC",
+  "exact_code": "description = context.getString(R.string.channel_description)"
+}

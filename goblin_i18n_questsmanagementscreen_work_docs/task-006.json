@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-006",
+  "title": "Add string resource edit_schedule_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Edit Schedule\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"edit_schedule_title\">Edit Schedule</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"no_repeating_quests_message\">No repeating quests yet. Set a quest to repeat when you forge it to see it here.</string>",
+  "exact_code": "    <string name=\"edit_schedule_title\">Edit Schedule</string>"
+}

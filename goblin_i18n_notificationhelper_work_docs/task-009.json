@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-009",
+  "title": "Localize the notification channel name at its use site",
+  "file": "app/src/main/java/com/example/notifications/NotificationHelper.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the now-removed CHANNEL_NAME constant reference with a direct context.getString() call — this is the channel-name argument to the NotificationChannel(...) constructor, inside createNotificationChannel(context: Context).",
+  "acceptance_criteria": [
+    "The CHANNEL_NAME reference is replaced by context.getString(R.string.channel_name)",
+    "No other line is modified"
+  ],
+  "start_anchor": "CHANNEL_NAME,",
+  "exact_code": "context.getString(R.string.channel_name),"
+}

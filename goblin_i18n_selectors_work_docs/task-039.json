@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-039",
+  "title": "Localize ScheduledDateRow's copy",
+  "file": "app/src/main/java/com/example/ui/components/Selectors.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "description": "Replace the hardcoded Set for later/Hidden until/Today.../Clear date/Pick Date/Change literals with resource-backed lookups.",
+  "acceptance_criteria": [
+    "'Set for later' comes from stringResource(R.string.set_for_later_label)",
+    "The hidden-until text comes from stringResource(R.string.hidden_until_date, it.toString()); the fallback comes from stringResource(R.string.today_starts_right_away)",
+    "The clear-date content description comes from stringResource(R.string.clear_date_content_description)",
+    "The Pick Date/Change button text comes from stringResource(R.string.pick_date_button) / stringResource(R.string.change_button)",
+    "No other logic in the function is changed"
+  ],
+  "name": "ScheduledDateRow",
+  "exact_code": "@Composable\nfun ScheduledDateRow(\n    scheduledDate: LocalDate?,\n    onPickDate: () -> Unit,\n    onClearDate: () -> Unit\n) {\n    Row(\n        modifier = Modifier.fillMaxWidth(),\n        horizontalArrangement = Arrangement.SpaceBetween,\n        verticalAlignment = Alignment.CenterVertically\n    ) {\n        Column(modifier = Modifier.weight(1f)) {\n            Text(stringResource(R.string.set_for_later_label), fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)\n            Text(\n                scheduledDate?.let { stringResource(R.string.hidden_until_date, it.toString()) } ?: stringResource(R.string.today_starts_right_away),\n                fontSize = 11.sp,\n                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)\n            )\n        }\n        if (scheduledDate != null) {\n            IconButton(onClick = onClearDate) {\n                Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.clear_date_content_description), modifier = Modifier.size(18.dp))\n            }\n        }\n        OutlinedButton(\n            onClick = onPickDate,\n            shape = RoundedCornerShape(8.dp),\n            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)\n        ) {\n            Text(if (scheduledDate == null) stringResource(R.string.pick_date_button) else stringResource(R.string.change_button), fontWeight = FontWeight.Bold)\n        }\n    }\n}"
+}

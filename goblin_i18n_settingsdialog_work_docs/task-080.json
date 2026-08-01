@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-080",
+  "title": "Localize 'Streak warning' toggle description",
+  "file": "app/src/main/java/com/example/ui/screens/SettingsDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by the referenced stringResource/pluralStringResource call",
+    "No other line is modified"
+  ],
+  "start_anchor": "description = \"Alert when your streak is at risk\",",
+  "exact_code": "description = stringResource(R.string.streak_warning_description),"
+}

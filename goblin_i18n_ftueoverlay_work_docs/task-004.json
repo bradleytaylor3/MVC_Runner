@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-004",
+  "title": "Add string resource ftue_forge_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Forge a quest\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"ftue_forge_title\">Forge a quest</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"ftue_welcome_body\">Every habit you want to build is a quest waiting to be forged. Let\\'s walk through the basics.</string>",
+  "exact_code": "    <string name=\"ftue_forge_title\">Forge a quest</string>"
+}

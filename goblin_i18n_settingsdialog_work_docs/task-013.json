@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-013",
+  "title": "Add string resource toggle_advanced_settings_content_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Toggle advanced settings\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"toggle_advanced_settings_content_description\">Toggle advanced settings</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"milestone_celebrations_description\">Celebrate gold, loot, and streak milestones in-app</string>",
+  "exact_code": "    <string name=\"toggle_advanced_settings_content_description\">Toggle advanced settings</string>"
+}

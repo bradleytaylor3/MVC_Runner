@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-035",
+  "title": "Localize ForgeQuestDialog title",
+  "file": "app/src/main/java/com/example/ui/screens/ActiveQuestsScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup (same text/resource as the Forge New Quest button).",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.forge_new_quest)",
+    "No other line is modified"
+  ],
+  "start_anchor": "Text(\"Forge New Quest\", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)",
+  "exact_code": "Text(stringResource(R.string.forge_new_quest), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)"
+}

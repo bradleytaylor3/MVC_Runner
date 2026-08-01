@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-056",
+  "title": "Localize UpcomingQuestItem's 'permanently deleted' message",
+  "file": "app/src/main/java/com/example/ui/components/TaskItem.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded template literal with a resource-backed lookup using the task title as a format arg.",
+  "acceptance_criteria": [
+    "The hardcoded string template is replaced by stringResource(R.string.delete_permanently_message, task.title)",
+    "No other line is modified"
+  ],
+  "start_anchor": "message = \"\\\"${task.title}\\\" will be permanently deleted. This can't be undone.\",",
+  "exact_code": "message = stringResource(R.string.delete_permanently_message, task.title),"
+}

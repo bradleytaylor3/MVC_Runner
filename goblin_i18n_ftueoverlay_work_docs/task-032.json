@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-032",
+  "title": "Localize the step body display",
+  "file": "app/src/main/java/com/example/ui/FtueOverlay.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the direct field read with a stringResource lookup on the resource ID.",
+  "acceptance_criteria": [
+    "current.body is replaced by stringResource(current.bodyRes)",
+    "No other line is modified"
+  ],
+  "start_anchor": "text = current.body,",
+  "exact_code": "text = stringResource(current.bodyRes),"
+}

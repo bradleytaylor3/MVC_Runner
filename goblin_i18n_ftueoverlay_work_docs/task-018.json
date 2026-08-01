@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-018",
+  "title": "Change FtueStep to hold string-resource IDs instead of resolved strings",
+  "file": "app/src/main/java/com/example/ui/FtueOverlay.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "FtueStep's fields hold resource IDs now (plain Int constants), not resolved text, since the top-level ftueSteps list is not itself a @Composable context and can't call stringResource() directly.",
+  "acceptance_criteria": [
+    "FtueStep's fields are renamed/retyped to titleRes: Int and bodyRes: Int",
+    "No other part of the data class changes"
+  ],
+  "start_anchor": "val title: String,",
+  "end_anchor": "val body: String",
+  "exact_code": "val titleRes: Int,\n    val bodyRes: Int"
+}

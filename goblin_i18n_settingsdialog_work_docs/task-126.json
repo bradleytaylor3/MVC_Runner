@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-126",
+  "title": "Localize 'Fix prompt copied!' toast",
+  "file": "app/src/main/java/com/example/ui/screens/SettingsDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Toast text can't use stringResource(); use context.getString() instead.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by the referenced stringResource/pluralStringResource call",
+    "No other line is modified"
+  ],
+  "start_anchor": "Toast.makeText(context, \"Fix prompt copied! Paste it back to your AI.\", Toast.LENGTH_LONG).show()",
+  "exact_code": "Toast.makeText(context, context.getString(R.string.fix_prompt_copied_toast), Toast.LENGTH_LONG).show()"
+}

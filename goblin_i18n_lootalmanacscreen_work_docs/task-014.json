@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-014",
+  "title": "Localize weekday abbreviation labels",
+  "file": "app/src/main/java/com/example/ui/screens/LootAlmanacScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded weekday-letter list with the shared string-array resource so the calendar header labels localize.",
+  "acceptance_criteria": [
+    "val daysOfWeek is assigned from stringArrayResource(R.array.weekday_abbreviations) instead of a hardcoded listOf(...)",
+    "daysOfWeek remains iterable the same way (daysOfWeek.forEach) for the existing header Row"
+  ],
+  "start_anchor": "val daysOfWeek = listOf(\"S\", \"M\", \"T\", \"W\", \"T\", \"F\", \"S\")",
+  "exact_code": "val daysOfWeek = stringArrayResource(R.array.weekday_abbreviations)"
+}

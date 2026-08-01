@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-055",
+  "title": "Localize UpcomingQuestItem's 'Delete this quest?' title (reuse)",
+  "file": "app/src/main/java/com/example/ui/components/TaskItem.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with the shared delete_this_quest_title resource (already introduced earlier in this batch as DeleteConfirmDialog's default).",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.delete_this_quest_title)",
+    "No other line is modified"
+  ],
+  "start_anchor": "title = \"Delete this quest?\",",
+  "exact_code": "title = stringResource(R.string.delete_this_quest_title),"
+}

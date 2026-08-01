@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Add string resource dev_options_header",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Developer Options\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"dev_options_header\">Developer Options</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"action_got_it\">Got it</string>",
+  "exact_code": "    <string name=\"dev_options_header\">Developer Options</string>"
+}

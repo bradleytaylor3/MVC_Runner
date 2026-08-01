@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-015",
+  "title": "Add plural resource minutes_count",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "block",
+  "change_type": "add",
+  "description": "Add the plural resource used to localize the pester-interval stepper (\"%1$d minute\" / \"%1$d minutes\").",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains a <plurals name=\"minutes_count\"> with \"one\" item \"%1$d minute\" and \"other\" item \"%1$d minutes\"",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"every_label\">Every</string>",
+  "exact_code": "    <plurals name=\"minutes_count\">\n        <item quantity=\"one\">%1$d minute</item>\n        <item quantity=\"other\">%1$d minutes</item>\n    </plurals>"
+}

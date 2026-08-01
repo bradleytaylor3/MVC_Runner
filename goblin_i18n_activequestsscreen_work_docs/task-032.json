@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-032",
+  "title": "Localize 'All Loot Plundered!' empty-state title",
+  "file": "app/src/main/java/com/example/ui/screens/ActiveQuestsScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.all_loot_plundered)",
+    "No other line is modified"
+  ],
+  "start_anchor": "text = \"All Loot Plundered!\",",
+  "exact_code": "text = stringResource(R.string.all_loot_plundered),"
+}

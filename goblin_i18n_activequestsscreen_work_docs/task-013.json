@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-013",
+  "title": "Add string resource repeat_auto_recreate_label",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Repeat (Auto-recreate on completion)\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"repeat_auto_recreate_label\">Repeat (Auto-recreate on completion)</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"loot_level_label\">Loot Level (Difficulty)</string>",
+  "exact_code": "    <string name=\"repeat_auto_recreate_label\">Repeat (Auto-recreate on completion)</string>"
+}

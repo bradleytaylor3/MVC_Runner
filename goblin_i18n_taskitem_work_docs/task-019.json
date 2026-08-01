@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-019",
+  "title": "Add string resource looted_summary",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Looted %1$d gold and %2$s\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"looted_summary\">Looted %1$d gold and %2$s</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"remove_from_history_message\">\"%1$s\" will be permanently removed from your Loot Almanac history. This can\\'t be undone.</string>",
+  "exact_code": "    <string name=\"looted_summary\">Looted %1$d gold and %2$s</string>"
+}

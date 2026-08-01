@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-035",
+  "title": "Localize ActiveTaskItem's 'Remove for today?' dialog title",
+  "file": "app/src/main/java/com/example/ui/components/TaskItem.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.remove_for_today_title)",
+    "No other line is modified"
+  ],
+  "start_anchor": "title = \"Remove for today?\",",
+  "exact_code": "title = stringResource(R.string.remove_for_today_title),"
+}

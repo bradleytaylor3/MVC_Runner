@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-043",
+  "title": "Localize ActiveTaskItem's 'Acquire loot!' content description",
+  "file": "app/src/main/java/com/example/ui/components/TaskItem.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.acquire_loot_content_description)",
+    "No other line is modified"
+  ],
+  "start_anchor": "Icon(Icons.Filled.Check, contentDescription = \"Acquire loot!\", tint = Color(0xFF2E7D32), modifier = Modifier.size(18.dp))",
+  "exact_code": "Icon(Icons.Filled.Check, contentDescription = stringResource(R.string.acquire_loot_content_description), tint = Color(0xFF2E7D32), modifier = Modifier.size(18.dp))"
+}

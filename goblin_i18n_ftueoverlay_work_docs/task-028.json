@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-028",
+  "title": "Point ftueSteps' claim entry at its body resource",
+  "file": "app/src/main/java/com/example/ui/FtueOverlay.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded body literal (single- or multi-line concatenation) with the matching string-resource ID.",
+  "acceptance_criteria": [
+    "The body expression becomes bodyRes = R.string.ftue_claim_body",
+    "No other line is modified"
+  ],
+  "start_anchor": "body = \"Completing quests fills your treasury with gold and relics — tracked right at the top of the screen.\"",
+  "exact_code": "bodyRes = R.string.ftue_claim_body"
+}

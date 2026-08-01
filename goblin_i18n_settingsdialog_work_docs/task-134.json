@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-134",
+  "title": "Localize valid-rewards-ready summary and fix its pluralization",
+  "file": "app/src/main/java/com/example/ui/screens/SettingsDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by the referenced stringResource/pluralStringResource call",
+    "No other line is modified"
+  ],
+  "start_anchor": "\"${result.validRewards.size} reward${if (result.validRewards.size > 1) \"s\" else \"\"} ready to import\",",
+  "exact_code": "pluralStringResource(R.plurals.rewards_ready_import_count, result.validRewards.size, result.validRewards.size),"
+}

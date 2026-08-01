@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-005",
+  "title": "Localize the daily reminder's body and fix its pluralization",
+  "file": "app/src/main/java/com/example/notifications/DailyReminderWorker.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the manually-pluralized template with applicationContext.resources.getQuantityString() using the new quests_waiting_body plural resource.",
+  "acceptance_criteria": [
+    "The hardcoded string template is replaced by applicationContext.resources.getQuantityString(R.plurals.quests_waiting_body, activeTasks, activeTasks)",
+    "No other line is modified"
+  ],
+  "start_anchor": "\"You have $activeTasks quest${if (activeTasks > 1) \"s\" else \"\"} waiting. Don't let the loot slip away!\",",
+  "exact_code": "applicationContext.resources.getQuantityString(R.plurals.quests_waiting_body, activeTasks, activeTasks),"
+}

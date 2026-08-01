@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-035",
+  "title": "Localize the Get Started/Next button",
+  "file": "app/src/main/java/com/example/ui/FtueOverlay.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded ternary literal with resource-backed lookups.",
+  "acceptance_criteria": [
+    "The 'Get Started' branch comes from stringResource(R.string.ftue_get_started_button)",
+    "The 'Next' branch comes from stringResource(R.string.ftue_next_button)",
+    "No other line is modified"
+  ],
+  "start_anchor": "Text(if (isLastStep) \"Get Started\" else \"Next\", fontWeight = FontWeight.Bold)",
+  "exact_code": "Text(if (isLastStep) stringResource(R.string.ftue_get_started_button) else stringResource(R.string.ftue_next_button), fontWeight = FontWeight.Bold)"
+}

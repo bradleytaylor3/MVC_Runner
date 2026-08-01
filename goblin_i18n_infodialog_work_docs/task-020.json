@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-020",
+  "title": "Add string resource info_quests_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Quests & Rewards\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"info_quests_title\">Quests &amp; Rewards</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"ftue_next_button\">Next</string>",
+  "exact_code": "    <string name=\"info_quests_title\">Quests &amp; Rewards</string>"
+}

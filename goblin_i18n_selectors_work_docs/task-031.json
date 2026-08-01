@@ -1,0 +1,17 @@
+{
+  "kind": "work",
+  "id": "task-031",
+  "title": "Localize PesterIntervalStepper's label and minutes text",
+  "file": "app/src/main/java/com/example/ui/components/Selectors.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "description": "Replace the hardcoded 'Every' label and the always-plural '$minutes minutes' text (a latent grammar bug for 1 minute) with resource-backed lookups, using a real <plurals> for the minutes text.",
+  "acceptance_criteria": [
+    "'Every' comes from stringResource(R.string.every_label)",
+    "The minutes text comes from pluralStringResource(R.plurals.minutes_count, minutes, minutes), correctly showing '1 minute' (singular) instead of the old always-plural '1 minutes'",
+    "The '-'/'+' step button glyphs are left as-is (not language-dependent, no resource needed)",
+    "No other logic in the function is changed"
+  ],
+  "name": "PesterIntervalStepper",
+  "exact_code": "@Composable\nfun PesterIntervalStepper(minutes: Int, onMinutesChange: (Int) -> Unit) {\n    Row(\n        modifier = Modifier.fillMaxWidth(),\n        horizontalArrangement = Arrangement.SpaceBetween,\n        verticalAlignment = Alignment.CenterVertically\n    ) {\n        Column(modifier = Modifier.weight(1f)) {\n            Text(stringResource(R.string.every_label), fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)\n            Text(pluralStringResource(R.plurals.minutes_count, minutes, minutes), fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f))\n        }\n        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {\n            val accent = MaterialTheme.colorScheme.primary\n            @Composable\n            fun StepButton(label: String, enabled: Boolean, onClick: () -> Unit) {\n                Box(\n                    modifier = Modifier\n                        .size(32.dp)\n                        .clip(CircleShape)\n                        .background(if (enabled) accent.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))\n                        .then(if (enabled) Modifier.clickable(onClick = onClick) else Modifier),\n                    contentAlignment = Alignment.Center\n                ) {\n                    Text(\n                        label,\n                        fontWeight = FontWeight.Bold,\n                        fontSize = 16.sp,\n                        color = if (enabled) accent else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)\n                    )\n                }\n            }\n            StepButton(\"-\", enabled = minutes > PESTER_INTERVAL_MIN_MINUTES) {\n                onMinutesChange((minutes - PESTER_INTERVAL_STEP_MINUTES).coerceAtLeast(PESTER_INTERVAL_MIN_MINUTES))\n            }\n            Text(\"$minutes\", fontWeight = FontWeight.Bold, fontSize = 14.sp, modifier = Modifier.width(28.dp), textAlign = TextAlign.Center)\n            StepButton(\"+\", enabled = minutes < PESTER_INTERVAL_MAX_MINUTES) {\n                onMinutesChange((minutes + PESTER_INTERVAL_STEP_MINUTES).coerceAtMost(PESTER_INTERVAL_MAX_MINUTES))\n            }\n        }\n    }\n}"
+}

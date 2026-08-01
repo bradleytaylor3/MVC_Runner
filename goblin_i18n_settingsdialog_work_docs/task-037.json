@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-037",
+  "title": "Add string resource backup_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Back up everything (tasks, gold, streak, settings) as JSON, or restore from a previous backup. Useful before reinstalling the app.\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"backup_description\">Back up everything (tasks, gold, streak, settings) as JSON, or restore from a previous backup. Useful before reinstalling the app.</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"delete_everything_button\">Delete Everything</string>",
+  "exact_code": "    <string name=\"backup_description\">Back up everything (tasks, gold, streak, settings) as JSON, or restore from a previous backup. Useful before reinstalling the app.</string>"
+}

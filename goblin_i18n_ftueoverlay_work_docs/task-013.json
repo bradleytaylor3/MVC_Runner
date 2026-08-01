@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-013",
+  "title": "Add string resource ftue_streak_body",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Complete at least one quest a day to grow your streak. There's plenty more to discover — habit stacking, repeating quests, the Loot Almanac — the Info panel covers it all.\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"ftue_streak_body\">Complete at least one quest a day to grow your streak. There\\'s plenty more to discover — habit stacking, repeating quests, the Loot Almanac — the Info panel covers it all.</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"ftue_streak_title\">Build your streak</string>",
+  "exact_code": "    <string name=\"ftue_streak_body\">Complete at least one quest a day to grow your streak. There\\'s plenty more to discover — habit stacking, repeating quests, the Loot Almanac — the Info panel covers it all.</string>"
+}

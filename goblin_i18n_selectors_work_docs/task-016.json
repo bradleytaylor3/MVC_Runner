@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-016",
+  "title": "Add string resource action_ok",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"OK\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"action_ok\">OK</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "</plurals>",
+  "exact_code": "    <string name=\"action_ok\">OK</string>",
+  "occurrence": 9
+}

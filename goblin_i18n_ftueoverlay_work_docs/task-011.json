@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-011",
+  "title": "Add string resource ftue_spend_body",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Set up rewards you can redeem with gold in Settings. Every so often you'll get a prompt to spend some — claiming one always costs a small slice of what you've got, so it's always within reach.\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"ftue_spend_body\">Set up rewards you can redeem with gold in Settings. Every so often you\\'ll get a prompt to spend some — claiming one always costs a small slice of what you\\'ve got, so it\\'s always within reach.</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"ftue_spend_title\">Spend your gold</string>",
+  "exact_code": "    <string name=\"ftue_spend_body\">Set up rewards you can redeem with gold in Settings. Every so often you\\'ll get a prompt to spend some — claiming one always costs a small slice of what you\\'ve got, so it\\'s always within reach.</string>"
+}

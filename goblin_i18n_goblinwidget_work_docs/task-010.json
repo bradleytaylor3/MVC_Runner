@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-010",
+  "title": "Localize QuestRow's complete-quest content description",
+  "file": "app/src/main/java/com/example/widget/GoblinWidget.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "QuestRow has no Context parameter of its own, so use Glance's LocalContext.current instead of a captured context.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by LocalContext.current.getString(R.string.complete_quest_content_description)",
+    "No other line is modified"
+  ],
+  "start_anchor": "contentDescription = \"Complete quest\",",
+  "exact_code": "contentDescription = LocalContext.current.getString(R.string.complete_quest_content_description),"
+}

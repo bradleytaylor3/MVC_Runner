@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-026",
+  "title": "Add plural resource items_imported_count",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "block",
+  "change_type": "add",
+  "description": "Add the plural resource used to localize the AI-import success toast (\"%1$d item imported!\" / \"%1$d items imported!\").",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains a <plurals name=\"items_imported_count\"> with \"one\" item \"%1$d item imported!\" and \"other\" item \"%1$d items imported!\"",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"import_json_button\">Import JSON</string>",
+  "exact_code": "    <plurals name=\"items_imported_count\">\n        <item quantity=\"one\">%1$d item imported!</item>\n        <item quantity=\"other\">%1$d items imported!</item>\n    </plurals>"
+}

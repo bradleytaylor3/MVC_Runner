@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-036",
+  "title": "Localize quest-title placeholder",
+  "file": "app/src/main/java/com/example/ui/screens/ActiveQuestsScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded placeholder literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.quest_title_placeholder)",
+    "No other line is modified"
+  ],
+  "start_anchor": "placeholder = { Text(\"What is your goblin mission?\") },",
+  "exact_code": "placeholder = { Text(stringResource(R.string.quest_title_placeholder)) },"
+}

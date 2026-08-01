@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Add string resource channel_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Daily quest reminders, streak alerts, and milestone celebrations\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"channel_description\">Daily quest reminders, streak alerts, and milestone celebrations</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"channel_name\">Goblin Loot Reminders</string>",
+  "exact_code": "    <string name=\"channel_description\">Daily quest reminders, streak alerts, and milestone celebrations</string>"
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-033",
+  "title": "Localize empty-state 'sound asleep' message",
+  "file": "app/src/main/java/com/example/ui/screens/ActiveQuestsScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.goblin_asleep_message)",
+    "No other line is modified"
+  ],
+  "start_anchor": "text = \"The goblin is sound asleep. Add a quest above!\",",
+  "exact_code": "text = stringResource(R.string.goblin_asleep_message),"
+}

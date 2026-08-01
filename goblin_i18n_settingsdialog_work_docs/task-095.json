@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-095",
+  "title": "Localize 'Prompt copied!' toast",
+  "file": "app/src/main/java/com/example/ui/screens/SettingsDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Toast text is built outside Compose's stringResource() call convention (it's passed straight to the platform Toast API, not rendered by a Composable), so use context.getString() instead — context is already in scope here via LocalContext.current above.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by the referenced stringResource/pluralStringResource call",
+    "No other line is modified"
+  ],
+  "start_anchor": "Toast.makeText(context, \"Prompt copied!\", Toast.LENGTH_SHORT).show()",
+  "exact_code": "Toast.makeText(context, context.getString(R.string.prompt_copied_toast), Toast.LENGTH_SHORT).show()"
+}

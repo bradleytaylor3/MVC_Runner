@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-022",
+  "title": "Add string resource add_reward_button",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Add Reward\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"add_reward_button\">Add Reward</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"define_treats_message\">Define treats you can redeem with gold you\\'ve earned. Every so often you\\'ll be prompted to spend some.</string>",
+  "exact_code": "    <string name=\"add_reward_button\">Add Reward</string>"
+}

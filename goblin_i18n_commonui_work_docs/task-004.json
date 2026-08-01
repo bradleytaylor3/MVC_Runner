@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-004",
+  "title": "Localize JackpotBadge's ready-to-gamble banner text",
+  "file": "app/src/main/java/com/example/ui/components/CommonUi.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.jackpot_ready_banner)",
+    "No other line is modified"
+  ],
+  "start_anchor": "\"Jackpot ready! Spend relics for a gold surge\",",
+  "exact_code": "stringResource(R.string.jackpot_ready_banner),"
+}

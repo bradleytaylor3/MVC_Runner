@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-047",
+  "title": "Localize ActiveTaskItem's 'Stack habit' button text",
+  "file": "app/src/main/java/com/example/ui/components/TaskItem.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with a resource-backed lookup.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by stringResource(R.string.stack_habit_button)",
+    "No other line is modified"
+  ],
+  "start_anchor": "Text(\"Stack habit\", fontSize = 11.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f))",
+  "exact_code": "Text(stringResource(R.string.stack_habit_button), fontSize = 11.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f))"
+}

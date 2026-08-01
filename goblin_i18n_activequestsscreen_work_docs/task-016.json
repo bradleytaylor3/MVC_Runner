@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-016",
+  "title": "Add string resource label_day_of_month",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Day of month\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"label_day_of_month\">Day of month</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "</string-array>",
+  "exact_code": "    <string name=\"label_day_of_month\">Day of month</string>"
+}

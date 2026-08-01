@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-007",
+  "title": "Localize the widget header's gold/streak summary",
+  "file": "app/src/main/java/com/example/widget/GoblinWidget.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded template literal with context.getString(), using gold and streak as format args.",
+  "acceptance_criteria": [
+    "The hardcoded string template is replaced by context.getString(R.string.gold_streak_summary, totalGold, streak)",
+    "No other line is modified"
+  ],
+  "start_anchor": "\"· ${totalGold}g · ${streak}-day streak\",",
+  "exact_code": "context.getString(R.string.gold_streak_summary, totalGold, streak),"
+}

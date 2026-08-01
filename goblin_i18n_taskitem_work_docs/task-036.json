@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-036",
+  "title": "Localize ActiveTaskItem's 'removed for today' message",
+  "file": "app/src/main/java/com/example/ui/components/TaskItem.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded template literal with a resource-backed lookup using the task title as a format arg.",
+  "acceptance_criteria": [
+    "The hardcoded string template is replaced by stringResource(R.string.remove_today_message, task.title)",
+    "No other line is modified"
+  ],
+  "start_anchor": "message = \"\\\"${task.title}\\\" will be removed for today. It'll come back on its normal schedule — this won't end the series.\",",
+  "exact_code": "message = stringResource(R.string.remove_today_message, task.title),"
+}

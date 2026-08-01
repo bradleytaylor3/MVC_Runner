@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-112",
+  "title": "Localize 'Data copied!' toast",
+  "file": "app/src/main/java/com/example/ui/screens/SettingsDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Toast text can't use stringResource(); use context.getString() instead.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by the referenced stringResource/pluralStringResource call",
+    "No other line is modified"
+  ],
+  "start_anchor": "Toast.makeText(context, \"Data copied!\", Toast.LENGTH_SHORT).show()",
+  "exact_code": "Toast.makeText(context, context.getString(R.string.data_copied_toast), Toast.LENGTH_SHORT).show()"
+}

@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-069",
+  "title": "Add string resource replace_all_data_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Replace all data?\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"replace_all_data_title\">Replace all data?</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "</plurals>",
+  "exact_code": "    <string name=\"replace_all_data_title\">Replace all data?</string>",
+  "occurrence": 18
+}

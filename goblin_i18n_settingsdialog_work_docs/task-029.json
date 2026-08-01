@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-029",
+  "title": "Add string resource open_dev_options_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Open Developer Options?\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"open_dev_options_title\">Open Developer Options?</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"ai_import_description\">Use an AI assistant to bulk-create tasks (and optionally rewards). Copy the prompt below, paste it into ChatGPT/Claude/etc., then import the JSON it generates.</string>",
+  "exact_code": "    <string name=\"open_dev_options_title\">Open Developer Options?</string>"
+}

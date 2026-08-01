@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-062",
+  "title": "Localize RepeatQuestItem's 'end series' message",
+  "file": "app/src/main/java/com/example/ui/components/TaskItem.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded template literal with a resource-backed lookup using the task title as a format arg.",
+  "acceptance_criteria": [
+    "The hardcoded string template is replaced by stringResource(R.string.end_series_message, task.title)",
+    "No other line is modified"
+  ],
+  "start_anchor": "message = \"\\\"${task.title}\\\" and its entire recurring series will be permanently deleted. This can't be undone. To just skip today's occurrence instead, use the delete button on the active quest in Active Quests.\",",
+  "exact_code": "message = stringResource(R.string.end_series_message, task.title),"
+}

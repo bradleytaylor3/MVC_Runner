@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-047",
+  "title": "Add string resource json_parse_error_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"JSON Parse Error\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"json_parse_error_title\">JSON Parse Error</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"validate_button\">Validate</string>",
+  "exact_code": "    <string name=\"json_parse_error_title\">JSON Parse Error</string>"
+}

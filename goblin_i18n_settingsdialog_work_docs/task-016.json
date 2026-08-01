@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-016",
+  "title": "Add string resource pester_mode_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Adds a per-quest option to keep re-reminding you until it's done\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"pester_mode_description\">Adds a per-quest option to keep re-reminding you until it\\'s done</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"pester_mode_label\">Pester mode</string>",
+  "exact_code": "    <string name=\"pester_mode_description\">Adds a per-quest option to keep re-reminding you until it\\'s done</string>"
+}

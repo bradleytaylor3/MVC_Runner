@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-008",
+  "title": "Localize the refresh icon's content description",
+  "file": "app/src/main/java/com/example/widget/GoblinWidget.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded literal with context.getString().",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by context.getString(R.string.refresh_content_description)",
+    "No other line is modified"
+  ],
+  "start_anchor": "contentDescription = \"Refresh\",",
+  "exact_code": "contentDescription = context.getString(R.string.refresh_content_description),"
+}

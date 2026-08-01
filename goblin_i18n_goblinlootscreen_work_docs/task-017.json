@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-017",
+  "title": "Localize compact header's combined stat line",
+  "file": "app/src/main/java/com/example/ui/GoblinLootScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "Replace the hardcoded template literal with a resource-backed lookup using gold/relics/streak as format args.",
+  "acceptance_criteria": [
+    "The hardcoded string template is replaced by stringResource(R.string.header_stat_summary, totalGold, relicCount, currentStreak)",
+    "No other line is modified"
+  ],
+  "start_anchor": "text = \"${totalGold}g  •  $relicCount relics  •  $currentStreak day streak\",",
+  "exact_code": "text = stringResource(R.string.header_stat_summary, totalGold, relicCount, currentStreak),"
+}

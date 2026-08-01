@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-022",
+  "title": "Add string resource delete_permanently_message",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"\"%1$s\" will be permanently deleted. This can't be undone.\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"delete_permanently_message\">\"%1$s\" will be permanently deleted. This can\\'t be undone.</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"delete_record_content_description\">Delete record</string>",
+  "exact_code": "    <string name=\"delete_permanently_message\">\"%1$s\" will be permanently deleted. This can\\'t be undone.</string>"
+}

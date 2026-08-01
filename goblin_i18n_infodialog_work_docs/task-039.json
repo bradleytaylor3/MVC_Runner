@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-039",
+  "title": "Add string resource no_topics_match",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"No topics match \"%1$s\".\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"no_topics_match\">No topics match \"%1$s\".</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"clear_search_content_description\">Clear search</string>",
+  "exact_code": "    <string name=\"no_topics_match\">No topics match \"%1$s\".</string>"
+}

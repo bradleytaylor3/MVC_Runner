@@ -1,0 +1,17 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Add stringResource/pluralStringResource/R imports",
+  "file": "app/src/main/java/com/example/ui/screens/SettingsDialog.kt",
+  "structure_type": "import",
+  "change_type": "add",
+  "description": "Add the imports needed to reference string/plural resources from this file.",
+  "acceptance_criteria": [
+    "androidx.compose.ui.res.stringResource is imported",
+    "androidx.compose.ui.res.pluralStringResource is imported",
+    "com.example.R is imported",
+    "No existing import is duplicated or removed"
+  ],
+  "start_anchor": "import java.util.Locale",
+  "exact_code": "import androidx.compose.ui.res.stringResource\nimport androidx.compose.ui.res.pluralStringResource\nimport com.example.R"
+}

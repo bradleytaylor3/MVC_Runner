@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-011",
+  "title": "Add string resource acquire_loot_content_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Acquire loot!\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"acquire_loot_content_description\">Acquire loot!</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"notes_label\">Notes</string>",
+  "exact_code": "    <string name=\"acquire_loot_content_description\">Acquire loot!</string>"
+}

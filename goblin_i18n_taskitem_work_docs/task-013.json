@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-013",
+  "title": "Add string resource toggle_habit_stack_content_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Toggle habit stack\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"toggle_habit_stack_content_description\">Toggle habit stack</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"discard_quest_content_description\">Discard quest</string>",
+  "exact_code": "    <string name=\"toggle_habit_stack_content_description\">Toggle habit stack</string>"
+}

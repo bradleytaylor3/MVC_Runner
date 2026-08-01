@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-125",
+  "title": "Localize error-list bullet items (1st of 2 occurrences of this template, reuse)",
+  "file": "app/src/main/java/com/example/ui/screens/SettingsDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "This exact literal also appears in DataBackupImportDialog further down the file (for its own error list); occurrence=1 resolves to whichever copy is still literal when this task runs — this one, since it's earlier in the file.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by the referenced stringResource/pluralStringResource call",
+    "No other line is modified"
+  ],
+  "start_anchor": "\"• $error\",",
+  "exact_code": "stringResource(R.string.bullet_item_template, error),",
+  "occurrence": 1
+}

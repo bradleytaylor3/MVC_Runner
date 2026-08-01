@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-005",
+  "title": "Add string resource remove_for_today_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Remove for today?\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"remove_for_today_title\">Remove for today?</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"action_delete\">Delete</string>",
+  "exact_code": "    <string name=\"remove_for_today_title\">Remove for today?</string>"
+}

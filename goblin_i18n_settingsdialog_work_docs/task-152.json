@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-152",
+  "title": "Localize errors-found summary and fix its pluralization (2nd of 2 occurrences, reuse)",
+  "file": "app/src/main/java/com/example/ui/screens/SettingsDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "By the time this task runs, TaskImportDialog's earlier copy of this literal has already been replaced, so occurrence=1 now resolves to this one.",
+  "acceptance_criteria": [
+    "The hardcoded string literal is replaced by the referenced stringResource/pluralStringResource call",
+    "No other line is modified"
+  ],
+  "start_anchor": "\"${result.errors.size} error${if (result.errors.size > 1) \"s\" else \"\"} found\",",
+  "exact_code": "pluralStringResource(R.plurals.errors_found_count, result.errors.size, result.errors.size),",
+  "occurrence": 1
+}

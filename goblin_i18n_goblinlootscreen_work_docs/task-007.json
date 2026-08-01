@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-007",
+  "title": "Add string resource settings_content_description",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Settings\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"settings_content_description\">Settings</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"header_stat_summary\">%1$dg  •  %2$d relics  •  %3$d day streak</string>",
+  "exact_code": "    <string name=\"settings_content_description\">Settings</string>"
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-006",
+  "title": "Add string resource notifications_header",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Notifications\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"notifications_header\">Notifications</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"goblin_settings_title\">Goblin Settings</string>",
+  "exact_code": "    <string name=\"notifications_header\">Notifications</string>"
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-034",
+  "title": "Add string resource info_developer_options_title",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Add the string resource used to localize \"Developer Options\".",
+  "acceptance_criteria": [
+    "app/src/main/res/values/strings.xml gains <string name=\"info_developer_options_title\">Developer Options</string>",
+    "No other resource is modified"
+  ],
+  "start_anchor": "<string name=\"info_settings_data_body\">The gear icon covers reminders, repeat timing, and notifications.</string>",
+  "exact_code": "    <string name=\"info_developer_options_title\">Developer Options</string>"
+}
