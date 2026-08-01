@@ -5,3 +5,11 @@ venv/
 .env
 *.egg-info/
 logs/
+
+# Generated work-doc batches from running the tool against real projects.
+# Example/schema batches (work_docs, work_docs_adb, organizer_work_docs)
+# stay tracked; everything else ending in _work_docs is local output.
+*_work_docs/
+!/work_docs/
+!/work_docs_adb/
+!/organizer_work_docs/
