@@ -25,6 +25,7 @@ MVC_Runner/
 ├── work_docs_adb/            # Example ADB-test batch + schema + authoring prompt
 ├── organizer_work_docs/      # A real 6-task code-edit batch (not a toy example)
 ├── .claude/skills/adb-test/   # Claude Code skill: /adb-test
+├── .claude/skills/code-edit/  # Claude Code skill: /code-edit
 ├── tests/                    # pytest suite (anchor resolution, work-doc validation)
 ├── logs/                     # JSON run logs (gitignored)
 ├── requirements.txt
@@ -69,6 +70,9 @@ python -m runner.cli run --work-dir work_docs --model qwen3:4b
   `exact_code` rather than describing it in prose — small/medium models
   reliably transcribe already-decided code but unreliably invent it from a
   description (especially one quoting a signature in backticks).
+- **From Claude Code**: the `/code-edit` skill (`.claude/skills/code-edit/`)
+  authors a batch from a plain-English change request, runs it, and reports
+  results and a diff back — no manual copy/paste needed.
 - **Authoring a batch interactively**: `python -m runner.cli build
   --work-dir work_docs` walks through one task at a time — prompts exactly
   the fields your chosen `structure_type`/`change_type` needs, validating
