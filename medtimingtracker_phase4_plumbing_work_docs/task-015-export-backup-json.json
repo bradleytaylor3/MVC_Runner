@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-015",
+  "title": "Add exportBackupJson to DailyListViewModel",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListViewModel.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DailyListViewModel",
+  "description": "Builds a DataBackupPayload from a snapshot of every profile, medication, and dose log, serializes it, and hands the JSON string back to the caller (the Settings screen writes it to a user-picked file via Storage Access Framework -- this method has no file I/O of its own).",
+  "acceptance_criteria": [
+    "fun exportBackupJson(onResult: (String) -> Unit) is a member of DailyListViewModel",
+    "It launches a viewModelScope coroutine that builds a DataBackupPayload from profileRepository.getActiveSnapshot(), medicationRepository.getActiveSnapshot(), and doseLogRepository.getAllSnapshot(), mapping each list's items via their toBackupItem() extension",
+    "It calls onResult with DataBackupValidator.serialize(payload)"
+  ],
+  "exact_code": "fun exportBackupJson(onResult: (String) -> Unit) {\n    viewModelScope.launch {\n        val payload = DataBackupPayload(\n            profiles = profileRepository.getActiveSnapshot().map { it.toBackupItem() },\n            medications = medicationRepository.getActiveSnapshot().map { it.toBackupItem() },\n            doseLogs = doseLogRepository.getAllSnapshot().map { it.toBackupItem() },\n        )\n        onResult(DataBackupValidator.serialize(payload))\n    }\n}"
+}

@@ -1,0 +1,10 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase1-repositories",
+  "repo_root": "C:/Users/bradl/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker",
+    "Repositories are thin constructor-wrapped DAO pass-throughs, no DI framework -- matches Goblin Loot Engine's manual-wiring convention"
+  ]
+}

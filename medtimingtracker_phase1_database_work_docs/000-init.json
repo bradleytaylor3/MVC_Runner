@@ -1,0 +1,10 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase1-database",
+  "repo_root": "C:/Users/bradl/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker",
+    "Room entities/DAOs/database live under the data/ package"
+  ]
+}

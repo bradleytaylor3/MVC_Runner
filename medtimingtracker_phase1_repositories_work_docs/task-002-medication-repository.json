@@ -1,0 +1,19 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Add MedicationRepository",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/MedicationRepository.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Thin repository wrapping MedicationDao, taking the DAO in its constructor with no DI framework.",
+  "acceptance_criteria": [
+    "class MedicationRepository(private val medicationDao: MedicationDao)",
+    "val activeMedications: Flow<List<Medication>> initialized from medicationDao.observeActive()",
+    "suspend fun getById(id: Int): Medication? delegating to medicationDao.getById",
+    "suspend fun insert(medication: Medication): Long delegating to medicationDao.insert",
+    "suspend fun update(medication: Medication) delegating to medicationDao.update",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.data"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nimport kotlinx.coroutines.flow.Flow\n\nclass MedicationRepository(private val medicationDao: MedicationDao) {\n    val activeMedications: Flow<List<Medication>> = medicationDao.observeActive()\n\n    suspend fun getById(id: Int): Medication? = medicationDao.getById(id)\n\n    suspend fun insert(medication: Medication): Long = medicationDao.insert(medication)\n\n    suspend fun update(medication: Medication) = medicationDao.update(medication)\n}\n"
+}

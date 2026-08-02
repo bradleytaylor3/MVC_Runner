@@ -1,0 +1,20 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Add DoseLogRepository",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/DoseLogRepository.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Thin repository wrapping DoseLogDao, taking the DAO in its constructor with no DI framework.",
+  "acceptance_criteria": [
+    "class DoseLogRepository(private val doseLogDao: DoseLogDao)",
+    "fun observeRecentForProfile(profileId: Int): Flow<List<DoseLog>> delegating to doseLogDao.observeRecentForProfile",
+    "fun observeMostRecentDose(profileId: Int, medicationId: Int): Flow<DoseLog?> delegating to doseLogDao.observeMostRecentDose",
+    "suspend fun getMostRecentDoseSnapshot(profileId: Int, medicationId: Int): DoseLog? delegating to doseLogDao.getMostRecentDoseSnapshot",
+    "suspend fun getPendingReminders(nowEpochMillis: Long): List<DoseLog> delegating to doseLogDao.getPendingReminders",
+    "suspend fun insert(doseLog: DoseLog): Long delegating to doseLogDao.insert",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.data"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nimport kotlinx.coroutines.flow.Flow\n\nclass DoseLogRepository(private val doseLogDao: DoseLogDao) {\n    fun observeRecentForProfile(profileId: Int): Flow<List<DoseLog>> =\n        doseLogDao.observeRecentForProfile(profileId)\n\n    fun observeMostRecentDose(profileId: Int, medicationId: Int): Flow<DoseLog?> =\n        doseLogDao.observeMostRecentDose(profileId, medicationId)\n\n    suspend fun getMostRecentDoseSnapshot(profileId: Int, medicationId: Int): DoseLog? =\n        doseLogDao.getMostRecentDoseSnapshot(profileId, medicationId)\n\n    suspend fun getPendingReminders(nowEpochMillis: Long): List<DoseLog> =\n        doseLogDao.getPendingReminders(nowEpochMillis)\n\n    suspend fun insert(doseLog: DoseLog): Long = doseLogDao.insert(doseLog)\n}\n"
+}

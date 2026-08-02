@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Add AppDatabase",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/AppDatabase.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Room database singleton wiring together the three entities and their DAOs, with exportSchema enabled and a thread-safe lazily-initialized companion object accessor, following the same singleton pattern used in the reference app Goblin Loot Engine's AppDatabase.",
+  "acceptance_criteria": [
+    "@Database annotation lists entities = [Profile::class, Medication::class, DoseLog::class], version = 1, exportSchema = true",
+    "@TypeConverters(Converters::class) on the abstract class",
+    "abstract class AppDatabase : RoomDatabase() with abstract fun profileDao(): ProfileDao, medicationDao(): MedicationDao, doseLogDao(): DoseLogDao",
+    "companion object holds a @Volatile nullable INSTANCE and a getDatabase(context: Context): AppDatabase function using double-checked synchronized locking and Room.databaseBuilder with database name \"med_timing_tracker_database\"",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.data"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nimport android.content.Context\nimport androidx.room.Database\nimport androidx.room.Room\nimport androidx.room.RoomDatabase\nimport androidx.room.TypeConverters\n\n@Database(\n    entities = [Profile::class, Medication::class, DoseLog::class],\n    version = 1,\n    exportSchema = true,\n)\n@TypeConverters(Converters::class)\nabstract class AppDatabase : RoomDatabase() {\n    abstract fun profileDao(): ProfileDao\n    abstract fun medicationDao(): MedicationDao\n    abstract fun doseLogDao(): DoseLogDao\n\n    companion object {\n        @Volatile\n        private var INSTANCE: AppDatabase? = null\n\n        fun getDatabase(context: Context): AppDatabase =\n            INSTANCE ?: synchronized(this) {\n                INSTANCE ?: Room.databaseBuilder(\n                    context.applicationContext,\n                    AppDatabase::class.java,\n                    \"med_timing_tracker_database\",\n                ).build().also { INSTANCE = it }\n            }\n    }\n}\n"
+}

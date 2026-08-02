@@ -1,0 +1,19 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Add ProfileRepository",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/ProfileRepository.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Thin repository wrapping ProfileDao, taking the DAO in its constructor with no DI framework, matching the reference app's manual-wiring convention.",
+  "acceptance_criteria": [
+    "class ProfileRepository(private val profileDao: ProfileDao)",
+    "val activeProfiles: Flow<List<Profile>> initialized from profileDao.observeActive()",
+    "suspend fun getById(id: Int): Profile? delegating to profileDao.getById",
+    "suspend fun insert(profile: Profile): Long delegating to profileDao.insert",
+    "suspend fun update(profile: Profile) delegating to profileDao.update",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.data"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nimport kotlinx.coroutines.flow.Flow\n\nclass ProfileRepository(private val profileDao: ProfileDao) {\n    val activeProfiles: Flow<List<Profile>> = profileDao.observeActive()\n\n    suspend fun getById(id: Int): Profile? = profileDao.getById(id)\n\n    suspend fun insert(profile: Profile): Long = profileDao.insert(profile)\n\n    suspend fun update(profile: Profile) = profileDao.update(profile)\n}\n"
+}

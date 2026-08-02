@@ -1,0 +1,11 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase2-notifications",
+  "repo_root": "C:/Users/bradl/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker",
+    "Notification/exact-alarm code lives under the notifications/ package",
+    "Scoped-down MVP: a single non-escalating reminder per logged dose, no action buttons, no self-rescheduling daily worker"
+  ]
+}

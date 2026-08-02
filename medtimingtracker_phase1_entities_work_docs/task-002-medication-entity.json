@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Add Medication entity",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/Medication.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Room entity for a medication a profile can be dosed with, covering both interval-based (MVP) and fixed-schedule (modeled but not yet implemented) dosing.",
+  "acceptance_criteria": [
+    "@Entity(tableName = \"medications\") data class Medication with an autoGenerate Int primary key id",
+    "Fields: name: String, dosingMode: DosingMode = DosingMode.INTERVAL, defaultDose: String, minIntervalMinutes: Int? = null, maxDailyDoses: Int? = null, fixedTimesOfDay: String? = null, notes: String? = null, isArchived: Boolean = false, createdAt: Long = System.currentTimeMillis()",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.data"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nimport androidx.room.Entity\nimport androidx.room.PrimaryKey\n\n@Entity(tableName = \"medications\")\ndata class Medication(\n    @PrimaryKey(autoGenerate = true) val id: Int = 0,\n    val name: String,\n    // MVP only implements INTERVAL; FIXED_SCHEDULE is modeled for forward compatibility.\n    val dosingMode: DosingMode = DosingMode.INTERVAL,\n    val defaultDose: String,\n    // Interval mode: minimum minutes between doses, e.g. 240 for \"every 4 hours\".\n    val minIntervalMinutes: Int? = null,\n    val maxDailyDoses: Int? = null,\n    // Fixed-schedule mode (unused until that mode ships): CSV of \"HH:mm\" times.\n    val fixedTimesOfDay: String? = null,\n    val notes: String? = null,\n    val isArchived: Boolean = false,\n    val createdAt: Long = System.currentTimeMillis(),\n)\n"
+}

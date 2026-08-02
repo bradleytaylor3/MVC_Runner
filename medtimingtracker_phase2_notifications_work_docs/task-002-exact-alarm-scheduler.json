@@ -1,0 +1,19 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Add ExactAlarmScheduler",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ExactAlarmScheduler.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Object owning scheduling/cancelling the single exact-alarm reminder per dose log, checking the API 31+ SCHEDULE_EXACT_ALARM permission before scheduling and no-oping (not falling back to WorkManager) when it isn't granted, since this app's MVP has no coarse fallback pipeline.",
+  "acceptance_criteria": [
+    "object ExactAlarmScheduler with public const val EXTRA_DOSE_LOG_ID, EXTRA_TITLE, EXTRA_TEXT string constants (public, not private, so ReminderAlarmReceiver can reference them)",
+    "fun canScheduleExact(context: Context): Boolean returns true below API 31 (S), otherwise checks AlarmManager.canScheduleExactAlarms()",
+    "fun schedule(context: Context, doseLogId: Int, triggerAtMillis: Long, title: String, text: String) first calls cancel(context, doseLogId), then returns early if !canScheduleExact(context), otherwise calls AlarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent) targeting ReminderAlarmReceiver",
+    "fun cancel(context: Context, doseLogId: Int) cancels the alarm via AlarmManager.cancel and also calls NotificationHelper.cancel(context, doseLogId) to clear any already-posted notification",
+    "The PendingIntent targets ReminderAlarmReceiver, uses doseLogId as its request code, and carries doseLogId/title/text as intent extras under the EXTRA_* keys, built with FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.notifications"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.notifications\n\nimport android.app.AlarmManager\nimport android.app.PendingIntent\nimport android.content.Context\nimport android.content.Intent\nimport android.os.Build\n\nobject ExactAlarmScheduler {\n    const val EXTRA_DOSE_LOG_ID = \"dose_log_id\"\n    const val EXTRA_TITLE = \"title\"\n    const val EXTRA_TEXT = \"text\"\n\n    fun canScheduleExact(context: Context): Boolean {\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true\n        val alarmManager = context.getSystemService(AlarmManager::class.java)\n        return alarmManager.canScheduleExactAlarms()\n    }\n\n    fun schedule(context: Context, doseLogId: Int, triggerAtMillis: Long, title: String, text: String) {\n        cancel(context, doseLogId)\n        if (!canScheduleExact(context)) return\n        val alarmManager = context.getSystemService(AlarmManager::class.java)\n        alarmManager.setExactAndAllowWhileIdle(\n            AlarmManager.RTC_WAKEUP,\n            triggerAtMillis,\n            pendingIntent(context, doseLogId, title, text),\n        )\n    }\n\n    fun cancel(context: Context, doseLogId: Int) {\n        val alarmManager = context.getSystemService(AlarmManager::class.java)\n        alarmManager.cancel(pendingIntent(context, doseLogId, \"\", \"\"))\n        NotificationHelper.cancel(context, doseLogId)\n    }\n\n    private fun pendingIntent(context: Context, doseLogId: Int, title: String, text: String): PendingIntent {\n        val intent = Intent(context, ReminderAlarmReceiver::class.java).apply {\n            putExtra(EXTRA_DOSE_LOG_ID, doseLogId)\n            putExtra(EXTRA_TITLE, title)\n            putExtra(EXTRA_TEXT, text)\n        }\n        return PendingIntent.getBroadcast(\n            context,\n            doseLogId,\n            intent,\n            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,\n        )\n    }\n}\n"
+}

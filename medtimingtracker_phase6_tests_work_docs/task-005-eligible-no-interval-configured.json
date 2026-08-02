@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-005",
+  "title": "Test: evaluateTiming is eligible when the medication has no minimum interval, even with a prior dose",
+  "file": "app/src/test/java/com/taylordproductivty/med_timing_tracker/data/DoseTimingCalculatorTest.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DoseTimingCalculatorTest",
+  "description": "A medication with no configured minimum interval is always eligible regardless of how recently it was last given.",
+  "acceptance_criteria": [
+    "@Test fun evaluateTiming_eligible_whenNoMinInterval() constructs a DoseLog with givenAtEpochMillis = 1_000_000L, calls DoseTimingCalculator.evaluateTiming(1_000_001L, thatDoseLog, null), and asserts the result is DoseTimingResult.Eligible"
+  ],
+  "exact_code": "@Test\nfun evaluateTiming_eligible_whenNoMinInterval() {\n    val mostRecentDose = DoseLog(\n        id = 1,\n        profileId = 1,\n        medicationId = 1,\n        givenAtEpochMillis = 1_000_000L,\n        doseAmount = \"5ml\",\n    )\n    val result = DoseTimingCalculator.evaluateTiming(1_000_001L, mostRecentDose, null)\n    assertTrue(result is DoseTimingResult.Eligible)\n}"
+}

@@ -1,0 +1,9 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase3-viewmodel-crud",
+  "repo_root": "C:/Users/bradl/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker"
+  ]
+}

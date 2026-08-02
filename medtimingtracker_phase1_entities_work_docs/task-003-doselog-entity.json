@@ -1,0 +1,17 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Add DoseLog entity",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/DoseLog.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Room entity recording a single logged dose event: who, what, when, and how much, plus the computed next-eligible time. Every dose log is an additive history event -- no compare-and-set guard is needed on insert, unlike a mutable completion flag, because two caregivers logging close together is exactly the scenario the app's warning dialog exists to surface, not a race to resolve.",
+  "acceptance_criteria": [
+    "@Entity(tableName = \"dose_logs\") data class DoseLog with an autoGenerate Int primary key id",
+    "Fields: profileId: Int, medicationId: Int, givenAtEpochMillis: Long, doseAmount: String, nextEligibleAtEpochMillis: Long? = null, wasOverrideWarningAcknowledged: Boolean = false, createdAt: Long = System.currentTimeMillis()",
+    "profileId and medicationId are plain Int linking columns with no @ForeignKey annotation",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.data"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nimport androidx.room.Entity\nimport androidx.room.PrimaryKey\n\n@Entity(tableName = \"dose_logs\")\ndata class DoseLog(\n    @PrimaryKey(autoGenerate = true) val id: Int = 0,\n    // Linking columns, no @ForeignKey -- matches this app's soft-relation convention.\n    val profileId: Int,\n    val medicationId: Int,\n    val givenAtEpochMillis: Long,\n    // Snapshot-copied from Medication.defaultDose at log time so later edits to a\n    // medication's default dose don't silently rewrite past history.\n    val doseAmount: String,\n    val nextEligibleAtEpochMillis: Long? = null,\n    // True if the user logged this dose despite the \"too soon\" warning dialog -- an\n    // audit trail, not a block: two caregivers logging close together is exactly the\n    // scenario this app exists to surface, not prevent outright.\n    val wasOverrideWarningAcknowledged: Boolean = false,\n    val createdAt: Long = System.currentTimeMillis(),\n)\n"
+}

@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Add insertMedication method to DailyListViewModel",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListViewModel.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DailyListViewModel",
+  "description": "New method for the manage-medications screen to add a medication, launching a viewModelScope coroutine that inserts via medicationRepository. minIntervalMinutes is optional since fixed-schedule medications (not yet implemented) won't set it.",
+  "acceptance_criteria": [
+    "fun insertMedication(name: String, defaultDose: String, minIntervalMinutes: Int?) is a member of DailyListViewModel",
+    "It launches a viewModelScope coroutine that calls medicationRepository.insert with a new Medication built from the given name/defaultDose/minIntervalMinutes",
+    "Valid Kotlin"
+  ],
+  "exact_code": "fun insertMedication(name: String, defaultDose: String, minIntervalMinutes: Int?) {\n    viewModelScope.launch {\n        medicationRepository.insert(\n            Medication(name = name, defaultDose = defaultDose, minIntervalMinutes = minIntervalMinutes),\n        )\n    }\n}"
+}

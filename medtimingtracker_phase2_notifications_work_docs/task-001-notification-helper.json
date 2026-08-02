@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Add NotificationHelper",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/NotificationHelper.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Object owning the notification channel creation and posting/cancelling a dose reminder notification, guarding the API 33+ POST_NOTIFICATIONS runtime permission before calling notify so it never crashes with a SecurityException if the permission hasn't been granted.",
+  "acceptance_criteria": [
+    "object NotificationHelper with const val CHANNEL_ID",
+    "fun createNotificationChannel(context: Context) creates a NotificationChannel with IMPORTANCE_DEFAULT on API 26+ only (no-ops below O)",
+    "fun sendReminder(context: Context, notificationId: Int, title: String, text: String) builds a NotificationCompat notification with a contentIntent back into MainActivity, and on API 33+ checks ContextCompat.checkSelfPermission for Manifest.permission.POST_NOTIFICATIONS before calling NotificationManagerCompat.from(context).notify, returning early if not granted",
+    "fun cancel(context: Context, notificationId: Int) calls NotificationManagerCompat.from(context).cancel(notificationId)",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.notifications, referencing com.taylordproductivty.med_timing_tracker.MainActivity"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.notifications\n\nimport android.Manifest\nimport android.app.NotificationChannel\nimport android.app.NotificationManager\nimport android.app.PendingIntent\nimport android.content.Context\nimport android.content.Intent\nimport android.content.pm.PackageManager\nimport android.os.Build\nimport androidx.core.app.NotificationCompat\nimport androidx.core.app.NotificationManagerCompat\nimport androidx.core.content.ContextCompat\nimport com.taylordproductivty.med_timing_tracker.MainActivity\n\nobject NotificationHelper {\n    const val CHANNEL_ID = \"dose_reminders\"\n\n    fun createNotificationChannel(context: Context) {\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return\n        val channel = NotificationChannel(\n            CHANNEL_ID,\n            \"Dose reminders\",\n            NotificationManager.IMPORTANCE_DEFAULT,\n        ).apply {\n            description = \"Notifies when a medication's minimum dosing interval has passed\"\n        }\n        context.getSystemService(NotificationManager::class.java).createNotificationChannel(channel)\n    }\n\n    fun sendReminder(context: Context, notificationId: Int, title: String, text: String) {\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&\n            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=\n                PackageManager.PERMISSION_GRANTED\n        ) {\n            return\n        }\n        val contentIntent = PendingIntent.getActivity(\n            context,\n            notificationId,\n            Intent(context, MainActivity::class.java),\n            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,\n        )\n        val notification = NotificationCompat.Builder(context, CHANNEL_ID)\n            .setSmallIcon(android.R.drawable.ic_popup_reminder)\n            .setContentTitle(title)\n            .setContentText(text)\n            .setContentIntent(contentIntent)\n            .setAutoCancel(true)\n            .build()\n        NotificationManagerCompat.from(context).notify(notificationId, notification)\n    }\n\n    fun cancel(context: Context, notificationId: Int) {\n        NotificationManagerCompat.from(context).cancel(notificationId)\n    }\n}\n"
+}

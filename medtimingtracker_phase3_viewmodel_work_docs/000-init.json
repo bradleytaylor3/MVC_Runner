@@ -1,0 +1,11 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase3-viewmodel",
+  "repo_root": "C:/Users/bradl/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker",
+    "UI/ViewModel code lives under the ui/ package",
+    "No DI framework -- AndroidViewModel constructs AppDatabase and repositories directly in its body, matching the data layer's manual-wiring convention"
+  ]
+}

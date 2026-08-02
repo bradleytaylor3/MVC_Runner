@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Add Profile entity",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/Profile.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Room entity for a caregiver's profile (person or pet) that medications are logged against on a shared device.",
+  "acceptance_criteria": [
+    "@Entity(tableName = \"profiles\") data class Profile with an autoGenerate Int primary key id",
+    "Fields: name: String, kind: ProfileKind = ProfileKind.PERSON, phoneNumber: String? = null, colorTag: String? = null, isArchived: Boolean = false, createdAt: Long = System.currentTimeMillis()",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.data"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nimport androidx.room.Entity\nimport androidx.room.PrimaryKey\n\n@Entity(tableName = \"profiles\")\ndata class Profile(\n    @PrimaryKey(autoGenerate = true) val id: Int = 0,\n    val name: String,\n    val kind: ProfileKind = ProfileKind.PERSON,\n    // Used by the one-tap \"text caregiver\" action (ACTION_SENDTO smsto:); null if not set.\n    val phoneNumber: String? = null,\n    val colorTag: String? = null,\n    // Soft delete: keeps DoseLog history intact since DoseLog has no @ForeignKey to cascade.\n    val isArchived: Boolean = false,\n    val createdAt: Long = System.currentTimeMillis(),\n)\n"
+}

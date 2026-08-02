@@ -1,0 +1,17 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Add DoseTimingCalculator -- the double-dose-prevention logic",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/DoseTimingCalculator.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Pure-function logic computing whether a candidate dose time is eligible given the medication's most recent prior dose and its minimum interval. This is the app's core double-dose-prevention feature, so it must be exact_code (not model-inferred): a sealed DoseTimingResult (Eligible or TooSoon(minutesRemaining)) and two pure functions, computeNextEligible and evaluateTiming.",
+  "acceptance_criteria": [
+    "sealed class DoseTimingResult with object Eligible and data class TooSoon(val minutesRemaining: Long)",
+    "object DoseTimingCalculator with fun computeNextEligible(givenAtEpochMillis: Long, minIntervalMinutes: Int?): Long? returning null when minIntervalMinutes is null, otherwise givenAtEpochMillis + minIntervalMinutes * 60_000L",
+    "fun evaluateTiming(candidateEpochMillis: Long, mostRecentDose: DoseLog?, minIntervalMinutes: Int?): DoseTimingResult returning Eligible when mostRecentDose is null, when minIntervalMinutes is null, or when candidateEpochMillis is at or after the computed next-eligible time; otherwise TooSoon with minutesRemaining rounded up to the nearest whole minute",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.data referencing the DoseLog entity from the same package"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nsealed class DoseTimingResult {\n    object Eligible : DoseTimingResult()\n    data class TooSoon(val minutesRemaining: Long) : DoseTimingResult()\n}\n\nobject DoseTimingCalculator {\n    // The next time this medication may be given again, or null if it has no minimum interval.\n    fun computeNextEligible(givenAtEpochMillis: Long, minIntervalMinutes: Int?): Long? {\n        if (minIntervalMinutes == null) return null\n        return givenAtEpochMillis + minIntervalMinutes * 60_000L\n    }\n\n    // Eligible when there is no prior dose, no minimum interval configured, or the\n    // candidate time is at or after the computed next-eligible time.\n    fun evaluateTiming(\n        candidateEpochMillis: Long,\n        mostRecentDose: DoseLog?,\n        minIntervalMinutes: Int?,\n    ): DoseTimingResult {\n        if (mostRecentDose == null || minIntervalMinutes == null) return DoseTimingResult.Eligible\n        val nextEligible = computeNextEligible(mostRecentDose.givenAtEpochMillis, minIntervalMinutes)\n            ?: return DoseTimingResult.Eligible\n        if (candidateEpochMillis >= nextEligible) return DoseTimingResult.Eligible\n        val minutesRemaining = (nextEligible - candidateEpochMillis + 59_999L) / 60_000L\n        return DoseTimingResult.TooSoon(minutesRemaining)\n    }\n}\n"
+}

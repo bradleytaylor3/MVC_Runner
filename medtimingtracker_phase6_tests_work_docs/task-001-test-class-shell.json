@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Add DoseTimingCalculatorTest class shell",
+  "file": "app/src/test/java/com/taylordproductivty/med_timing_tracker/data/DoseTimingCalculatorTest.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Empty test class with the imports every subsequent test method in this file will need. Test methods are added one at a time in later tasks.",
+  "acceptance_criteria": [
+    "class DoseTimingCalculatorTest with no methods yet",
+    "Imports org.junit.Assert.assertEquals, org.junit.Assert.assertNull, org.junit.Assert.assertTrue, org.junit.Test",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.data"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nimport org.junit.Assert.assertEquals\nimport org.junit.Assert.assertNull\nimport org.junit.Assert.assertTrue\nimport org.junit.Test\n\nclass DoseTimingCalculatorTest {\n}\n"
+}

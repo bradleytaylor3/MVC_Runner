@@ -1,0 +1,19 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Add MedicationDao",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/MedicationDao.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Room DAO for the medications table: a Flow of active medications for the UI, a lookup by id, insert, and update.",
+  "acceptance_criteria": [
+    "@Dao interface MedicationDao",
+    "observeActive(): Flow<List<Medication>> querying WHERE isArchived = 0 ORDER BY name ASC",
+    "suspend fun getById(id: Int): Medication?",
+    "suspend fun insert(medication: Medication): Long annotated @Insert",
+    "suspend fun update(medication: Medication) annotated @Update",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.data referencing the Medication entity from the same package"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nimport androidx.room.Dao\nimport androidx.room.Insert\nimport androidx.room.Query\nimport androidx.room.Update\nimport kotlinx.coroutines.flow.Flow\n\n@Dao\ninterface MedicationDao {\n    @Query(\"SELECT * FROM medications WHERE isArchived = 0 ORDER BY name ASC\")\n    fun observeActive(): Flow<List<Medication>>\n\n    @Query(\"SELECT * FROM medications WHERE id = :id\")\n    suspend fun getById(id: Int): Medication?\n\n    @Insert\n    suspend fun insert(medication: Medication): Long\n\n    @Update\n    suspend fun update(medication: Medication)\n}\n"
+}

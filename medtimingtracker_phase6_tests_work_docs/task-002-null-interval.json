@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Test: computeNextEligible returns null when there's no minimum interval",
+  "file": "app/src/test/java/com/taylordproductivty/med_timing_tracker/data/DoseTimingCalculatorTest.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DoseTimingCalculatorTest",
+  "description": "computeNextEligible(givenAt, null) must return null -- a medication with no configured minimum interval never blocks a next dose.",
+  "acceptance_criteria": [
+    "@Test fun computeNextEligible_returnsNull_whenNoMinInterval() calls DoseTimingCalculator.computeNextEligible(1_000_000L, null) and asserts the result is null via assertNull"
+  ],
+  "exact_code": "@Test\nfun computeNextEligible_returnsNull_whenNoMinInterval() {\n    val result = DoseTimingCalculator.computeNextEligible(1_000_000L, null)\n    assertNull(result)\n}"
+}

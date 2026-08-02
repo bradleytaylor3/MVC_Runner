@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-007",
+  "title": "Test: evaluateTiming reports the exact minutes remaining when too soon",
+  "file": "app/src/test/java/com/taylordproductivty/med_timing_tracker/data/DoseTimingCalculatorTest.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DoseTimingCalculatorTest",
+  "description": "This is the number shown directly in the warning dialog the user sees, so it must be exactly right for a whole-minute remainder.",
+  "acceptance_criteria": [
+    "@Test fun evaluateTiming_tooSoon_reportsExactMinutesRemaining() constructs a DoseLog given at 0L with a 60-minute interval, evaluates a candidate 10 minutes before the boundary (50 * 60_000L), asserts the result is DoseTimingResult.TooSoon, and asserts its minutesRemaining equals 10L"
+  ],
+  "exact_code": "@Test\nfun evaluateTiming_tooSoon_reportsExactMinutesRemaining() {\n    val mostRecentDose = DoseLog(\n        id = 1,\n        profileId = 1,\n        medicationId = 1,\n        givenAtEpochMillis = 0L,\n        doseAmount = \"5ml\",\n    )\n    // Candidate is exactly 10 minutes before the 60-minute mark.\n    val candidate = 50 * 60_000L\n    val result = DoseTimingCalculator.evaluateTiming(candidate, mostRecentDose, 60)\n    assertTrue(result is DoseTimingResult.TooSoon)\n    assertEquals(10L, (result as DoseTimingResult.TooSoon).minutesRemaining)\n}"
+}

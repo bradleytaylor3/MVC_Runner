@@ -1,0 +1,20 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Add ProfileDao",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/ProfileDao.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Room DAO for the profiles table: a Flow of active profiles for the UI, a suspend snapshot read for headless callers, a lookup by id, insert, and update.",
+  "acceptance_criteria": [
+    "@Dao interface ProfileDao",
+    "observeActive(): Flow<List<Profile>> querying WHERE isArchived = 0 ORDER BY name ASC",
+    "suspend fun getActiveSnapshot(): List<Profile> with the same query, for non-UI callers",
+    "suspend fun getById(id: Int): Profile?",
+    "suspend fun insert(profile: Profile): Long annotated @Insert",
+    "suspend fun update(profile: Profile) annotated @Update",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.data referencing the Profile entity from the same package"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nimport androidx.room.Dao\nimport androidx.room.Insert\nimport androidx.room.Query\nimport androidx.room.Update\nimport kotlinx.coroutines.flow.Flow\n\n@Dao\ninterface ProfileDao {\n    @Query(\"SELECT * FROM profiles WHERE isArchived = 0 ORDER BY name ASC\")\n    fun observeActive(): Flow<List<Profile>>\n\n    // Snapshot read for callers outside the UI (notification receivers, widget) that\n    // can't collect a Flow.\n    @Query(\"SELECT * FROM profiles WHERE isArchived = 0 ORDER BY name ASC\")\n    suspend fun getActiveSnapshot(): List<Profile>\n\n    @Query(\"SELECT * FROM profiles WHERE id = :id\")\n    suspend fun getById(id: Int): Profile?\n\n    @Insert\n    suspend fun insert(profile: Profile): Long\n\n    @Update\n    suspend fun update(profile: Profile)\n}\n"
+}

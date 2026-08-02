@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-012",
+  "title": "Add imports needed by settings/backup ViewModel methods",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListViewModel.kt",
+  "structure_type": "import",
+  "change_type": "add",
+  "description": "Imports for the upcoming settings field/property and the exportBackupJson/restoreBackupJson methods.",
+  "acceptance_criteria": [
+    "New import lines are added for: androidx.room.withTransaction, com.taylordproductivty.med_timing_tracker.data.AppSettings, com.taylordproductivty.med_timing_tracker.data.DataBackupPayload, com.taylordproductivty.med_timing_tracker.data.DataBackupValidator, com.taylordproductivty.med_timing_tracker.data.SettingsRepository, com.taylordproductivty.med_timing_tracker.data.toBackupItem, com.taylordproductivty.med_timing_tracker.data.toEntity",
+    "No existing import lines are changed"
+  ],
+  "start_anchor": "import com.taylordproductivty.med_timing_tracker.data.ProfileRepository",
+  "exact_code": "import com.taylordproductivty.med_timing_tracker.data.AppSettings\nimport com.taylordproductivty.med_timing_tracker.data.DataBackupPayload\nimport com.taylordproductivty.med_timing_tracker.data.DataBackupValidator\nimport com.taylordproductivty.med_timing_tracker.data.SettingsRepository\nimport com.taylordproductivty.med_timing_tracker.data.toBackupItem\nimport com.taylordproductivty.med_timing_tracker.data.toEntity\nimport androidx.room.withTransaction"
+}

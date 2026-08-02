@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-008",
+  "title": "Test: evaluateTiming rounds a partial-minute remainder up",
+  "file": "app/src/test/java/com/taylordproductivty/med_timing_tracker/data/DoseTimingCalculatorTest.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DoseTimingCalculatorTest",
+  "description": "30 seconds remaining should display as 1 minute remaining, not 0 -- rounding down would tell the user they're already eligible when they're not.",
+  "acceptance_criteria": [
+    "@Test fun evaluateTiming_tooSoon_roundsUpPartialMinute() constructs a DoseLog given at 0L with a 60-minute interval, evaluates a candidate 30 seconds before the 60-minute boundary (60 * 60_000L - 30_000L), asserts the result is DoseTimingResult.TooSoon, and asserts its minutesRemaining equals 1L"
+  ],
+  "exact_code": "@Test\nfun evaluateTiming_tooSoon_roundsUpPartialMinute() {\n    val mostRecentDose = DoseLog(\n        id = 1,\n        profileId = 1,\n        medicationId = 1,\n        givenAtEpochMillis = 0L,\n        doseAmount = \"5ml\",\n    )\n    // Candidate is 30 seconds before the 60-minute mark -- should round up to 1 minute remaining.\n    val candidate = 60 * 60_000L - 30_000L\n    val result = DoseTimingCalculator.evaluateTiming(candidate, mostRecentDose, 60)\n    assertTrue(result is DoseTimingResult.TooSoon)\n    assertEquals(1L, (result as DoseTimingResult.TooSoon).minutesRemaining)\n}"
+}

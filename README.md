@@ -24,6 +24,8 @@ MVC_Runner/
 ├── work_docs/                # Example code-edit batch + schema + authoring prompt
 ├── work_docs_adb/            # Example ADB-test batch + schema + authoring prompt
 ├── organizer_work_docs/      # A real 6-task code-edit batch (not a toy example)
+├── medtimingtracker_*_work_docs/  # 12 real batches, 36 tasks, from an actual
+│                                    Android/Kotlin build -- see below
 ├── .claude/skills/adb-test/   # Claude Code skill: /adb-test
 ├── .claude/skills/code-edit/  # Claude Code skill: /code-edit
 ├── tests/                    # pytest suite (anchor resolution, work-doc validation)
@@ -83,6 +85,37 @@ python -m runner.cli run --work-dir work_docs --model qwen3:4b
 - `pytest` (from this directory) runs `tests/`, covering location-resolution
   edge cases (multi-line signatures, brace vs. indentation body bounds,
   marker `occurrence` disambiguation) and work-doc field validation.
+
+### Real-world example corpus: `medtimingtracker_*_work_docs/`
+
+`organizer_work_docs/` is one real batch; these are twelve, from actually
+building an Android/Kotlin app (a med-timing-tracker) with this tool over
+one session — 36 tasks total, almost entirely `exact_code` (deterministic
+splices, no model call). Kept as tracked examples because they're a much
+larger and more structurally diverse sample than anything else in this
+repo: every `structure_type` this schema supports except `function`/
+`class`/`docstring` shows up somewhere across them, split across Room
+entities/DAOs/database/repositories, a notification pipeline, ViewModels,
+and a JSON backup layer — real Kotlin, not toy snippets.
+
+They're also the origin of two real bugs this tool had (both fixed, see
+`tests/test_anchor.py` and `tests/test_executor.py` for the regression
+tests, and git history for the fixes): `method`/`add`'s parent resolution
+didn't recognize Kotlin `interface` declarations (only literal `class`),
+and appending into a class/interface body that turned out to be empty
+landed at the wrong indentation. Both were found by running batches
+against a real project, not by unit testing in isolation — which is
+exactly the value a corpus like this adds over synthetic fixtures alone.
+Worth mining further if `anchor.py`/`executor.py` need more tuning: these
+batches are real anchors resolved against real (if now-already-applied)
+Kotlin files, not hypothetical ones.
+
+Batch-numbered by the phase of the app they built (`phase1_*` is the Room
+data layer, `phase2_*` the notification pipeline, etc.) — the numbering
+also demonstrates the tool's batch-boundary convention: one batch per
+architectural layer, sequenced so a later batch's anchors can assume an
+earlier batch already landed (e.g. `phase1_daos` references entities from
+`phase1_entities`).
 
 ## `test-adb` — ADB-driven Android UI testing
 

@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-004",
+  "title": "Test: evaluateTiming is eligible when there's no prior dose",
+  "file": "app/src/test/java/com/taylordproductivty/med_timing_tracker/data/DoseTimingCalculatorTest.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DoseTimingCalculatorTest",
+  "description": "A first-ever dose for a profile/medication combination is always eligible -- there's nothing to be too soon after.",
+  "acceptance_criteria": [
+    "@Test fun evaluateTiming_eligible_whenNoMostRecentDose() calls DoseTimingCalculator.evaluateTiming(1_000_000L, null, 60) and asserts the result is DoseTimingResult.Eligible via assertTrue(result is DoseTimingResult.Eligible)"
+  ],
+  "exact_code": "@Test\nfun evaluateTiming_eligible_whenNoMostRecentDose() {\n    val result = DoseTimingCalculator.evaluateTiming(1_000_000L, null, 60)\n    assertTrue(result is DoseTimingResult.Eligible)\n}"
+}

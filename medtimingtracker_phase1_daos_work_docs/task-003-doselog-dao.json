@@ -1,0 +1,20 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Add DoseLogDao",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/DoseLogDao.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Room DAO for the dose_logs table: recent doses for a profile, the most recent dose of a specific medication for a profile (drives the live 'next eligible' UI, plus a suspend snapshot variant for headless callers), all doses with a still-pending reminder (for reboot re-arm), and a plain insert with no compare-and-set guard since every dose log is an additive history event, not a mutable flag.",
+  "acceptance_criteria": [
+    "@Dao interface DoseLogDao",
+    "observeRecentForProfile(profileId: Int, limit: Int = 50): Flow<List<DoseLog>> ordered by givenAtEpochMillis DESC",
+    "observeMostRecentDose(profileId: Int, medicationId: Int): Flow<DoseLog?> filtering on both profileId and medicationId, ordered by givenAtEpochMillis DESC LIMIT 1",
+    "suspend fun getMostRecentDoseSnapshot(profileId: Int, medicationId: Int): DoseLog? with the same filter/order as observeMostRecentDose, for non-UI callers",
+    "suspend fun getPendingReminders(nowEpochMillis: Long): List<DoseLog> selecting rows where nextEligibleAtEpochMillis IS NOT NULL AND nextEligibleAtEpochMillis > :nowEpochMillis",
+    "suspend fun insert(doseLog: DoseLog): Long annotated @Insert, with no WHERE-guarded update -- this is a plain insert, not a compare-and-set",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.data referencing the DoseLog entity from the same package"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nimport androidx.room.Dao\nimport androidx.room.Insert\nimport androidx.room.Query\nimport kotlinx.coroutines.flow.Flow\n\n@Dao\ninterface DoseLogDao {\n    @Query(\n        \"SELECT * FROM dose_logs WHERE profileId = :profileId ORDER BY givenAtEpochMillis DESC LIMIT :limit\"\n    )\n    fun observeRecentForProfile(profileId: Int, limit: Int = 50): Flow<List<DoseLog>>\n\n    // Drives the live \"next eligible\" UI: the most recent dose of this medication for\n    // this profile, if any.\n    @Query(\n        \"SELECT * FROM dose_logs WHERE profileId = :profileId AND medicationId = :medicationId \" +\n            \"ORDER BY givenAtEpochMillis DESC LIMIT 1\"\n    )\n    fun observeMostRecentDose(profileId: Int, medicationId: Int): Flow<DoseLog?>\n\n    // Snapshot read used headlessly by BootReminderReceiver to re-arm alarms.\n    @Query(\n        \"SELECT * FROM dose_logs WHERE profileId = :profileId AND medicationId = :medicationId \" +\n            \"ORDER BY givenAtEpochMillis DESC LIMIT 1\"\n    )\n    suspend fun getMostRecentDoseSnapshot(profileId: Int, medicationId: Int): DoseLog?\n\n    // All doses with a still-pending reminder, used to re-arm every alarm after reboot.\n    @Query(\n        \"SELECT * FROM dose_logs WHERE nextEligibleAtEpochMillis IS NOT NULL \" +\n            \"AND nextEligibleAtEpochMillis > :nowEpochMillis\"\n    )\n    suspend fun getPendingReminders(nowEpochMillis: Long): List<DoseLog>\n\n    // Plain insert, not a compare-and-set update: every dose log is an additive history\n    // event, and near-simultaneous logs from two caregivers are exactly the data this\n    // app is designed to capture and surface, not a race to resolve.\n    @Insert\n    suspend fun insert(doseLog: DoseLog): Long\n}\n"
+}

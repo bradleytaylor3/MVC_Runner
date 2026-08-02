@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-016",
+  "title": "Add restoreBackupJson to DailyListViewModel",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListViewModel.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DailyListViewModel",
+  "description": "Parses and validates a backup JSON string (the Settings screen reads the file content itself and passes it in), and if valid, atomically wipes every table and reinserts the backup's rows preserving their original ids -- correct here specifically because the wipe happens first, so there is no id collision, and DoseLog.profileId/medicationId references stay valid.",
+  "acceptance_criteria": [
+    "fun restoreBackupJson(json: String, onResult: (errors: List<String>) -> Unit) is a member of DailyListViewModel",
+    "It launches a viewModelScope coroutine that calls DataBackupValidator.parseJson(json); if the returned payload is null, it calls onResult with a single-item list containing the parse error message (or a fallback message) and returns",
+    "If parsing succeeded, it calls DataBackupValidator.validate(payload); if that returns any errors, it calls onResult with those errors and returns without touching the database",
+    "Otherwise it calls db.withTransaction { } wrapping: deleteAll() on all three repositories, then inserting every profiles/medications/doseLogs item via their toEntity() extension and each repository's insert(), in that order (profiles and medications before doseLogs, since doseLogs reference them)",
+    "After the transaction completes it calls onResult(emptyList())"
+  ],
+  "exact_code": "fun restoreBackupJson(json: String, onResult: (errors: List<String>) -> Unit) {\n    viewModelScope.launch {\n        val (payload, parseError) = DataBackupValidator.parseJson(json)\n        if (payload == null) {\n            onResult(listOf(parseError ?: \"Failed to parse backup file\"))\n            return@launch\n        }\n        val validationErrors = DataBackupValidator.validate(payload)\n        if (validationErrors.isNotEmpty()) {\n            onResult(validationErrors)\n            return@launch\n        }\n        db.withTransaction {\n            profileRepository.deleteAll()\n            medicationRepository.deleteAll()\n            doseLogRepository.deleteAll()\n            payload.profiles.forEach { profileRepository.insert(it.toEntity()) }\n            payload.medications.forEach { medicationRepository.insert(it.toEntity()) }\n            payload.doseLogs.forEach { doseLogRepository.insert(it.toEntity()) }\n        }\n        onResult(emptyList())\n    }\n}"
+}

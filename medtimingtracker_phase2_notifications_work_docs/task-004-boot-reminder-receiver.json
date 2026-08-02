@@ -1,0 +1,19 @@
+{
+  "kind": "work",
+  "id": "task-004",
+  "title": "Add BootReminderReceiver",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/BootReminderReceiver.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "BroadcastReceiver that re-arms every still-pending dose reminder after a reboot, since exact alarms don't survive a device restart. Uses goAsync() plus an IO-dispatcher coroutine to read Room off the main thread, looking up each pending DoseLog's Medication to build the reminder text.",
+  "acceptance_criteria": [
+    "class BootReminderReceiver : BroadcastReceiver()",
+    "onReceive returns early unless intent.action == Intent.ACTION_BOOT_COMPLETED",
+    "onReceive calls goAsync() and launches a CoroutineScope(Dispatchers.IO) coroutine that finishes the PendingResult in a finally block",
+    "Inside the coroutine: gets AppDatabase.getDatabase(applicationContext), calls doseLogDao().getPendingReminders(now), and for each pending DoseLog looks up its Medication via medicationDao().getById, skipping if the medication is missing",
+    "For each pending DoseLog with its Medication found, calls ExactAlarmScheduler.schedule with the dose log's id, its nextEligibleAtEpochMillis, and a title/text mentioning the medication's name",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.notifications referencing com.taylordproductivty.med_timing_tracker.data.AppDatabase"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.notifications\n\nimport android.content.BroadcastReceiver\nimport android.content.Context\nimport android.content.Intent\nimport com.taylordproductivty.med_timing_tracker.data.AppDatabase\nimport kotlinx.coroutines.CoroutineScope\nimport kotlinx.coroutines.Dispatchers\nimport kotlinx.coroutines.launch\n\nclass BootReminderReceiver : BroadcastReceiver() {\n    override fun onReceive(context: Context, intent: Intent) {\n        if (intent.action != Intent.ACTION_BOOT_COMPLETED) return\n        val pendingResult = goAsync()\n        val appContext = context.applicationContext\n        CoroutineScope(Dispatchers.IO).launch {\n            try {\n                val database = AppDatabase.getDatabase(appContext)\n                val now = System.currentTimeMillis()\n                val pending = database.doseLogDao().getPendingReminders(now)\n                for (doseLog in pending) {\n                    val medication = database.medicationDao().getById(doseLog.medicationId) ?: continue\n                    ExactAlarmScheduler.schedule(\n                        appContext,\n                        doseLog.id,\n                        doseLog.nextEligibleAtEpochMillis ?: continue,\n                        \"Dose window open\",\n                        \"${medication.name} is now eligible for another dose\",\n                    )\n                }\n            } finally {\n                pendingResult.finish()\n            }\n        }\n    }\n}\n"
+}

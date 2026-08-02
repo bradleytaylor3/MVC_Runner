@@ -1,0 +1,11 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase1-daos",
+  "repo_root": "C:/Users/bradl/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker",
+    "Room entities/DAOs/database live under the data/ package",
+    "Flow-returning queries for UI-observed reads; suspend fun snapshot reads for callers outside the UI (notification receivers, widget)"
+  ]
+}

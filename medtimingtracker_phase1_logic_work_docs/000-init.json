@@ -1,0 +1,10 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase1-logic",
+  "repo_root": "C:/Users/bradl/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker",
+    "Pure logic classes live under the data/ package alongside the entities they operate on"
+  ]
+}

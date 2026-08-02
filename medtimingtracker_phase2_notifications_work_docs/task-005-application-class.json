@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-005",
+  "title": "Add MedTimingTrackerApp Application subclass",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/MedTimingTrackerApp.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Application subclass creating the notification channel at process start, mirroring the reference app's GoblinLootApplication.kt but scoped down to only what this MVP's single-shot reminder pipeline needs -- no periodic WorkManager enqueue since there's no daily/rollover worker in this MVP.",
+  "acceptance_criteria": [
+    "class MedTimingTrackerApp : Application()",
+    "override fun onCreate() calls super.onCreate() then NotificationHelper.createNotificationChannel(this)",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker referencing com.taylordproductivty.med_timing_tracker.notifications.NotificationHelper"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker\n\nimport android.app.Application\nimport com.taylordproductivty.med_timing_tracker.notifications.NotificationHelper\n\nclass MedTimingTrackerApp : Application() {\n    override fun onCreate() {\n        super.onCreate()\n        NotificationHelper.createNotificationChannel(this)\n    }\n}\n"
+}

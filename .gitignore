@@ -7,9 +7,12 @@ venv/
 logs/
 
 # Generated work-doc batches from running the tool against real projects.
-# Example/schema batches (work_docs, work_docs_adb, organizer_work_docs)
-# stay tracked; everything else ending in _work_docs is local output.
+# Example/schema batches (work_docs, work_docs_adb, organizer_work_docs) and
+# the medtimingtracker_* batches (a real 12-batch, 36-task Android/Kotlin
+# build -- see README's "Real-world example corpus" section) stay tracked;
+# everything else ending in _work_docs is local output.
 *_work_docs/
 !/work_docs/
 !/work_docs_adb/
 !/organizer_work_docs/
+!/medtimingtracker_*_work_docs/

@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Add ReminderAlarmReceiver",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ReminderAlarmReceiver.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "BroadcastReceiver fired by the exact alarm ExactAlarmScheduler schedules; reads the dose_log_id/title/text extras and posts the notification via NotificationHelper. No pester/escalation re-arming since this MVP's reminder is single-shot, not repeating.",
+  "acceptance_criteria": [
+    "class ReminderAlarmReceiver : BroadcastReceiver()",
+    "onReceive reads doseLogId via intent.getIntExtra(ExactAlarmScheduler.EXTRA_DOSE_LOG_ID, -1) and returns early if it's -1",
+    "onReceive reads title/text via intent.getStringExtra with ExactAlarmScheduler.EXTRA_TITLE / EXTRA_TEXT and returns early if either is null",
+    "onReceive calls NotificationHelper.sendReminder(context, doseLogId, title, text)",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.notifications"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.notifications\n\nimport android.content.BroadcastReceiver\nimport android.content.Context\nimport android.content.Intent\n\nclass ReminderAlarmReceiver : BroadcastReceiver() {\n    override fun onReceive(context: Context, intent: Intent) {\n        val doseLogId = intent.getIntExtra(ExactAlarmScheduler.EXTRA_DOSE_LOG_ID, -1)\n        if (doseLogId == -1) return\n        val title = intent.getStringExtra(ExactAlarmScheduler.EXTRA_TITLE) ?: return\n        val text = intent.getStringExtra(ExactAlarmScheduler.EXTRA_TEXT) ?: return\n        NotificationHelper.sendReminder(context, doseLogId, title, text)\n    }\n}\n"
+}

@@ -1,0 +1,11 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase4-backup",
+  "repo_root": "C:/Users/bradl/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker",
+    "Moshi with @JsonClass(generateAdapter = true) codegen, matching the reference app's backup pattern",
+    "Backup item data classes are deliberately decoupled from Room entities via toBackupItem()/toEntity() mappers so entity schema churn doesn't silently break the backup format"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Test: computeNextEligible adds the interval in milliseconds",
+  "file": "app/src/test/java/com/taylordproductivty/med_timing_tracker/data/DoseTimingCalculatorTest.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DoseTimingCalculatorTest",
+  "description": "computeNextEligible must convert minutes to milliseconds and add exactly, no off-by-one.",
+  "acceptance_criteria": [
+    "@Test fun computeNextEligible_addsIntervalInMillis() calls DoseTimingCalculator.computeNextEligible(1_000_000L, 60) and asserts the result equals 1_000_000L + 60 * 60_000L via assertEquals"
+  ],
+  "exact_code": "@Test\nfun computeNextEligible_addsIntervalInMillis() {\n    val result = DoseTimingCalculator.computeNextEligible(1_000_000L, 60)\n    assertEquals(1_000_000L + 60 * 60_000L, result)\n}"
+}

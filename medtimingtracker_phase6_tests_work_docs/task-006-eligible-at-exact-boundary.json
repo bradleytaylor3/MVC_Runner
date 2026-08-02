@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-006",
+  "title": "Test: evaluateTiming is eligible exactly at the next-eligible boundary",
+  "file": "app/src/test/java/com/taylordproductivty/med_timing_tracker/data/DoseTimingCalculatorTest.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DoseTimingCalculatorTest",
+  "description": "The comparison must be >= (inclusive), not > -- a candidate time exactly at the computed next-eligible time is eligible, not too soon.",
+  "acceptance_criteria": [
+    "@Test fun evaluateTiming_eligible_whenCandidateAtExactlyNextEligible() constructs a DoseLog with givenAtEpochMillis = 0L, computes nextEligible = 60 * 60_000L, calls DoseTimingCalculator.evaluateTiming(nextEligible, thatDoseLog, 60), and asserts the result is DoseTimingResult.Eligible"
+  ],
+  "exact_code": "@Test\nfun evaluateTiming_eligible_whenCandidateAtExactlyNextEligible() {\n    val mostRecentDose = DoseLog(\n        id = 1,\n        profileId = 1,\n        medicationId = 1,\n        givenAtEpochMillis = 0L,\n        doseAmount = \"5ml\",\n    )\n    val nextEligible = 60 * 60_000L\n    val result = DoseTimingCalculator.evaluateTiming(nextEligible, mostRecentDose, 60)\n    assertTrue(result is DoseTimingResult.Eligible)\n}"
+}

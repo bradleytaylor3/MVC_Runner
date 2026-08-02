@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-013",
+  "title": "Add settingsRepository field and settings StateFlow to DailyListViewModel",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListViewModel.kt",
+  "structure_type": "constant",
+  "change_type": "add",
+  "description": "Wires SettingsRepository into the ViewModel alongside the existing repositories, and exposes its settings Flow as a StateFlow the same way activeProfiles/activeMedications are exposed.",
+  "acceptance_criteria": [
+    "private val settingsRepository = SettingsRepository(application) is added as a field on DailyListViewModel",
+    "val settings: StateFlow<AppSettings> is added, built from settingsRepository.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AppSettings())"
+  ],
+  "start_anchor": "private val doseLogRepository = DoseLogRepository(db.doseLogDao())",
+  "exact_code": "private val settingsRepository = SettingsRepository(application)\n\nval settings: StateFlow<AppSettings> = settingsRepository.settings\n    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AppSettings())"
+}

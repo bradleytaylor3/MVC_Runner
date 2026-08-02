@@ -1,0 +1,17 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Add Converters.kt with ProfileKind and DosingMode enums plus Room TypeConverters",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/Converters.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "New file defining the two domain enums (ProfileKind: PERSON/PET, DosingMode: INTERVAL/FIXED_SCHEDULE) used by the Profile and Medication entities, plus a Room Converters class with @TypeConverter methods for both.",
+  "acceptance_criteria": [
+    "Declares enum class ProfileKind with PERSON and PET",
+    "Declares enum class DosingMode with INTERVAL and FIXED_SCHEDULE",
+    "Declares class Converters with @TypeConverter methods converting each enum to/from String",
+    "File is valid Kotlin under package com.taylordproductivty.med_timing_tracker.data"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nimport androidx.room.TypeConverter\n\nenum class ProfileKind {\n    PERSON,\n    PET,\n}\n\nenum class DosingMode {\n    INTERVAL,\n    FIXED_SCHEDULE,\n}\n\nclass Converters {\n    @TypeConverter\n    fun fromProfileKind(value: ProfileKind): String = value.name\n\n    @TypeConverter\n    fun toProfileKind(value: String): ProfileKind = ProfileKind.valueOf(value)\n\n    @TypeConverter\n    fun fromDosingMode(value: DosingMode): String = value.name\n\n    @TypeConverter\n    fun toDosingMode(value: String): DosingMode = DosingMode.valueOf(value)\n}\n"
+}

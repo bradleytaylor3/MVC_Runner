@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Add insertProfile method to DailyListViewModel",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListViewModel.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DailyListViewModel",
+  "description": "New method for the manage-profiles screen to add a profile, launching a viewModelScope coroutine that inserts via profileRepository.",
+  "acceptance_criteria": [
+    "fun insertProfile(name: String, kind: ProfileKind, phoneNumber: String?) is a member of DailyListViewModel",
+    "It launches a viewModelScope coroutine that calls profileRepository.insert with a new Profile built from the given name/kind/phoneNumber",
+    "Valid Kotlin"
+  ],
+  "exact_code": "fun insertProfile(name: String, kind: ProfileKind, phoneNumber: String?) {\n    viewModelScope.launch {\n        profileRepository.insert(Profile(name = name, kind = kind, phoneNumber = phoneNumber))\n    }\n}"
+}

@@ -1,0 +1,19 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Add SettingsRepository backed by DataStore Preferences",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/SettingsRepository.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Plain constructor class (no DI framework) wrapping a preferencesDataStore, exposing a typed AppSettings data class via a Flow with defaults for every key, and a suspend setter. MVP scope is intentionally minimal: a single notificationsEnabled toggle.",
+  "acceptance_criteria": [
+    "private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = \"med_timing_tracker_settings\") declared at file scope",
+    "data class AppSettings(val notificationsEnabled: Boolean = true)",
+    "class SettingsRepository(private val context: Context) with a private object Keys containing a booleanPreferencesKey for notificationsEnabled",
+    "val settings: Flow<AppSettings> built from context.dataStore.data.map { prefs -> AppSettings(notificationsEnabled = prefs[Keys.NOTIFICATIONS_ENABLED] ?: true) }",
+    "suspend fun setNotificationsEnabled(enabled: Boolean) writing via context.dataStore.edit { it[Keys.NOTIFICATIONS_ENABLED] = enabled }",
+    "Valid Kotlin under package com.taylordproductivty.med_timing_tracker.data"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.data\n\nimport android.content.Context\nimport androidx.datastore.core.DataStore\nimport androidx.datastore.preferences.core.Preferences\nimport androidx.datastore.preferences.core.booleanPreferencesKey\nimport androidx.datastore.preferences.core.edit\nimport androidx.datastore.preferences.preferencesDataStore\nimport kotlinx.coroutines.flow.Flow\nimport kotlinx.coroutines.flow.map\n\nprivate val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = \"med_timing_tracker_settings\")\n\ndata class AppSettings(val notificationsEnabled: Boolean = true)\n\nclass SettingsRepository(private val context: Context) {\n    private object Keys {\n        val NOTIFICATIONS_ENABLED = booleanPreferencesKey(\"notifications_enabled\")\n    }\n\n    val settings: Flow<AppSettings> = context.dataStore.data.map { prefs ->\n        AppSettings(notificationsEnabled = prefs[Keys.NOTIFICATIONS_ENABLED] ?: true)\n    }\n\n    suspend fun setNotificationsEnabled(enabled: Boolean) {\n        context.dataStore.edit { it[Keys.NOTIFICATIONS_ENABLED] = enabled }\n    }\n}\n"
+}
