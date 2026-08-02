@@ -1,0 +1,101 @@
+[
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "gemma3:4b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 21.109000000171363,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "gemma3:4b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 5.5939999998081475,
+    "detail": "}\n\t@Delete\n\tsuspend fun delete(profile: Profile)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "gemma3:4b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 5.75,
+    "detail": "    @Query(\n        \"SELECT COUNT(*) FROM profile\"\n    )"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "gemma3:4b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 5.1560000001918525,
+    "detail": "fragment is a single line ('@Query(\"SELECT COUNT(*) FROM profile\")') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "gemma3:4b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 5.6719999997876585,
+    "detail": "fragment is a single line ('@Query(\"DELETE FROM profile WHERE id = :id)') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "gemma3:4b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 5.5780000002123415,
+    "detail": "fragment is a single line ('@Query(\"DELETE FROM profile WHERE id = :id\")') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "gemma3:4b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 6.875,
+    "detail": "        kilometers = input(\"Enter kilometers: \")\n    miles = float(kilometers) * 0.621371\n    return miles"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "gemma3:4b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 6.625,
+    "detail": "        def kilometers_to_miles(kilometers: float) -> float:\n            return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "gemma3:4b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 6.3899999998975545,
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "gemma3:4b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 5.4530000002123415,
+    "detail": "fragment is a single line ('return miles * 1.60934') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "gemma3:4b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 5.7969999997876585,
+    "detail": "KM_TO_MILES_FACTOR = 0.621371"
+  }
+]

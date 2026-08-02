@@ -11,12 +11,14 @@ MVC_Runner/
 │   ├── sample_a.txt
 │   └── sample_b.txt
 ├── runner/                  # Local-model execution pipeline (Ollama)
-│   ├── cli.py                # `python -m runner.cli run|test-adb|build`
+│   ├── cli.py                # `python -m runner.cli run|test-adb|build|scaffold|bench`
 │   ├── ollama_client.py       # HTTP client for a local Ollama server
 │   ├── work_doc.py            # Code-edit batch schema (init doc + work docs)
 │   ├── anchor.py / patch.py   # Anchor resolution + fragment splicing
 │   ├── executor.py            # `run`: code-editing batch loop
 │   ├── work_builder.py        # `build`: interactive work_docs/ batch wizard
+│   ├── scaffold.py            # `scaffold`: expand a {{template}} + item list into a batch, no model call
+│   ├── bench.py                # `bench`: score local models on known-answer fragments
 │   ├── adb_task.py            # ADB-test batch schema (init doc + work docs)
 │   ├── adb_client.py          # subprocess wrapper around the `adb` CLI
 │   ├── ui_dump.py             # Parses `uiautomator dump` XML into elements
@@ -26,6 +28,8 @@ MVC_Runner/
 ├── organizer_work_docs/      # A real 6-task code-edit batch (not a toy example)
 ├── medtimingtracker_*_work_docs/  # 12 real batches, 36 tasks, from an actual
 │                                    Android/Kotlin build -- see below
+├── scaffold_examples/        # Example scaffold spec (see `scaffold` below)
+├── bench/fixtures/            # Known-answer fixtures for `bench` (see below)
 ├── .claude/skills/adb-test/   # Claude Code skill: /adb-test
 ├── .claude/skills/code-edit/  # Claude Code skill: /code-edit
 ├── tests/                    # pytest suite (anchor resolution, work-doc validation)
@@ -117,6 +121,45 @@ architectural layer, sequenced so a later batch's anchors can assume an
 earlier batch already landed (e.g. `phase1_daos` references entities from
 `phase1_entities`).
 
+## `scaffold` — mechanically expanding repetitive batches
+
+Most of the manual JSON-authoring effort in a real batch (see the
+`medtimingtracker_*_work_docs/` corpus below) wasn't deciding *what* to
+write — it was retyping the same task shape a dozen times for near-identical
+edits (a DAO method per query, an entity per field, ...). `scaffold` factors
+that out: write one shared `task_template` plus a short list of per-item
+variables, and it expands them into a full batch of validated, ready-to-run
+`exact_code` tasks — no model call, not even at authoring time.
+
+```bash
+python -m runner.cli scaffold scaffold_examples/profile_dao_methods.json --work-dir work_docs
+python -m runner.cli run --work-dir work_docs --model qwen3:4b
+```
+
+Template fields use `{{double_braces}}`, not `str.format`'s `{single_braces}`
+— a template field is usually source code, and Kotlin/Java/JS all use plain
+`{`/`}` for real block syntax that `str.format` would misread as a
+placeholder. See `scaffold_examples/profile_dao_methods.json` for a full
+worked example (3 Room DAO methods from one shared template).
+
+## `bench` — scoring local models on known-answer fragments
+
+An offline harness: given a fixture (a small real-ish source file plus tasks
+with known-correct `exact_code`), it withholds the `exact_code`, asks the
+model to generate the fragment for real (the same `build_prompt` →
+`ollama_client.generate` → `parse_fragment` → shape-validation → bleed-check
+pipeline `run` uses), and scores the result against the known answer. Never
+touches a real repo.
+
+```bash
+python -m runner.cli bench --models qwen2.5:1.5b,gemma3:4b,qwen3:4b --report logs/bench/results.json
+```
+
+This is how `pattern_example` (below) got evaluated rather than assumed to
+help — see "Running on small models" below, and `bench/README.md` for full
+methodology, results, caveats, and instructions for re-testing with a
+larger/GPU-accelerated model.
+
 ## `test-adb` — ADB-driven Android UI testing
 
 Drives a real Android device or emulator over ADB, using a local model to
@@ -178,3 +221,28 @@ That said, schema-constrained output only fixes *shape*, not *judgment* or
   models remain more reliable, and a "success" status only means the
   pipeline didn't error, never that the resulting code is correct. Review
   the diff regardless of model size.
+
+  This was measured directly with `runner/bench.py`, not assumed: on small,
+  realistic, well-scoped pattern-following tasks (add a DAO method following
+  three existing ones, add a one-line conversion function following two),
+  `qwen2.5:1.5b`, `gemma3:4b`, and `qwen3:4b` all landed around **0-15%
+  exact-match**, and `pattern_example` — a real sibling instance of the
+  pattern shown to the model as a concrete few-shot example, meant to make
+  generation more reliable than working from `description` prose alone —
+  did **not** reliably move that number; several runs it did the same or
+  worse. `qwen3:4b` was also frequently slow enough to hit the request
+  timeout on a single fragment. The dominant failure modes were a bare
+  signature/name with no body and fluent-but-wrong content (caught by
+  `_validate_fragment_shape`/bleed-detection in the first case, invisible to
+  the pipeline in the second — this is why "success" never means "correct").
+  One real, fixable bug came out of building this: small models frequently
+  double-escape newlines in their JSON output (`\n` decodes to the two
+  literal characters `\` and `n`, not a line break), which was masking
+  otherwise-fine multi-line fragments as bare one-liners; `parse_fragment`
+  now unescapes this. Net conclusion: at this model size, `pattern_example`
+  and shape validation are worth keeping for opportunistic/low-stakes use
+  under human review, but they aren't a substitute for `exact_code` — the
+  `scaffold` command (above) is the actual lever for cutting down how much
+  JSON a human/Claude has to hand-author, since it needs no model call at
+  all. Full write-up, raw results, and instructions for re-testing this on a
+  GPU with a bigger model: `bench/README.md`.

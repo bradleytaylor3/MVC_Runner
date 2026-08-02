@@ -176,6 +176,10 @@ def _build_one_task(work_dir: Path, task_num: int) -> Path:
     exact_code = _prompt_multiline("exact_code")
     if exact_code is not None:
         data["exact_code"] = exact_code
+    else:
+        pattern_example = _prompt_multiline("pattern_example (a real sibling instance of this pattern, if one exists)")
+        if pattern_example is not None:
+            data["pattern_example"] = pattern_example
 
     acceptance_criteria = _prompt_list("acceptance_criteria")
     while not acceptance_criteria:

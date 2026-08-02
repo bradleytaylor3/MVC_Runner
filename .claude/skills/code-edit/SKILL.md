@@ -40,6 +40,19 @@ paraphrase of it).
    already applied. If `work_docs/` already has files from a previous
    batch, ask before overwriting rather than assuming they're stale.
 
+   If several tasks in this batch are the same shape and differ only in a
+   name/value/query (a DAO method per query, an entity per field, ...),
+   write a `runner.scaffold` spec instead of hand-authoring each one — one
+   shared `task_template` plus a short per-item variable list, expanded by
+   `python -m runner.cli scaffold <spec.json> --work-dir work_docs`. See
+   `scaffold_examples/profile_dao_methods.json` for the shape, and
+   `work_docs/AUTHORING_PROMPT.md`'s "Repetitive batches" section. This is
+   the preferred way to cut down how much JSON you write by hand for a
+   repetitive batch — prefer it over trying to get the local model to
+   generate the repeated content itself (see the note on `pattern_example`
+   below: real benchmarking showed local models aren't reliable enough at
+   generation for that to be a good trade).
+
 4. **Run it**: `python -m runner.cli run --work-dir work_docs --model qwen3:4b`
    (add `--repo-root` if it needs to differ from the init doc's,
    `--allow-dirty` if step 2 was resolved that way, `--dry-run` if the user

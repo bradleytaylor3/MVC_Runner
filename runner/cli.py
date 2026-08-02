@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from runner import adb_agent, adb_client, executor, ollama_client, token_savings, work_builder
+from runner import adb_agent, adb_client, bench, executor, ollama_client, scaffold, token_savings, work_builder
 from runner.adb_task import AdbTaskError, load_adb_batch
 from runner.work_doc import WorkDocError, load_batch
 
@@ -134,10 +134,11 @@ def main() -> int:
     run_parser.add_argument("--context-lines", type=int, default=3,
                              help="Lines of read-only context shown before/after each anchor (default: 3)")
     run_parser.add_argument("--max-retries", type=int, default=0,
-                             help="Extra attempts for a task whose output fails validation on model-quality "
-                                  "grounds (parse failure, exact_code mismatch) before giving up on it "
-                                  "(default: 0 — no retry). Anchor/splice errors are never retried since "
-                                  "they're deterministic given the task and repo state.")
+                             help="Extra attempts for a task whose output fails on model-quality grounds "
+                                  "(parse failure, shape validation) before giving up on it — each retry is told "
+                                  "why the previous attempt was rejected (default: 0 — no retry). Anchor/splice "
+                                  "errors are never retried since they're deterministic given the task and repo "
+                                  "state, as are exact_code tasks, which never call the model at all.")
     run_parser.set_defaults(func=cmd_run)
 
     test_adb_parser = subparsers.add_parser("test-adb", help="Run an ADB-driven UI test batch against a connected device/emulator")
@@ -166,6 +167,9 @@ def main() -> int:
     build_parser.add_argument("--model", default=DEFAULT_MODEL,
                                help=f"Model tag shown in the closing 'run it with' hint (default: {DEFAULT_MODEL})")
     build_parser.set_defaults(func=cmd_build)
+
+    bench.add_bench_subparser(subparsers)
+    scaffold.add_scaffold_subparser(subparsers)
 
     args = parser.parse_args()
     return args.func(args)

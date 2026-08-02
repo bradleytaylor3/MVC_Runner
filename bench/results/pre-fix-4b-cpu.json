@@ -1,0 +1,299 @@
+[
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 9.937000000150874,
+    "detail": "fragment is a single line ('suspend fun delete(profile: Profile) {}') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 3.3129999998491257,
+    "detail": "```kotlin\nsuspend fun delete(profile: Profile)\n{\n}\n```\n"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 3.469000000040978,
+    "detail": "fragment is a single line ('suspend fun count(): Int = withContext(Dispatchers.IO) { ProfileDao.count() }') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 3.468000000109896,
+    "detail": "count(): Int\n}\n\n@Query(\"SELECT COUNT(*) FROM profiles\")\nfun countProfiles(): Int = 0"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 3.5,
+    "detail": "fragment is a single line ('@Query(\"DELETE FROM profile WHERE id = :id\")') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 4.047000000020489,
+    "detail": "fragment is a single line ('fun deleteById(id: Long): Boolean = withContext(Dispatchers.IO) { val profile = find(profileId=id)?.let { it } ?: return@withContext false if (profile != null) DaoRepository.deleteProfile(profile) else false }}') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "gemma3:4b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 32.0,
+    "detail": "You are a code editor assistant. Your task is to generate placeholder content for a React component that displays a list of items. The component should have a title and an item list. Use the following"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "gemma3:4b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 5.0,
+    "detail": "fragment is a single line ('code') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "gemma3:4b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 7.452999999979511,
+    "detail": "fragment is a single line ('to confirm the location itself. target language: kotlin. # task;\u201d  }  for f1 > f2 to see how it is a change') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "gemma3:4b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 6.265999999828637,
+    "detail": "fragment is a single line (\"Fragment's are made to be edited with in your code. Your edit is not being captured in this response.\") \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "gemma3:4b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 7.594000000040978,
+    "detail": "fragment is a single line ('I am sorry, but I cannot fulfill this request. The prompt asks me to produce code for a program that is not possible. The user is trying to create a perfect duplicate of the source code. It does not make sense.') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "gemma3:4b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 8.125,
+    "detail": "fragment is a single line ('You have requested the creation of a code editing assistant. This assistant is designed to help you with tasks such as code completion, error detection, and refactoring. To use this assistant, simply type your request or question into the input box. The assistant will then respond with the appropriate information or assistance.') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen3:4b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 11.515000000130385,
+    "detail": "fragment is a single line ('@Delete\\\\n    suspend fun delete(profile: Profile)') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen3:4b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 5.234999999869615,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen3:4b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 5.469000000040978,
+    "detail": "    @Query(\"SELECT * FROM profile ORDER BY name ASC\")\n    suspend fun count(): Int"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen3:4b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 8.375,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen3:4b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 4.405999999959022,
+    "detail": " "
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen3:4b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 4.640000000130385,
+    "detail": "fragment is a single line ('fun deleteById(id: Long) = {') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 6.625,
+    "detail": "fragment is a single line ('return kilometers * 0.621371') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 3.3129999998491257,
+    "detail": "fragment is a single line ('def kilometers_to_miles(kilometers): return kilometers * 0.621371') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 3.280999999959022,
+    "detail": "fragment is a single line ('return miles * 1.60934') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 3.469000000040978,
+    "detail": "fragment is a single line ('return (miles - 1609.34) * 0.621371') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 3.2340000001713634,
+    "detail": "KM_TO_MILES_FACTOR = 0.621371\n"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "gemma3:4b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 16.265999999828637,
+    "detail": " \n    def kilometers_to_miles(kilometers: float) -> float:\n        return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "gemma3:4b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 6.547000000020489,
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "gemma3:4b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 5.515000000130385,
+    "detail": "fragment is a single line ('return miles * 1.60934') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "gemma3:4b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 6.562999999849126,
+    "detail": " \ndef miles_to_kilometers(miles:float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "gemma3:4b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 6.047000000020489,
+    "detail": "KM_TO_MILES_FACTOR = 0.621371\n"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen3:4b",
+    "pattern_example": true,
+    "status": "parse_error",
+    "elapsed_seconds": 16.030999999959022,
+    "detail": "{\n  \"fragment\": \"return (fahrenheit - 32) * 5 / 9\\\\n\\\\nfor the function to convert kilometers to miles, the code should be: def kilometers_to_miles(kilometers: float) -> float: return kilometers * 1.0"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen3:4b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 4.672000000020489,
+    "detail": "fragment is a single line ('fahrenheit - 32 * 5 / 9') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen3:4b",
+    "pattern_example": true,
+    "status": "error",
+    "elapsed_seconds": 602.094000000041,
+    "detail": "Ollama at http://localhost:11434/api/generate did not respond within 600s."
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen3:4b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 7.25,
+    "detail": "fragment is a single line ('1.0') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "qwen3:4b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 4.452999999979511,
+    "detail": "fahrenheit"
+  }
+]

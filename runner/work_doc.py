@@ -90,6 +90,7 @@ class WorkTask:
     end_anchor: str | None = None
     occurrence: int | None = None
     exact_code: str | None = None
+    pattern_example: str | None = None
     new_file: bool = False
     context_files: list[str] = field(default_factory=list)
     source_path: Path | None = None
@@ -124,11 +125,15 @@ class WorkTask:
         end_anchor = data.get("end_anchor")
         occurrence = data.get("occurrence")
         exact_code = data.get("exact_code")
+        pattern_example = data.get("pattern_example")
 
         if change_type == "delete" and new_file:
             err("change_type 'delete' is incompatible with new_file: true")
         if exact_code is not None and change_type == "delete":
             err("'exact_code' is not valid with change_type 'delete'")
+        if exact_code is not None and pattern_example is not None:
+            err("'pattern_example' is pointless with 'exact_code' set — the model is never called, so it "
+                "never sees the example")
 
         if new_file:
             if change_type != "add":
@@ -151,6 +156,7 @@ class WorkTask:
             end_anchor=end_anchor,
             occurrence=occurrence,
             exact_code=exact_code,
+            pattern_example=pattern_example,
             new_file=new_file,
             context_files=data.get("context_files", []),
             source_path=source_path,

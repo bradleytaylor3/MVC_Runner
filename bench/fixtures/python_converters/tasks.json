@@ -1,0 +1,39 @@
+{
+  "batch_id": "bench-python-converters",
+  "language": "python",
+  "file": "converters.py",
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "Add kilometers_to_miles",
+      "structure_type": "function",
+      "change_type": "add",
+      "start_anchor": "    return (fahrenheit - 32) * 5 / 9",
+      "description": "convert kilometers to miles, following the same one-line conversion pattern as the functions above",
+      "acceptance_criteria": ["kilometers_to_miles(1.0) is approximately 0.621371"],
+      "pattern_example": "def celsius_to_fahrenheit(celsius: float) -> float:\n    return celsius * 9 / 5 + 32",
+      "exact_code": "def kilometers_to_miles(km: float) -> float:\n    return km * 0.621371"
+    },
+    {
+      "id": "task-002",
+      "title": "Add miles_to_kilometers",
+      "structure_type": "function",
+      "change_type": "add",
+      "start_anchor": "    return (fahrenheit - 32) * 5 / 9",
+      "description": "convert miles to kilometers, the inverse of kilometers_to_miles, following the same one-line conversion pattern",
+      "acceptance_criteria": ["miles_to_kilometers(1.0) is approximately 1.60934"],
+      "pattern_example": "def fahrenheit_to_celsius(fahrenheit: float) -> float:\n    return (fahrenheit - 32) * 5 / 9",
+      "exact_code": "def miles_to_kilometers(miles: float) -> float:\n    return miles / 0.621371"
+    },
+    {
+      "id": "task-003",
+      "title": "Add KM_TO_MILES_FACTOR constant",
+      "structure_type": "constant",
+      "change_type": "add",
+      "start_anchor": "    return (fahrenheit - 32) * 5 / 9",
+      "description": "a module-level constant for the km-to-miles conversion factor used elsewhere in this file",
+      "acceptance_criteria": ["KM_TO_MILES_FACTOR is defined as a float close to 0.621371"],
+      "exact_code": "KM_TO_MILES_FACTOR = 0.621371"
+    }
+  ]
+}

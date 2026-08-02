@@ -161,6 +161,7 @@ def build_prompt(
     lines: list[str] | None,
     resolved: anchor_mod.ResolvedAnchor | None,
     context_lines: int,
+    retry_feedback: str | None = None,
 ) -> str:
     """Only ever called for tasks without exact_code — those are spliced
     deterministically in _attempt_work_task without invoking the model at
@@ -173,6 +174,16 @@ def build_prompt(
     parts.append(f"\n# Task {task.id}: {task.title}")
     parts.append(f"\nInstruction: {_instruction_sentence(task)}")
     parts.append(f"change_type: {task.change_type}")
+
+    if retry_feedback:
+        parts.append("\n## Your previous attempt was rejected — fix this and try again")
+        parts.append(retry_feedback)
+
+    if task.pattern_example:
+        parts.append("\n## Follow this real example of the same pattern elsewhere in the codebase")
+        parts.append("(reference only — do not include it in your output; it shows the shape/style to match, "
+                      "not what to write)")
+        parts.append(task.pattern_example)
 
     if task.acceptance_criteria:
         parts.append("\n## Acceptance criteria")
@@ -215,6 +226,21 @@ def build_prompt(
     return "\n".join(parts)
 
 
+def _unescape_literal_newlines(fragment: str) -> str:
+    """A small model told to 'encode newlines as \\n' sometimes over-escapes
+    it: the JSON value it emits contains the two literal characters
+    backslash+n rather than an actual line break, so correct JSON decoding
+    leaves that literal text sitting in the fragment instead of a newline.
+    Found live: this was inflating _validate_fragment_shape's "bare
+    signature" rate — a real multi-statement fragment with zero real
+    newlines but a literal '\\n' in it is this failure mode, not a model
+    that actually wrote one line (real source code never contains that
+    exact two-character text), so unescape it rather than reject it."""
+    if "\n" not in fragment and "\\n" in fragment:
+        return fragment.replace("\\n", "\n")
+    return fragment
+
+
 def parse_fragment(text: str) -> str | None:
     # With `format=FRAGMENT_SCHEMA` passed to generate(), `text` should already
     # be exactly one conforming JSON object. Fall back to the older
@@ -225,7 +251,7 @@ def parse_fragment(text: str) -> str | None:
     except json.JSONDecodeError:
         data = None
     if isinstance(data, dict) and isinstance(data.get("fragment"), str):
-        return data["fragment"]
+        return _unescape_literal_newlines(data["fragment"])
 
     matches = FRAGMENT_RE.findall(text)
     if len(matches) != 1:
@@ -238,6 +264,33 @@ def parse_fragment(text: str) -> str | None:
     return content
 
 
+def _validate_fragment_shape(task: WorkTask, fragment: str) -> str | None:
+    """Lightweight, high-confidence structural sanity checks on a model
+    fragment before it's spliced in — cheap ways to catch exactly the
+    failure modes STRUCTURE_TYPE_FRAMING warns against (echoing a signature
+    or name instead of writing real content) without needing a real parser.
+    Deliberately conservative: only flags patterns that are essentially
+    never a legitimate answer, to keep false positives (and needless
+    retries) rare."""
+    non_blank = [line for line in fragment.split("\n") if line.strip()]
+    if not non_blank:
+        return None
+
+    if task.structure_type in ("function", "class", "method") and len(non_blank) == 1:
+        return (f"fragment is a single line ({non_blank[0].strip()!r}) — looks like a bare signature/name "
+                "with no body; write the complete definition, including its body")
+
+    if task.structure_type == "docstring" and len(non_blank) > 1:
+        return f"docstring fragment has {len(non_blank)} non-blank lines — should be exactly one docstring line"
+
+    stripped = fragment.strip()
+    for label, value in (("name", task.name), ("start_anchor", task.start_anchor), ("target_name", task.target_name)):
+        if value and stripped == value.strip():
+            return f"fragment is just the {label} restated verbatim ({value!r}), not real content"
+
+    return None
+
+
 def _save_raw_response(logs_dir: Path, run_ts: str, task_id: str, text: str) -> str:
     raw_dir = logs_dir / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
@@ -247,12 +300,13 @@ def _save_raw_response(logs_dir: Path, run_ts: str, task_id: str, text: str) -> 
 
 
 # Statuses caused by the model's output quality rather than a structural/config
-# problem — worth a fresh sample from the model. Only reachable for tasks
-# without exact_code: those never call the model at all (see
-# _attempt_work_task), so they can only fail on anchor_error/splice_error,
-# both deterministic given the task/repo state — retrying without changing
-# anything would just reproduce the same failure.
-RETRYABLE_STATUSES = ("parse_error",)
+# problem — worth a fresh sample from the model, fed back the reason the
+# previous attempt was rejected (see retry_feedback in build_prompt). Only
+# reachable for tasks without exact_code: those never call the model at all
+# (see _attempt_work_task), so they can only fail on anchor_error/
+# splice_error, both deterministic given the task/repo state — retrying
+# without changing anything would just reproduce the same failure.
+RETRYABLE_STATUSES = ("parse_error", "validation_error")
 
 
 def _attempt_work_task(
@@ -271,6 +325,7 @@ def _attempt_work_task(
     logs_dir: Path,
     run_ts: str,
     start: float,
+    retry_feedback: str | None = None,
 ) -> dict:
     entry = {"id": task.id, "title": task.title}
 
@@ -308,7 +363,7 @@ def _attempt_work_task(
         )
         return entry
 
-    prompt = build_prompt(task, init, repo_root, lines, resolved, context_lines)
+    prompt = build_prompt(task, init, repo_root, lines, resolved, context_lines, retry_feedback=retry_feedback)
 
     try:
         result = ollama_client.generate(prompt, model=model, host=host, think=think, format=FRAGMENT_SCHEMA)
@@ -319,27 +374,32 @@ def _attempt_work_task(
     entry["prompt_eval_count"] = result.prompt_eval_count
     entry["eval_count"] = result.eval_count
 
-    def fail_parse(message: str) -> dict:
-        entry.update(status="parse_error", error=message, elapsed_seconds=time.monotonic() - start)
+    def fail(status: str, message: str) -> dict:
+        entry.update(status=status, error=message, elapsed_seconds=time.monotonic() - start)
         entry["raw_response_path"] = _save_raw_response(logs_dir, run_ts, task.id, result.text)
         return entry
 
     fragment = parse_fragment(result.text)
     if fragment is None:
-        return fail_parse("model output did not contain exactly one ===FRAGMENT===...===END FRAGMENT=== block")
+        return fail("parse_error", "model output did not contain exactly one ===FRAGMENT===...===END FRAGMENT=== block")
 
     is_empty = fragment.strip() == ""
     if task.change_type == "delete" and not is_empty:
-        return fail_parse("change_type 'delete' requires an empty fragment, but model returned content")
+        return fail("parse_error", "change_type 'delete' requires an empty fragment, but model returned content")
     if task.change_type in ("add", "modify") and is_empty:
-        return fail_parse(f"change_type '{task.change_type}' requires a non-empty fragment")
+        return fail("parse_error", f"change_type '{task.change_type}' requires a non-empty fragment")
+
+    if not is_empty:
+        shape_issue = _validate_fragment_shape(task, fragment)
+        if shape_issue:
+            return fail("validation_error", shape_issue)
 
     if task.new_file:
         new_text = fragment
     else:
         bleed = patch.detect_trailing_bleed(lines, resolved, fragment) or patch.detect_leading_bleed(lines, resolved, fragment)
         if bleed:
-            return fail_parse(bleed)
+            return fail("validation_error", bleed)
         try:
             new_lines = patch.splice(lines, resolved, task.change_type, fragment)
         except patch.SpliceError as e:
@@ -412,14 +472,17 @@ def execute_work_task(
             }
 
     entry = None
+    retry_feedback: str | None = None
     for attempt in range(max_retries + 1):
         entry = _attempt_work_task(
             task, init, repo_root, file_path, lines, crlf, resolved,
             model, host, dry_run, think, context_lines, logs_dir, run_ts, start,
+            retry_feedback=retry_feedback,
         )
         entry["attempts"] = attempt + 1
         if entry["status"] not in RETRYABLE_STATUSES or attempt == max_retries:
             break
+        retry_feedback = entry.get("error")
     return entry
 
 

@@ -63,6 +63,7 @@ filename.
   "occurrence": "1-based index (optional, only if start_anchor's text matches more than one line)",
 
   "exact_code": "optional: the literal final code, when already fully decided",
+  "pattern_example": "optional: a real sibling instance of this same pattern, for the model to follow",
   "new_file": false,
   "context_files": ["optional/relative/path/for_reference_only.py"]
 }
@@ -100,14 +101,29 @@ the runner errors if the file already exists.
 ### `exact_code` (optional, any structure_type/change_type except `delete`)
 
 When you already know the exact final code — not just its intent — put it
-here instead of relying on `description` prose. The model's job shrinks to
-fitting it into place (adjusting only indentation to match the surrounding
-context), not inventing it. `description` stays required in all cases as
-the human-readable "why," even when `exact_code` is set. This matters:
-small/medium local models reliably transcribe already-decided code, but
-unreliably synthesize it from a description — especially one that quotes a
-signature in backticks, which gets misread as literal output to copy
-rather than a spec to implement.
+here instead of relying on `description` prose. This skips the model
+entirely: the runner reindents `exact_code` to fit the splice point and
+writes it deterministically (see `runner.patch.reindent_to`), with no model
+call at all. `description` stays required in all cases as the human-readable
+"why," even when `exact_code` is set. This matters because small/medium
+local models turned out to be unreliable even at the mechanical job of
+reindenting known-final code verbatim (a real 75-task batch: 0/75 succeeded
+when the model was asked to just reindent `exact_code`, 75/75 once that step
+was made deterministic instead) — so `exact_code` is for content that's
+genuinely already decided, not a way to "help" the model with a hint.
+
+### `pattern_example` (optional, mutually exclusive with `exact_code`)
+
+When the exact code *isn't* decided yet, but a real sibling instance of the
+same pattern already exists elsewhere in the file/codebase (e.g. the DAO
+already has three `@Query` methods and this task adds a fourth), paste that
+one sibling here. It's shown to the model as a concrete "follow this shape"
+example alongside `description` — small local models are far more reliable
+at extending a pattern they can see a real instance of than at inventing
+structure from prose alone. Use this for boilerplate that's genuinely
+pattern-following; for the first instance of a new pattern, or for anything
+requiring real judgment/business logic, either write `exact_code` yourself
+or leave both unset and rely on `description` + `acceptance_criteria`.
 
 ### `context_files` (optional, list)
 

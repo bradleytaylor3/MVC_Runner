@@ -1,0 +1,36 @@
+{
+  "batch_id": "profile-dao-methods",
+  "repo_root": "/path/to/your/android/app",
+  "language": "kotlin",
+  "id_prefix": "task",
+  "task_template": {
+    "title": "Add {{name}} to ProfileDao",
+    "file": "app/src/main/java/com/example/app/data/dao/ProfileDao.kt",
+    "structure_type": "method",
+    "change_type": "add",
+    "parent": "ProfileDao",
+    "description": "{{description}}",
+    "acceptance_criteria": ["{{acceptance}}"],
+    "exact_code": "{{exact_code}}"
+  },
+  "items": [
+    {
+      "name": "delete",
+      "description": "delete a profile record from the database",
+      "acceptance": "ProfileDao has a suspend fun delete(profile: Profile) annotated with @Delete",
+      "exact_code": "    @Delete\n    suspend fun delete(profile: Profile)"
+    },
+    {
+      "name": "count",
+      "description": "return the total number of profiles",
+      "acceptance": "ProfileDao has a suspend fun count(): Int annotated with a @Query that counts rows",
+      "exact_code": "    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int"
+    },
+    {
+      "name": "deleteById",
+      "description": "delete a profile by its id",
+      "acceptance": "ProfileDao has a suspend fun deleteById(id: Long) annotated with a @Query DELETE statement",
+      "exact_code": "    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "batch_id": "bench-kotlin-dao",
+  "language": "kotlin",
+  "file": "ProfileDao.kt",
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "Add a delete method to ProfileDao",
+      "structure_type": "method",
+      "change_type": "add",
+      "parent": "ProfileDao",
+      "description": "delete a profile record from the database, following the same pattern as insert()",
+      "acceptance_criteria": ["ProfileDao gets a suspend fun delete(profile: Profile) annotated with @Delete"],
+      "pattern_example": "    @Insert\n    suspend fun insert(profile: Profile)",
+      "exact_code": "    @Delete\n    suspend fun delete(profile: Profile)"
+    },
+    {
+      "id": "task-002",
+      "title": "Add a count query to ProfileDao",
+      "structure_type": "method",
+      "change_type": "add",
+      "parent": "ProfileDao",
+      "description": "return the total number of profiles, following the same @Query pattern as getById",
+      "acceptance_criteria": ["ProfileDao gets a suspend fun count(): Int annotated with a @Query that counts rows"],
+      "pattern_example": "    @Query(\"SELECT * FROM profile WHERE id = :id\")\n    suspend fun getById(id: Long): Profile?",
+      "exact_code": "    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int"
+    },
+    {
+      "id": "task-003",
+      "title": "Add a deleteById query to ProfileDao",
+      "structure_type": "method",
+      "change_type": "add",
+      "parent": "ProfileDao",
+      "description": "delete a profile by its id, following the same parameterized @Query pattern used by getById, but as a DELETE statement",
+      "acceptance_criteria": ["ProfileDao gets a suspend fun deleteById(id: Long) annotated with a @Query DELETE statement"],
+      "pattern_example": "    @Query(\"SELECT * FROM profile ORDER BY name ASC\")\n    fun getAll(): Flow<List<Profile>>",
+      "exact_code": "    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)"
+    }
+  ]
+}

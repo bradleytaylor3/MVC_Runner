@@ -102,3 +102,22 @@ def test_new_file_skips_location_validation():
         _data(structure_type="function", change_type="add", new_file=True), PATH
     )
     assert task.new_file is True and task.start_anchor is None
+
+
+def test_pattern_example_parses():
+    task = WorkTask.from_dict(
+        _data(structure_type="method", change_type="add", parent="Foo", pattern_example="fun bar() {}"),
+        PATH,
+    )
+    assert task.pattern_example == "fun bar() {}"
+
+
+def test_pattern_example_rejected_alongside_exact_code():
+    with pytest.raises(WorkDocError):
+        WorkTask.from_dict(
+            _data(
+                structure_type="method", change_type="add", parent="Foo",
+                exact_code="fun baz() {}", pattern_example="fun bar() {}",
+            ),
+            PATH,
+        )

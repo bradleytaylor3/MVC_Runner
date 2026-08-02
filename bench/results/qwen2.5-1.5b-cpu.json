@@ -1,0 +1,101 @@
+[
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 6.655999999959022,
+    "detail": "fragment is a single line ('suspend fun delete(profile: Profile)') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 3.1870000001508743,
+    "detail": "fragment is a single line ('private lateinit var db: Database') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 3.8909999998286366,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 3.875,
+    "detail": "\n    @Query(\"select count(*) from profile order by name asc\")\n    fun getProfileCount(): Int\n  \n"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 4.219000000040978,
+    "detail": "// 1. Change the method body to a DELETE statement instead of an findById query.\n// 2. Add a deleteById function that takes an id as a parameter and deletes the profile with that id."
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 3.75,
+    "detail": "    @Query(\"DELETE FROM profile WHERE id = :id\")\n    fun deleteById(id: Long): Boolean\n"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 3.4369999999180436,
+    "detail": "fragment is a single line ('return (fahrenheit - 32) * 5 / 9') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 3.4530000002123415,
+    "detail": "fragment is a single line ('return (fahrenheit - 32) * 5 / 9;') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 3.5469999997876585,
+    "detail": "fragment is a single line ('return (fahrenheit - 32) * 5 / 9;') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 3.4060000001918525,
+    "detail": "fragment is a single line ('return (fahrenheit - 32) * 5 / 9') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "qwen2.5:1.5b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 3.359999999869615,
+    "detail": "fragment is just the start_anchor restated verbatim ('    return (fahrenheit - 32) * 5 / 9'), not real content"
+  }
+]
