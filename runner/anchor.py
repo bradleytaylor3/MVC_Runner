@@ -37,7 +37,14 @@ FUNCTION_PATTERNS = [
     r"^\s*(?:public|private|protected|static|final|abstract|\s)*[\w<>\[\],\s]+?\b{name}\s*\(",
 ]
 CLASS_PATTERNS = [
-    r"^\s*(?:public|private|open|abstract|data|sealed|final|\s)*class\s+{name}\b",
+    # Kotlin interfaces are structurally identical to classes for anchor
+    # purposes (a name, a brace-delimited body) — matching both here means
+    # method/add's parent resolution (which searches with symbol_type=
+    # "class") works against interfaces too, not just literal `class`
+    # declarations. Found live: every DAO in a real Room-based project is
+    # an interface, and method/add against one failed with "symbol not
+    # found: class 'X'" before this.
+    r"^\s*(?:public|private|open|abstract|data|sealed|final|\s)*(?:class|interface)\s+{name}\b",
 ]
 
 

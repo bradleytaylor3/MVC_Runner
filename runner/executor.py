@@ -125,7 +125,17 @@ def _reference_indent(task: WorkTask, lines: list[str], resolved: anchor_mod.Res
         ref_idx = resolved.start_line if task.structure_type == "docstring" else resolved.start_line - 1
     if 0 <= ref_idx < len(lines) and lines[ref_idx].strip():
         line = lines[ref_idx]
-        return len(line) - len(line.lstrip())
+        base_indent = len(line) - len(line.lstrip())
+        # If the reference line itself opens a block (e.g. a method/add
+        # whose parent's body turned out to be empty, so "the line right
+        # before" is the parent's own declaration line), the new content is
+        # that block's first member, one level deeper -- not a sibling at
+        # the opener's own indent. Found live: appending the first method
+        # into an empty Kotlin class body landed at 0 indent (the class
+        # declaration's own indent) instead of 4.
+        if resolved.mode == "insert" and line.rstrip().endswith("{"):
+            return base_indent + 4
+        return base_indent
     return None
 
 

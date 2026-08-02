@@ -81,6 +81,22 @@ def test_kotlin_method_body_end_appends_before_closing_brace():
     assert r.start_line == 4  # before the class's own closing '}', not after it
 
 
+def test_kotlin_method_add_parent_resolves_against_interface_not_just_class():
+    # Every Room DAO in a real Kotlin project is an `interface`, not a
+    # `class` -- method/add's parent resolution (symbol_type="class" under
+    # the hood) must still find it. Found live: this raised
+    # "symbol not found: class 'FooDao'" before CLASS_PATTERNS matched
+    # `interface` too.
+    lines = [
+        "interface FooDao {",
+        "    fun bar()",
+        "}",
+    ]
+    r = resolve_anchor(_task(structure_type="method", change_type="add", parent="FooDao"), lines, "kotlin")
+    assert r.mode == "insert"
+    assert r.start_line == 2  # before the interface's own closing '}'
+
+
 def test_kotlin_docstring_body_start_multiline_signature():
     lines = [
         "class Foo {",
