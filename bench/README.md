@@ -20,8 +20,9 @@ sibling example of the pattern (`pattern_example`), structural sanity
 checks, feedback-driven retries — does *generation* (not just transcription)
 become reliable enough to route real work to the model instead of having
 Claude (or a human) pre-decide `exact_code`? Short answer: no — not at ≤4B on
-CPU, and still no up to 12B on GPU, though accuracy does improve with scale.
-See Results below.
+CPU, and still no up to 12B on GPU, though accuracy improves with scale and
+with model generation (the best result so far, `gemma4:12b`, gets close —
+see Results below — but not close enough, and unevenly across fixtures).
 
 ## Fixtures
 
@@ -147,6 +148,65 @@ this is a dead end rather than "needs more scale than fits in 8GB VRAM."
   partial CPU offload affects output quality (it shouldn't in theory —
   compute placement doesn't change the math — but hasn't been isolated
   here).
+
+## Models tested and removed — don't re-pull without new evidence
+
+After benchmarking, `gemma3:4b` and `qwen2.5-coder:7b` were deleted from
+local disk (`ollama rm`) — both scored in line with everything else here
+(well under 50% exact-match) and neither is used as a default anywhere in
+this tool, so there's no reason to keep them installed. Re-pull only if
+testing a specific new claim about one of them (a fine-tune, a newer
+version of the same tag, etc.), not to re-confirm the number above.
+
+Two poor-on-this-bench models are still installed, but *not* because they
+tested well — because they're wired as CLI defaults for a different task:
+- `qwen2.5:1.5b` — `DEFAULT_ADB_MODEL` for `test-adb` (`runner/cli.py`).
+  Weak at code generation (9% exact-match) but that's not what it's used
+  for by default; it holds up fine at the classification-shaped action
+  selection `test-adb` actually asks of it (see root `README.md`'s
+  "Running on small models" section).
+- `qwen3:4b` — `DEFAULT_MODEL` for `run` (`runner/cli.py`), despite scoring
+  **0% exact-match** here, the worst of every model tested. Real batches
+  mostly bypass this via `exact_code` (see `TOKEN_SAVINGS.md`: 844/844
+  completed tasks so far never called a model at all), so the bad default
+  has limited real-world bite today — but it's worth knowing this default
+  is not a reasonable choice if a task actually needs generation.
+  `gemma4:12b` (55% exact-match, see the same-size-class comparison below)
+  is by far the best candidate to replace it, but was judged not to clear
+  this doc's own bar for a confident swap (60-70%+, mismatch rare) — see
+  that section for the fixture-split nuance behind that call, and whether
+  it's since been overridden.
+
+## Same-size-class generation comparison: gemma3:12b vs gemma4:12b
+
+Gemma 4 released 2026-04-02; `gemma4:12b` (7.6GB) is the direct successor
+tag to `gemma3:12b` (8.1GB) at the same nominal size, so this isolates
+"does the newer generation help" from "does bigger help" (`bench/results/gemma4-12b-gpu-2026-08-03.json`):
+
+| model | pattern_example | exact | whitespace | mismatch | rejected |
+|---|---|---|---|---|---|
+| gemma3:12b | no | 2/6 | 0/6 | 2/6 | 2/6 |
+| gemma3:12b | yes | 2/5 | 0/5 | 2/5 | 1/5 |
+| gemma4:12b | no | 3/6 | 0/6 | 3/6 | 0/6 |
+| gemma4:12b | yes | 3/5 | 0/5 | 0/5 | 2/5 |
+
+Combined: `gemma3:12b` 36% exact / 36% mismatch → **`gemma4:12b` 55% exact /
+27% mismatch** — a real jump at the same footprint, and currently the best
+result of anything tested here.
+
+**But it's not an even 55% — it's a complete split by fixture, not a
+spread:** `gemma4:12b` got **6/6 exact-match on `kotlin_dao`** (every
+trial, both with and without `pattern_example`) and **0/5 on
+`python_converters`** (2 `validation_error`, 3 `mismatch` — zero
+successes). `gemma3:12b` didn't show this pattern anywhere near as sharply.
+With n=6 and n=5 per fixture this could be fixture-specific luck, but a
+clean 100%/0% split is different from noise scattered across both — treat
+"gemma4:12b is reliable" as fixture-shape-dependent, not general, until
+tested against more than 2 fixtures.
+
+Against the decision rubric below (60-70%+ exact-match, mismatch rare):
+**55%/27% is close but doesn't clear it** — meaningfully better than every
+other model tested, not yet at "trust it for unreviewed generation."
 
 ## Trying an even bigger model
 

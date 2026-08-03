@@ -1,0 +1,101 @@
+[
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 67.82799999997951,
+    "detail": "\n    @Delete\n    suspend fun delete(profile: Profile)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 16.281000000191852,
+    "detail": "\n    @Delete\n    suspend fun delete(profile: Profile)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 19.687999999849126,
+    "detail": "    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 18.109000000171363,
+    "detail": "\n    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int\n"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 19.75,
+    "detail": "    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 16.67199999978766,
+    "detail": "\n    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 18.016000000061467,
+    "detail": "fragment is a single line ('def convert_fahrenheit(fahrenheit): if isinstance(fahrenheit, int) or isinstance(fahrenheit, float): return (fahrenheit - 32) * 5 / 9') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 17.718999999808148,
+    "detail": "def kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 14.641000000061467,
+    "detail": "fragment is a single line (\"the paragraph's initial section is currently under review to ensure it meets all specified requirements.\") \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 13.172000000020489,
+    "detail": "Theed\nSmall_S"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 13.561999999918044,
+    "detail": "The quick brown fox jumps over the lazy dog."
+  }
+]
