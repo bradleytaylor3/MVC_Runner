@@ -100,10 +100,13 @@ def cmd_test_adb(args: argparse.Namespace) -> int:
             dry_run=args.dry_run,
             logs_dir=args.logs_dir.resolve(),
             think=args.think,
+            replay=args.replay,
         )
     except ollama_client.OllamaError as e:
         print(f"Error: {e}", file=sys.stderr)
         return 3
+
+    token_savings.update_adb_summary(args.logs_dir.resolve())
 
     ok_statuses = ("pass", "init")
     return 0 if all(e["status"] in ok_statuses for e in log_data["entries"]) else 1
@@ -166,6 +169,14 @@ def main() -> int:
     test_adb_parser.add_argument("--think", action="store_true",
                                   help="Allow reasoning-capable models (e.g. qwen3) to use their thinking mode "
                                        "(default: off, for faster/more deterministic per-step actions)")
+    test_adb_parser.add_argument("--replay", action=argparse.BooleanOptionalAction, default=True,
+                                  help="Replay a scenario's saved recording (work_docs_adb/recordings/<id>.json, "
+                                       "written the first time a scenario is authored) by resolving each step's "
+                                       "element selector and executing it directly -- no per-step model call, just "
+                                       "one call at the end to judge the final screen. Falls back to full "
+                                       "re-authoring for a scenario if a selector can no longer be resolved or the "
+                                       "judgment disagrees with the recording (default: on). Pass --no-replay to "
+                                       "force full re-authoring for every task, e.g. after changing the app.")
     test_adb_parser.set_defaults(func=cmd_test_adb)
 
     build_parser = subparsers.add_parser("build", help="Interactively build a work_docs/ batch, one task at a time")

@@ -4,7 +4,10 @@ and execute it over ADB, until the model declares the scenario pass/fail or
 a step limit is hit. Unlike `run_batch` (code-editing), a failing scenario
 doesn't invalidate later ones, so the batch runs every task regardless of
 individual verdicts; it only aborts early on a hard error (ADB or Ollama
-unreachable)."""
+unreachable). This full loop is also this module's recorder: a scenario run
+here has its action path captured for `adb_replay` (see run_adb_batch),
+which lets a later run replay the same path with no per-step model call and
+only fall back to this loop when something has actually drifted."""
 
 import json
 import re
@@ -12,7 +15,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from runner import adb_client, ollama_client
+from runner import adb_client, adb_replay, ollama_client
 from runner.adb_task import AdbInitTask, AdbWorkTask
 from runner.ui_dump import UiDumpError, element_by_index, format_elements_for_prompt, parse_elements
 
@@ -198,6 +201,9 @@ def run_adb_task(
     start = time.monotonic()
     package = task.resolved_package(init)
     max_steps = task.resolved_max_steps(init)
+    model_calls = 0
+    prompt_tokens = 0
+    eval_tokens = 0
 
     try:
         if task.reset_app:
@@ -205,18 +211,27 @@ def run_adb_task(
         adb_client.start_app(package, activity=task.activity, serial=serial)
         time.sleep(1.5)  # let the app finish launching before the first UI dump
     except adb_client.AdbError as e:
-        entry.update(status="error", error=str(e), steps=[], elapsed_seconds=time.monotonic() - start)
+        entry.update(status="error", error=str(e), steps=[], model_calls=0, prompt_eval_count=0, eval_count=0,
+                     elapsed_seconds=time.monotonic() - start)
         return entry
 
     history: list[str] = []
     steps: list[dict] = []
+    # Mirrors this run's action path as adb_replay's recording format so a
+    # later run can replay it without a model call per step. Set to None the
+    # moment any executed action can't be captured that way (e.g. a tap on an
+    # element with neither resource-id nor text) — a partial recording would
+    # replay differently than this run did, so it's better to have none.
+    recording_steps: list[dict] | None = []
+    work_dir = init.source_path.parent if init.source_path else None
 
     for step_num in range(1, max_steps + 1):
         try:
             xml_text = adb_client.dump_ui(serial=serial)
             elements = parse_elements(xml_text)
         except (adb_client.AdbError, UiDumpError) as e:
-            entry.update(status="error", error=str(e), steps=steps, elapsed_seconds=time.monotonic() - start)
+            entry.update(status="error", error=str(e), steps=steps, model_calls=model_calls,
+                         prompt_eval_count=prompt_tokens, eval_count=eval_tokens, elapsed_seconds=time.monotonic() - start)
             return entry
 
         prompt = build_step_prompt(task, history, format_elements_for_prompt(elements))
@@ -224,8 +239,13 @@ def run_adb_task(
         try:
             result = ollama_client.generate(prompt, model=model, host=host, think=think, format=ACTION_SCHEMA)
         except ollama_client.OllamaError as e:
-            entry.update(status="error", error=str(e), steps=steps, elapsed_seconds=time.monotonic() - start)
+            entry.update(status="error", error=str(e), steps=steps, model_calls=model_calls,
+                         prompt_eval_count=prompt_tokens, eval_count=eval_tokens, elapsed_seconds=time.monotonic() - start)
             return entry
+
+        model_calls += 1
+        prompt_tokens += result.prompt_eval_count or 0
+        eval_tokens += result.eval_count or 0
 
         try:
             action = parse_action(result.text)
@@ -241,25 +261,41 @@ def run_adb_task(
             try:
                 execute_action(action, elements, serial)
             except adb_client.AdbError as e:
-                entry.update(status="error", error=str(e), steps=steps, elapsed_seconds=time.monotonic() - start)
+                entry.update(status="error", error=str(e), steps=steps, model_calls=model_calls,
+                             prompt_eval_count=prompt_tokens, eval_count=eval_tokens, elapsed_seconds=time.monotonic() - start)
                 return entry
 
         steps.append({"step": step_num, "action": action, "executed": not dry_run, "description": description})
         history.append(f"Step {step_num}: {description}")
 
         if action["action"] == "done":
+            if recording_steps is not None and work_dir is not None:
+                adb_replay.write_recording(work_dir, task, recording_steps, action["result"], action.get("reason", ""))
             entry.update(
                 status=action["result"],
                 reason=action.get("reason", ""),
                 steps=steps,
+                model_calls=model_calls,
+                prompt_eval_count=prompt_tokens,
+                eval_count=eval_tokens,
                 elapsed_seconds=time.monotonic() - start,
             )
             return entry
+
+        if recording_steps is not None:
+            captured = adb_replay.capture_step(action, elements)
+            if captured is None:
+                recording_steps = None
+            else:
+                recording_steps.append(captured)
 
     entry.update(
         status="inconclusive",
         error=f"reached max_steps ({max_steps}) without the model emitting 'done'",
         steps=steps,
+        model_calls=model_calls,
+        prompt_eval_count=prompt_tokens,
+        eval_count=eval_tokens,
         elapsed_seconds=time.monotonic() - start,
     )
     return entry
@@ -274,9 +310,11 @@ def run_adb_batch(
     dry_run: bool,
     logs_dir: Path,
     think: bool = False,
+    replay: bool = True,
 ) -> dict:
     run_ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     started_at = datetime.now(timezone.utc).isoformat()
+    work_dir = init.source_path.parent if init.source_path else None
 
     entries = [{
         "id": "init",
@@ -288,13 +326,24 @@ def run_adb_batch(
 
     for task in tasks:
         print(f"[{task.id}] {task.title} ...", end=" ", flush=True)
-        entry = run_adb_task(task, init, model, host, serial, dry_run, think)
+
+        recording = adb_replay.load_recording(work_dir, task) if (replay and work_dir is not None) else None
+        if recording is not None:
+            entry = adb_replay.replay_adb_task(task, init, recording, model, host, serial, dry_run)
+            if entry["status"] == "drift":
+                print(f"drift ({entry.get('drift')}), re-authoring ...", end=" ", flush=True)
+                entry = run_adb_task(task, init, model, host, serial, dry_run, think)
+                entry["escalated"] = True
+        else:
+            entry = run_adb_task(task, init, model, host, serial, dry_run, think)
+
         print(entry["status"])
         entries.append(entry)
 
     logs_dir.mkdir(parents=True, exist_ok=True)
     log_path = logs_dir / f"{run_ts}.json"
     log_data = {
+        "kind": "adb",
         "batch_id": init.batch_id,
         "started_at": started_at,
         "dry_run": dry_run,

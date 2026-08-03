@@ -84,6 +84,33 @@ filename.
   Set `false` for a scenario that intentionally continues from wherever a
   previous task in the batch left the app.
 
+## Recordings and replay
+
+The first time a scenario runs, `test-adb` also writes
+`recordings/<task id>.json` alongside the log: the sequence of element
+selectors (resource-id, or text + class, per element acted on) and actions
+it took, plus the final `pass`/`fail` verdict and reason. On later runs (with
+`--replay`, the default), a scenario with a matching recording skips the
+step-by-step model loop entirely -- each recorded selector is resolved
+against the live screen and executed directly, with only one model call at
+the very end to judge the final screen against `acceptance_criteria`.
+
+This falls back to a full re-authoring run (the same loop as a first run,
+which then overwrites the recording) whenever something has actually
+changed, not on every run:
+- a recorded selector no longer resolves to exactly one element on screen
+  (the UI changed enough that the old path may not apply), or
+- the final judgment disagrees with the recording's verdict (a real
+  behavior change, not just a different way of getting the same result), or
+- the work doc's `goal`/`acceptance_criteria` text was edited (the
+  recording's `goal_hash` no longer matches).
+
+Pass `--no-replay` to force full re-authoring for every task regardless of
+existing recordings -- useful right after intentionally changing the app
+under test, when you expect every recording to be stale. A scenario that
+was never recorded (or has no resolvable selectors -- e.g. every step is an
+icon-only tap with no resource-id or text) always runs the full loop.
+
 ## Notes for whoever authors these (e.g. a cloud model at the planning stage)
 
 - One batch = one directory = one init doc + N independent work docs. Unlike

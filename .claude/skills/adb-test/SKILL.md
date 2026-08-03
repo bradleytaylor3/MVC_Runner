@@ -37,13 +37,21 @@ not your own paraphrase of it).
 
 4. **Run it**: `python -m runner.cli test-adb --work-dir work_docs_adb --model qwen2.5:1.5b`
    (add `--device <serial>` if multiple devices are connected and the user
-   cares which one).
+   cares which one). A scenario that's run before and has a saved recording
+   (`work_docs_adb/recordings/<id>.json`) replays it by default instead of
+   re-authoring from scratch — see the "Recordings and replay" section of
+   `schema.md` for when that recording is trusted versus discarded. Pass
+   `--no-replay` if the user says the app under test changed and wants
+   everything re-authored fresh rather than trusting old recordings.
 
 5. **Report results**, not raw JSON. Read the log written to `logs/`, and
-   for each scenario give a one-line verdict (pass/fail/inconclusive/error).
-   For anything other than `pass`, pull the relevant `reason` and the last
-   few `steps` out of the log and explain in plain language what happened
-   and where — don't just dump the log file at the user.
+   for each scenario give a one-line verdict (pass/fail/inconclusive/error);
+   note when an entry was `replayed` (fast path, no full re-authoring) versus
+   `escalated` (its recording no longer held up, so it fell back to full
+   authoring — worth mentioning since that usually means something in the
+   app changed). For anything other than `pass`, pull the relevant `reason`
+   and the last few `steps` out of the log and explain in plain language
+   what happened and where — don't just dump the log file at the user.
 
 6. **Triage before re-running the whole batch.** If a scenario's failure
    looks like an authoring problem (ambiguous `goal`, wrong package/
