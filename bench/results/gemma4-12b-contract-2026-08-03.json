@@ -1,0 +1,112 @@
+[
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 10.734119648999922,
+    "detail": "    @Delete\n    suspend fun delete(profile: Profile)",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 4.169687823000004,
+    "detail": "\n    @Delete\n    suspend fun delete(profile: Profile)",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 4.947882536999941,
+    "detail": "\n    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int\n",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 4.411559506000003,
+    "detail": "    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 5.538200945999961,
+    "detail": "\n    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 5.314899531999799,
+    "detail": "\n    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "functional_match",
+    "elapsed_seconds": 12.702050196000073,
+    "detail": "def kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371",
+    "checker_detail": "kilometers_to_miles(1.0) = 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "functional_match",
+    "elapsed_seconds": 11.424282150999943,
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371",
+    "checker_detail": "kilometers_to_miles(1.0) = 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "functional_match",
+    "elapsed_seconds": 14.033568535000086,
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934",
+    "checker_detail": "miles_to_kilometers(1.0) = 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "functional_match",
+    "elapsed_seconds": 11.456145100999947,
+    "detail": "\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934",
+    "checker_detail": "miles_to_kilometers(1.0) = 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "whitespace_match",
+    "elapsed_seconds": 10.904309928999965,
+    "detail": "    \n\nKM_TO_MILES_FACTOR = 0.621371",
+    "checker_detail": ""
+  }
+]

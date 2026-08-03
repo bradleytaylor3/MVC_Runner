@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from runner import anchor as anchor_mod
+from runner import contract_check
 from runner import executor
 from runner import ollama_client
 from runner import patch
@@ -33,12 +34,17 @@ FIXTURES_DIR = Path(__file__).resolve().parent.parent / "bench" / "fixtures"
 
 # Outcomes worth distinguishing when deciding whether a model is trustworthy
 # enough to skip exact_code for a given kind of task: exact/whitespace_match
-# mean it would have produced a correct file; mismatch means it ran cleanly
-# but got the content wrong (the dangerous case — nothing would have caught
-# it in a real run); everything else is a case the real pipeline's own
-# guards (parse_fragment, _validate_fragment_shape, bleed detection) already
-# catch before the bad content ever reaches a file.
-MATCH_STATUSES = ("exact_match", "whitespace_match")
+# mean it would have produced a correct file; functional_match means the text
+# differs from the ground truth but the task's declarative `contract` (see
+# runner/contract_check.py) confirmed it satisfies the task's
+# acceptance_criteria anyway (a renamed variable, an equivalent formula,
+# differently-quoted SQL); mismatch means it ran cleanly but failed that
+# check, or the task has no contract to check against — the dangerous case,
+# since nothing would have caught it in a real run; everything else is a
+# case the real pipeline's own guards (parse_fragment,
+# _validate_fragment_shape, bleed detection) already catch before the bad
+# content ever reaches a file.
+MATCH_STATUSES = ("exact_match", "whitespace_match", "functional_match")
 
 
 @dataclass
@@ -50,6 +56,7 @@ class BenchOutcome:
     status: str
     elapsed_seconds: float
     detail: str = ""
+    checker_detail: str = ""
 
 
 def _normalize(text: str) -> str:
@@ -60,21 +67,24 @@ def _normalize_loose(text: str) -> str:
     return "".join(_normalize(text).split())
 
 
-def load_fixture(fixture_dir: Path) -> tuple[InitTask, list[tuple[WorkTask, str]]]:
-    """Returns the fixture's InitTask plus (task, ground_truth_exact_code)
-    pairs — exact_code is stripped out of every task before WorkTask
-    construction so it's never accidentally available to build_prompt."""
+def load_fixture(fixture_dir: Path) -> tuple[InitTask, list[tuple[WorkTask, str, dict | None]]]:
+    """Returns the fixture's InitTask plus (task, ground_truth_exact_code,
+    contract) triples — exact_code and contract are stripped out of every
+    task before WorkTask construction so neither is ever accidentally
+    available to build_prompt. contract is None for tasks that don't
+    declare one (functional scoring falls back to mismatch for those)."""
     meta = json.loads((fixture_dir / "tasks.json").read_text(encoding="utf-8"))
     init = InitTask(batch_id=meta["batch_id"], repo_root=str(fixture_dir), language=meta["language"])
 
-    pairs: list[tuple[WorkTask, str]] = []
+    pairs: list[tuple[WorkTask, str, dict | None]] = []
     for raw in meta["tasks"]:
         raw = dict(raw)
         raw.setdefault("file", meta["file"])
         raw.setdefault("kind", "work")
         ground_truth = raw.pop("exact_code")
+        contract = raw.pop("contract", None)
         task = WorkTask.from_dict(raw, fixture_dir / "tasks.json")
-        pairs.append((task, ground_truth))
+        pairs.append((task, ground_truth, contract))
     return init, pairs
 
 
@@ -94,6 +104,7 @@ def run_one(
     think: bool,
     context_lines: int,
     options: dict | None = None,
+    contract: dict | None = None,
 ) -> BenchOutcome:
     start = time.monotonic()
     common = dict(fixture=fixture_dir.name, task_id=task.id, model=model, pattern_example=bool(task.pattern_example))
@@ -131,7 +142,15 @@ def run_one(
         status = "whitespace_match"
     else:
         status = "mismatch"
-    return BenchOutcome(**common, status=status, elapsed_seconds=elapsed, detail=fragment[:200])
+
+    checker_detail = ""
+    if status == "mismatch" and contract is not None:
+        passed, checker_detail = contract_check.check_contract(init.language, fragment, contract)
+        if passed:
+            status = "functional_match"
+
+    return BenchOutcome(**common, status=status, elapsed_seconds=elapsed, detail=fragment[:200],
+                         checker_detail=checker_detail)
 
 
 def run_bench(models: list[str], host: str, think: bool, context_lines: int, ablate: bool,
@@ -142,7 +161,7 @@ def run_bench(models: list[str], host: str, think: bool, context_lines: int, abl
     for fixture_dir in fixture_dirs:
         init, pairs = load_fixture(fixture_dir)
         for model in models:
-            for task, ground_truth in pairs:
+            for task, ground_truth, contract in pairs:
                 variants = [task]
                 if ablate and task.pattern_example:
                     variants.append(_without_pattern_example(task))
@@ -150,7 +169,7 @@ def run_bench(models: list[str], host: str, think: bool, context_lines: int, abl
                     print(f"[{fixture_dir.name}/{variant.id}] {model} "
                           f"(pattern_example={'yes' if variant.pattern_example else 'no'}) ...", end=" ", flush=True)
                     outcome = run_one(variant, ground_truth, init, fixture_dir, model, host, think, context_lines,
-                                       options=options)
+                                       options=options, contract=contract)
                     print(outcome.status)
                     outcomes.append(outcome)
 
@@ -163,19 +182,23 @@ def _print_report(outcomes: list[BenchOutcome]) -> None:
         by_key.setdefault((o.model, o.pattern_example), []).append(o)
 
     print("\n=== Bench report ===")
-    header = f"{'model':<16} {'pattern_example':<16} {'n':>3} {'exact':>6} {'whitespace':>11} {'mismatch':>9} {'rejected':>9}"
+    header = (f"{'model':<16} {'pattern_example':<16} {'n':>3} {'exact':>6} {'whitespace':>11} "
+              f"{'functional':>11} {'mismatch':>9} {'rejected':>9}")
     print(header)
     print("-" * len(header))
     for (model, pattern_example), group in sorted(by_key.items()):
         n = len(group)
         exact = sum(1 for o in group if o.status == "exact_match")
         whitespace = sum(1 for o in group if o.status == "whitespace_match")
+        functional = sum(1 for o in group if o.status == "functional_match")
         mismatch = sum(1 for o in group if o.status == "mismatch")
         rejected = sum(1 for o in group if o.status not in MATCH_STATUSES and o.status != "mismatch")
         print(f"{model:<16} {'yes' if pattern_example else 'no':<16} {n:>3} {exact:>6} {whitespace:>11} "
-              f"{mismatch:>9} {rejected:>9}")
+              f"{functional:>11} {mismatch:>9} {rejected:>9}")
 
-    print("\nmismatch = pipeline accepted it, but the content was wrong — the case nothing else catches.")
+    print("\nfunctional = text differs from ground truth, but the task's declarative contract confirmed")
+    print("             it satisfies the acceptance_criteria anyway (right effect, different wording).")
+    print("mismatch = pipeline accepted it, but it was wrong (or the task has no contract to check).")
     print("rejected = parse_error/validation_error/anchor_error: caught before it could reach a file.")
 
 

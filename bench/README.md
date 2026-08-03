@@ -315,6 +315,73 @@ without actually tracking the anchor's enclosing scope. Worth a follow-up
 if this structure_type keeps showing up ungrounded (no `pattern_example`)
 in real batches.
 
+## Functional scoring: how much of `mismatch` was wording, not errors? (2026-08-03)
+
+Every `mismatch` case above was scored by literal text diff (`_normalize`/
+`_normalize_loose` in `bench.py`) against `exact_code` — which cannot tell
+"broken" apart from "correct but reworded" (e.g. `kilometers * 0.621371` vs.
+ground truth's `km * 0.621371`, flagged but not resolved above). Added a
+`functional_match` status: each task can declare a `contract` (see
+`runner/contract_check.py`) — a small, UML-flavored operation-signature
+spec (stereotype/annotation, name, params, return type, plus behavioral
+test `cases` where the language is executable) — and if the pipeline's
+literal-diff verdict was `mismatch`, the contract is checked and can
+upgrade it if the fragment actually satisfies the task's
+`acceptance_criteria`.
+
+Deliberately declarative rather than a hand-written checker function per
+task, for one specific reason: it makes it possible to *not compare
+spelling at all* for names that are locally scoped (a function's own
+parameter, a local variable) — checked by type/role only, or not checked —
+while still requiring exact spelling where a name is load-bearing (the
+operation name, a constant another task might reference, a SQL
+table/column). A synonym/abbreviation table (`km` ≈ `kilometers`) was
+considered and rejected: it can't be made exhaustive, and it would also
+wave through renames of load-bearing names it has no way to distinguish
+from cosmetic ones.
+
+- `python` contracts (`kind: "function"|"constant"`, `cases`) — real
+  execution. Runs the fragment in a subprocess (not in-process `exec`,
+  since it's untrusted model output — bounded by a timeout, though not
+  sandboxed against filesystem/network), then calls the function with each
+  case's `args` / reads the constant and asserts it's numerically close to
+  `expect`.
+- `kotlin` contracts (`stereotype`, `sql`, `name`, `params`, `return_type`,
+  `suspend`) — not real execution (would need Room + an in-memory DB, too
+  heavy for this loop). Instead parses the fragment's annotation/SQL/
+  signature and checks it matches the task's *intent* (right annotation,
+  right SQL verb/table, right signature) regardless of exact wording — a
+  renamed parameter or backtick-quoted table name no longer counts against
+  it, but the annotation, SQL verb, table, and method name still must be
+  exactly right.
+
+Re-ran the reigning champion, `gemma4:12b`, same fixtures/harness
+(`bench/results/gemma4-12b-contract-2026-08-03.json`):
+
+| model | pattern_example | n | exact | whitespace | functional | mismatch | rejected |
+|---|---|---|---|---|---|---|---|
+| gemma4:12b | no | 6 | 3 | 1 | 2 | 0 | 0 |
+| gemma4:12b | yes | 5 | 3 | 0 | 2 | 0 | 0 |
+
+**11/11 (100%) correct-effect, 0 mismatch** — every one of the original
+run's `python_converters` failures was the same `kilometers`/`miles`
+parameter-naming case already flagged, not a new failure mode; the
+fragments are byte-identical to the ones recorded as `mismatch` in
+`gemma4-12b-post-indent-fix-2026-08-03.json` (confirms the earlier
+temperature experiment's finding that decoding is effectively
+deterministic here). `kotlin_dao` stayed 6/6 exact, as in every prior run.
+
+**This changes the verdict, conditionally.** Against the decision rubric
+(60-70%+ exact-match *or* effect-correct, mismatch rare): `gemma4:12b` now
+clears it on *these two fixtures*, at 100% effect-correct. But n=11 across
+2 boilerplate-shaped fixtures is still small, and the `kotlin_dao` checker
+is contract-checking, not execution — a subtly wrong `WHERE` clause could
+still pass if it matches the regex shape. **Not yet a reason to flip
+`exact_code`'s default** — worth widening fixtures (more languages, fewer
+boilerplate-favorable patterns, an executable checker for a compiled
+language) before trusting 100% as representative rather than
+kotlin_dao/python_converters-flavored, same caveat as every result above.
+
 ## Trying an even bigger model
 
 12B (partially GPU-resident on this 8GB card) still didn't clear the bar —
