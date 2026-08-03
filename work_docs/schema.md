@@ -70,6 +70,7 @@ filename.
 
   "exact_code": "optional: the literal final code, when already fully decided",
   "pattern_example": "optional: a real sibling instance of this same pattern, for the model to follow",
+  "contract": "optional: a declarative in/out spec the model's fragment must satisfy (see below) — the model chooses the implementation",
   "new_file": false,
   "context_files": ["optional/relative/path/for_reference_only.py"]
 }
@@ -132,10 +133,41 @@ already has three `@Query` methods and this task adds a fourth), paste that
 one sibling here. It's shown to the model as a concrete "follow this shape"
 example alongside `description` — small local models are far more reliable
 at extending a pattern they can see a real instance of than at inventing
-structure from prose alone. Use this for boilerplate that's genuinely
-pattern-following; for the first instance of a new pattern, or for anything
-requiring real judgment/business logic, either write `exact_code` yourself
-or leave both unset and rely on `description` + `acceptance_criteria`.
+structure from prose alone. Combine with `contract` where the shape fits it
+(a checkable contract catches a wrong-but-plausible fragment that
+`pattern_example` alone wouldn't). For the first instance of a new pattern,
+or for anything requiring real judgment/business logic, either write
+`exact_code` yourself or leave everything but `description` +
+`acceptance_criteria` unset.
+
+### `contract` (optional, mutually exclusive with `exact_code`)
+
+An alternative to `exact_code` for tasks where the final code isn't
+decided, but the *effect* is fully specified — a UML-flavored operation
+signature (name, params, return type, an annotation/`stereotype`, plus
+behavioral `cases` where the language is executable) that the model's
+fragment is checked against (`runner/contract_check.py`) after the usual
+shape/bleed checks, before it's ever spliced in. A failure is retried like
+any other `validation_error`, with the mismatch fed back to the model. The
+model is free to choose names, formulas, exact SQL formatting — anything
+not pinned by the contract — as long as the required effect holds; this is
+the main lever for *not* writing `exact_code` by hand without falling back
+to unverified generation. Only two shapes are wired up so far
+(`bench/fixtures/*/tasks.json` are the reference examples):
+
+- Python `{"kind": "function", "name": "...", "cases": [{"args": [...], "expect": ..., "rel_tol": 1e-4}]}`
+  or `{"kind": "constant", "name": "...", "expect": ..., "rel_tol": 1e-4}` — runs the fragment in a
+  subprocess and checks the real behavior/value.
+- Kotlin `{"stereotype": "Insert"|"Delete"|"Update"|"Query", "name": "...", "params": [{"type": "..."}], "return_type": "..."|null, "suspend": true|false, "sql": {"verb": "...", "table": "...", "aggregate": "...", "where_param": "..."}}`
+  (`sql` only for `stereotype: "Query"`) — checks the annotation/SQL/signature *shape*, not real execution (no Room/DB
+  involved), so it can't catch a subtly wrong `WHERE` clause the regex shape still matches.
+
+If a task's shape doesn't fit either of these, `contract` isn't usable yet
+— fall back to `exact_code` (if the code is decided) or `pattern_example`
+(if it isn't). Benchmarked so far only on small, boilerplate-shaped fixtures
+(`bench/README.md`'s "Functional scoring" and "Rechecking smaller models"
+sections) — real batches should still have someone skim the diff, same as
+any non-`exact_code` task.
 
 ### `context_files` (optional, list)
 
@@ -196,6 +228,11 @@ spreading them across N+1 files:
   Reach for `block` only when nothing else fits.
 - If you already know the exact code, use `exact_code` — don't paraphrase
   it into `description` and hope the model reconstructs it faithfully.
+  If the code isn't decided but the task's effect fits one of `contract`'s
+  supported shapes (see above), prefer `contract` over hand-writing
+  `exact_code` — it costs fewer authoring tokens (a compact spec instead of
+  full source) and the runner verifies the effect before ever writing the
+  file, instead of just trusting generation unreviewed.
 - Keep `description` focused on intent even when `exact_code` is absent;
   let `structure_type`/`change_type`/the location fields carry the "where"
   and "what kind of edit."

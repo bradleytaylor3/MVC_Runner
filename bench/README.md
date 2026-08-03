@@ -413,3 +413,51 @@ rubric as before:
   `mismatch` rate of anything tested) — worth trying a different
   coder-tuned family before concluding that lever is dead, but it's not the
   free win it looked like on paper.
+
+## Rechecking smaller models under contract scoring (2026-08-03)
+
+The models above were all scored, and mostly discarded, under pure literal
+diffing. Since that scoring just overstated `gemma4:12b`'s failure rate, it
+likely did the same to every smaller model's numbers — reran the two still
+on disk, `qwen3:4b` and `qwen2.5-coder:7b`
+(`bench/results/small-models-rebench-2026-08-03.json`):
+
+| model | n | exact | whitespace | functional | mismatch | rejected | combined correct-effect |
+|---|---|---|---|---|---|---|---|
+| qwen3:4b | 11 | 4 | 1 | 4 | 2 | 0 | **9/11 (82%)** |
+| qwen2.5-coder:7b | 11 | 3 | 0 | 4 | 0 | 4 | **7/11 (64%)** |
+
+Both real jumps, but for different reasons — checked the actual `detail` on
+every remaining `mismatch`/`rejected` case rather than assuming the new
+scoring explains everything:
+
+- `qwen3:4b`'s 2 remaining `mismatch` cases are genuinely wrong, not
+  wording: `kotlin_dao/task-001` produced a `@Query` DELETE annotated
+  `delete(): Flow<Profile>` instead of `@Delete`, and
+  `python_converters/task-002` computed `miles * 2.54` (a unit conversion
+  factor for the wrong pair of units entirely). The contract scoring caught
+  these correctly rather than papering over them.
+- **`qwen3:4b`'s big swing is confounded with the indentation-bug fix
+  earlier in this doc, not purely a scoring artifact** — its original GPU
+  run showed 8/11 `rejected`, and `rejected` (parse/validation/anchor
+  errors) is never touched by contract scoring at all. Most of that
+  0%-exact/73%-rejected → 82%-correct-effect swing is the real pipeline
+  bug fix; only a portion is the relabeling this session added. Don't
+  attribute the whole jump to today's change.
+- `qwen2.5-coder:7b`'s `mismatch` (55% originally, the worst of any model
+  tested) fully resolved to `exact`/`functional` — 0 remaining. But a
+  *new*-looking failure mode appeared: 4/11 `validation_error`, all
+  `kotlin_dao`, all the same cause — "model fragment's last non-blank line
+  duplicates the line immediately after the edit point" (it echoed back
+  the closing brace it was shown as read-only context). That's a real,
+  repeatable model defect on this fixture, not a scoring gap — the
+  pipeline's own bleed guard is doing its job.
+
+**Practical read for token reduction:** `qwen3:4b` (2.5GB, a fraction of
+`gemma4:12b`'s 7.6GB) reaching 82% correct-effect with its remaining
+failures being genuine, not cosmetic, makes it a real second data point —
+not yet trustworthy unsupervised (2/11 wrong is still too high to skip
+review), but close enough that it's worth widening fixtures for rather
+than writing it off on the old numbers. `qwen2.5-coder:7b` looks solid on
+`python_converters` but has a specific, fixable-sounding Kotlin bleed
+problem worth a targeted look before it's judged on accuracy at all.

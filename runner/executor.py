@@ -4,8 +4,15 @@ model call — the content is already fully decided, so only its indentation
 needs adjusting, which is computed from the file, not guessed) or, for tasks
 without exact_code, build a structure_type-specific fragment-only prompt,
 call the local model, and parse/validate its fragment before splicing it in.
-Writes the result unless dry-run. Stops the batch on the first task that
-doesn't succeed."""
+If the task also carries a `contract` (see runner/contract_check.py — a
+declarative in/out spec: signature/stereotype plus, where the language is
+executable, behavioral test cases), the fragment must satisfy it too before
+it's accepted, on top of the existing shape/bleed checks — the model is free
+to write whatever implementation it wants for a contract task, as long as it
+produces the required effect; a failure there is retried like any other
+validation_error, with the mismatch fed back as feedback for the next
+attempt. Writes the result unless dry-run. Stops the batch on the first task
+that doesn't succeed."""
 
 import json
 import re
@@ -14,6 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from runner import anchor as anchor_mod
+from runner import contract_check
 from runner import ollama_client
 from runner import patch
 from runner.work_doc import InitTask, WorkTask
@@ -406,6 +414,11 @@ def _attempt_work_task(
         shape_issue = _validate_fragment_shape(task, fragment)
         if shape_issue:
             return fail("validation_error", shape_issue)
+
+        if task.contract is not None:
+            passed, detail = contract_check.check_contract(init.language, fragment, task.contract)
+            if not passed:
+                return fail("validation_error", f"fragment failed contract check: {detail}")
 
     if task.new_file:
         new_text = fragment

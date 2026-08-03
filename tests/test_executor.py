@@ -11,10 +11,18 @@ pattern_example / retry_feedback sections, added alongside the authoring
 workflow change to route more pattern-following boilerplate to the model
 instead of always pre-deciding exact_code."""
 
+import json
 from pathlib import Path
 
 from runner import anchor as anchor_mod
-from runner.executor import _reference_indent, _validate_fragment_shape, build_prompt, parse_fragment
+from runner import ollama_client
+from runner.executor import (
+    _reference_indent,
+    _validate_fragment_shape,
+    build_prompt,
+    execute_work_task,
+    parse_fragment,
+)
 from runner.work_doc import InitTask, WorkTask
 
 
@@ -158,3 +166,72 @@ def test_parse_fragment_leaves_real_newlines_untouched():
     text = '{"fragment": "line one\\nline two"}'
     fragment = parse_fragment(text)
     assert fragment == "line one\nline two"
+
+
+def _contract_task(**kwargs) -> WorkTask:
+    defaults = dict(
+        id="t1", title="add doubler", file="converters.py",
+        structure_type="function", change_type="add",
+        description="doubles a number", acceptance_criteria=["double_value(2.0) == 4.0"],
+        start_anchor="    return (fahrenheit - 32) * 5 / 9",
+        contract={"kind": "function", "name": "double_value", "cases": [{"args": [2.0], "expect": 4.0}]},
+    )
+    defaults.update(kwargs)
+    return WorkTask(**defaults)
+
+
+def _fake_generate(fragments):
+    """Returns a fake ollama_client.generate that yields each fragment in
+    order, one per call — for asserting retry behavior deterministically."""
+    responses = iter(fragments)
+
+    def fake(prompt, model, host, think=False, format=None, options=None):
+        fragment = next(responses)
+        return ollama_client.GenerateResult(
+            text=json.dumps({"fragment": fragment}), prompt_eval_count=1, eval_count=1,
+        )
+
+    return fake
+
+
+def test_contract_check_rejects_wrong_effect_but_accepts_a_differently_worded_retry(tmp_path, monkeypatch):
+    # A model can satisfy a contract without matching any particular wording
+    # -- the point of contracts over exact_code is that the implementation is
+    # the model's to choose, only the effect is fixed. First attempt computes
+    # the wrong effect (x * 3) and should be retried with feedback; second
+    # attempt is a different-but-correct implementation (x * 2) and should be
+    # accepted even though nothing here ever compared it to reference text.
+    (tmp_path / "converters.py").write_text(
+        "def fahrenheit_to_celsius(fahrenheit: float) -> float:\n    return (fahrenheit - 32) * 5 / 9\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(ollama_client, "generate", _fake_generate([
+        "def double_value(x: float) -> float:\n    return x * 3",
+        "def double_value(x: float) -> float:\n    return x * 2",
+    ]))
+
+    entry = execute_work_task(
+        _contract_task(), _init(), tmp_path, model="fake-model", host="http://x", dry_run=False,
+        think=False, context_lines=3, logs_dir=tmp_path / "logs", run_ts="20260101T000000Z", max_retries=1,
+    )
+
+    assert entry["status"] == "success"
+    assert entry["attempts"] == 2
+    assert "x * 2" in (tmp_path / "converters.py").read_text()
+
+
+def test_contract_check_rejection_leaves_file_unwritten_when_retries_exhausted(tmp_path, monkeypatch):
+    original = "def fahrenheit_to_celsius(fahrenheit: float) -> float:\n    return (fahrenheit - 32) * 5 / 9\n"
+    (tmp_path / "converters.py").write_text(original, encoding="utf-8")
+    monkeypatch.setattr(ollama_client, "generate", _fake_generate([
+        "def double_value(x: float) -> float:\n    return x * 3",
+    ]))
+
+    entry = execute_work_task(
+        _contract_task(), _init(), tmp_path, model="fake-model", host="http://x", dry_run=False,
+        think=False, context_lines=3, logs_dir=tmp_path / "logs", run_ts="20260101T000000Z", max_retries=0,
+    )
+
+    assert entry["status"] == "validation_error"
+    assert "contract" in entry["error"]
+    assert (tmp_path / "converters.py").read_text() == original

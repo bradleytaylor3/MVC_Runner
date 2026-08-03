@@ -91,6 +91,7 @@ class WorkTask:
     occurrence: int | None = None
     exact_code: str | None = None
     pattern_example: str | None = None
+    contract: dict | None = None
     new_file: bool = False
     context_files: list[str] = field(default_factory=list)
     source_path: Path | None = None
@@ -123,6 +124,7 @@ class WorkTask:
         occurrence = data.get("occurrence")
         exact_code = data.get("exact_code")
         pattern_example = data.get("pattern_example")
+        contract = data.get("contract")
 
         acceptance_criteria = data.get("acceptance_criteria", [])
         if not isinstance(acceptance_criteria, list):
@@ -138,6 +140,11 @@ class WorkTask:
         if exact_code is not None and pattern_example is not None:
             err("'pattern_example' is pointless with 'exact_code' set — the model is never called, so it "
                 "never sees the example")
+        if exact_code is not None and contract is not None:
+            err("'contract' is pointless with 'exact_code' set — the model is never called, so there's "
+                "nothing to check its output against")
+        if contract is not None and not isinstance(contract, dict):
+            err("'contract' must be an object")
 
         if new_file:
             if change_type != "add":
@@ -161,6 +168,7 @@ class WorkTask:
             occurrence=occurrence,
             exact_code=exact_code,
             pattern_example=pattern_example,
+            contract=contract,
             new_file=new_file,
             context_files=data.get("context_files", []),
             source_path=source_path,

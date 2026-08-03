@@ -1,0 +1,222 @@
+[
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen3:4b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 6.976431070000217,
+    "detail": "    @Delete\n    suspend fun delete(profile: Profile)",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen3:4b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 0.8897209839997231,
+    "detail": "    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun delete(id: Long): Flow<Profile>",
+    "checker_detail": "missing @Delete annotation"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen3:4b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 0.9513277900000503,
+    "detail": "    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen3:4b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 0.8040009789997384,
+    "detail": "    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen3:4b",
+    "pattern_example": true,
+    "status": "functional_match",
+    "elapsed_seconds": 1.0195198540000092,
+    "detail": "    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long): Unit",
+    "checker_detail": "contract satisfied"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen3:4b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 0.856168799000443,
+    "detail": "    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 14.453934925999874,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 1.273687751000125,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 2.476851289000024,
+    "detail": "\n    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int\n",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 1.3340408570002182,
+    "detail": "\n    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int\n",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 2.522886438999649,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 1.2779874499997277,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen3:4b",
+    "pattern_example": true,
+    "status": "functional_match",
+    "elapsed_seconds": 2.898124082999857,
+    "detail": "def kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371",
+    "checker_detail": "kilometers_to_miles(1.0) = 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen3:4b",
+    "pattern_example": false,
+    "status": "functional_match",
+    "elapsed_seconds": 0.9150073270002395,
+    "detail": "def kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371",
+    "checker_detail": "kilometers_to_miles(1.0) = 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen3:4b",
+    "pattern_example": true,
+    "status": "functional_match",
+    "elapsed_seconds": 1.0641309879997607,
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934",
+    "checker_detail": "miles_to_kilometers(1.0) = 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen3:4b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 0.8858029209995948,
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 2.54\n",
+    "checker_detail": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\n    assert math.isclose(result, 1.60934, rel_tol=0.0001), \\\n           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: miles_to_kilometers(1.0) = 2.54, expected ~1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "qwen3:4b",
+    "pattern_example": false,
+    "status": "whitespace_match",
+    "elapsed_seconds": 0.9432941209997807,
+    "detail": "    KM_TO_MILES_FACTOR = 0.621371\n",
+    "checker_detail": ""
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": true,
+    "status": "functional_match",
+    "elapsed_seconds": 6.623007719999805,
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371",
+    "checker_detail": "kilometers_to_miles(1.0) = 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": false,
+    "status": "functional_match",
+    "elapsed_seconds": 1.5803588529997796,
+    "detail": "def kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371",
+    "checker_detail": "kilometers_to_miles(1.0) = 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": true,
+    "status": "functional_match",
+    "elapsed_seconds": 2.700010298000052,
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934",
+    "checker_detail": "miles_to_kilometers(1.0) = 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": false,
+    "status": "functional_match",
+    "elapsed_seconds": 1.5509221610000168,
+    "detail": "\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934",
+    "checker_detail": "miles_to_kilometers(1.0) = 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 2.159074220000093,
+    "detail": "KM_TO_MILES_FACTOR = 0.621371\n",
+    "checker_detail": ""
+  }
+]
