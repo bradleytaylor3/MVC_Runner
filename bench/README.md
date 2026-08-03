@@ -19,8 +19,9 @@ guess: if we give the model everything we reasonably can — a concrete
 sibling example of the pattern (`pattern_example`), structural sanity
 checks, feedback-driven retries — does *generation* (not just transcription)
 become reliable enough to route real work to the model instead of having
-Claude (or a human) pre-decide `exact_code`? Short answer: no, not at ≤4B on
-CPU. See Results below.
+Claude (or a human) pre-decide `exact_code`? Short answer: no — not at ≤4B on
+CPU, and still no up to 12B on GPU, though accuracy does improve with scale.
+See Results below.
 
 ## Fixtures
 
@@ -75,34 +76,91 @@ real successes into false `validation_error`s.
 or underperformed plain `description`-only generation. It is not the lever
 that makes small local models trustworthy for this.
 
+## Results (2026-08-03, GPU-accelerated, this machine)
+
+Same machine, same fixtures, same harness — the difference is Ollama is now
+using the GPU (confirmed via `ollama ps` showing `100% GPU` for the smaller
+models; `gemma3:12b` at 8.1GB doesn't fully fit this GPU's 8GB VRAM, so it's
+majority-GPU with some CPU spillover — its ~24s/call average is far closer
+to the fully-GPU 7B model's ~9s/call than to the CPU-only run's >600s/call
+timeouts, so it's not running CPU-only either). This wasn't a deliberate
+re-test — it was discovered mid-session that the CPU-only framing of the
+run above was itself stale; the GPU has apparently been usable on this
+machine for a while.
+
+**Re-running the original 3 models under GPU** (`bench/results/gpu-rerun-2026-08-03.json`):
+
+| model | pattern_example | exact | whitespace | mismatch | rejected |
+|---|---|---|---|---|---|
+| gemma3:4b | no | 2/6 | 1/6 | 2/6 | 1/6 |
+| gemma3:4b | yes | 0/5 | 1/5 | 2/5 | 2/5 |
+| qwen2.5:1.5b | no | 1/6 | 1/6 | 1/6 | 3/6 |
+| qwen2.5:1.5b | yes | 0/5 | 0/5 | 2/5 | 3/5 |
+| qwen3:4b | no | 0/6 | 0/6 | 1/6 | 5/6 |
+| qwen3:4b | yes | 0/5 | 0/5 | 2/5 | 3/5 |
+
+GPU didn't change what a model outputs, only how fast — as expected, since
+it's the same weights and the same sampling. The concrete payoff: `qwen3:4b`
+is no longer practically unusable (every trial now completes in seconds,
+not timing out at >600s), which finally answers the CPU run's open
+question — and the answer is accuracy, not speed, was never the problem for
+it: 0/11 exact-match even once it can actually finish.
+
+**Bigger + code-specialized models** (`bench/results/gpu-bigger-models-2026-08-03.json`):
+
+| model | pattern_example | exact | whitespace | mismatch | rejected |
+|---|---|---|---|---|---|
+| gemma3:12b | no | 2/6 | 0/6 | 2/6 | 2/6 |
+| gemma3:12b | yes | 2/5 | 0/5 | 2/5 | 1/5 |
+| qwen2.5-coder:7b | no | 2/6 | 0/6 | 3/6 | 1/6 |
+| qwen2.5-coder:7b | yes | 0/5 | 1/5 | 3/5 | 1/5 |
+
+Combined exact-match: **`gemma3:12b` 4/11 (36%)**, roughly 2-4x the 4B
+CPU/GPU runs above — scale clearly helps. **`qwen2.5-coder:7b` 2/11 (18%)**,
+no better than the general-purpose 4B models and worse on `mismatch` (6/11,
+55% — the highest of any model tested). Being code-specialized didn't help
+here; general capability/size did more work than domain tuning, at least
+for this fragment-in-JSON output shape and at 7B.
+
+**Verdict, against this doc's own decision rubric below: still no.**
+`gemma3:12b`'s 36% exact-match is well under the 60-70% bar, and `mismatch`
+(the dangerous, silently-wrong case) stayed at 36% — worse than useless if
+unreviewed, since it's indistinguishable from a correct result without a
+human or test suite checking. `exact_code` + `scaffold` stays the default;
+model generation stays opportunistic/human-reviewed only. The trend with
+scale is real, though — worth another data point at 27B+ before concluding
+this is a dead end rather than "needs more scale than fits in 8GB VRAM."
+
 ## Caveats (read before trusting these numbers)
 
 - n=5-6 per cell, single run, no temperature/seed averaging — real
   run-to-run variance was visible while collecting this (a killed/restarted
   attempt on `gemma3:4b` mid-session showed 2 `exact_match` where the final
-  clean run showed 1). Don't treat 0% vs 17% as a meaningful gap; do treat
-  "well under half" as a stable conclusion across every run observed.
+  clean run showed 1). Don't treat small point differences (e.g. 9% vs 18%)
+  as a meaningful gap; do treat "well under half, mismatch common" as the
+  stable conclusion across every run observed, CPU or GPU, 1.5B through 12B.
 - Only 2 fixtures, both boilerplate-shaped and both favorable cases (a real
   sibling pattern exists in-file). Real-world tasks without a clean sibling
   pattern would likely do worse, not better.
-- CPU inference only. `qwen3:4b`'s practical unusability here may be
-  hardware-bound rather than a capability finding — worth re-testing on a
-  GPU purely for latency, independent of correctness.
+- `gemma3:12b` didn't fully fit in this GPU's 8GB VRAM (see above) — its
+  numbers may understate what a card with more headroom would produce, if
+  partial CPU offload affects output quality (it shouldn't in theory —
+  compute placement doesn't change the math — but hasn't been isolated
+  here).
 
-## Trying a bigger / GPU-accelerated model
+## Trying an even bigger model
 
-The whole point of keeping this harness (and this write-up) around: when
-running on a machine with a dedicated GPU, larger local models become
-practical, and it's worth re-asking the question with real numbers rather
-than assumptions.
+12B (partially GPU-resident on this 8GB card) still didn't clear the bar —
+worth trying next once more VRAM is available, or a smaller/quantized 20B+
+tag that fits:
 
 ```bash
-ollama pull gemma3:12b        # or whatever larger/newer tag is available by then
-python -m runner.cli bench --models gemma3:12b --report bench/results/gemma3-12b-gpu.json
+ollama pull gemma3:27b        # or whatever larger/newer tag fits available VRAM by then
+python -m runner.cli bench --models gemma3:27b --report bench/results/gemma3-27b-gpu.json
 ```
 
-Compare the resulting `exact_match` rate against the table above. Rough
-guide for what to do with the result:
+Compare the resulting `exact_match` rate against the tables above. Same
+rubric as before:
 
 - **Still well under ~50% exact-match, or `mismatch` stays common** — the
   conclusion in this doc still holds: keep `exact_code` + `scaffold` (see
@@ -116,8 +174,8 @@ guide for what to do with the result:
   doesn't test). Also worth widening the fixtures here first (more
   languages/patterns, more items per pattern) so the number is trustworthy
   before changing a default that affects every batch.
-- Also worth trying a **code-specialized** model tag (e.g. a `-coder`
-  variant) rather than only scaling up a general chat model — the
-  benchmarked models here (`qwen2.5`, `gemma3`, `qwen3`) are all
-  general-purpose; a coder-tuned model of similar or even smaller size might
-  outperform a bigger general one.
+- A `-coder` tag didn't outperform a same-class general model here
+  (`qwen2.5-coder:7b` underperformed `gemma3:12b` and had the worst
+  `mismatch` rate of anything tested) — worth trying a different
+  coder-tuned family before concluding that lever is dead, but it's not the
+  free win it looked like on paper.

@@ -231,18 +231,28 @@ That said, schema-constrained output only fixes *shape*, not *judgment* or
   generation more reliable than working from `description` prose alone —
   did **not** reliably move that number; several runs it did the same or
   worse. `qwen3:4b` was also frequently slow enough to hit the request
-  timeout on a single fragment. The dominant failure modes were a bare
-  signature/name with no body and fluent-but-wrong content (caught by
+  timeout on a single fragment (this turned out to be a CPU-vs-GPU artifact,
+  not a capability finding — see below). The dominant failure modes were a
+  bare signature/name with no body and fluent-but-wrong content (caught by
   `_validate_fragment_shape`/bleed-detection in the first case, invisible to
   the pipeline in the second — this is why "success" never means "correct").
   One real, fixable bug came out of building this: small models frequently
   double-escape newlines in their JSON output (`\n` decodes to the two
   literal characters `\` and `n`, not a line break), which was masking
   otherwise-fine multi-line fragments as bare one-liners; `parse_fragment`
-  now unescapes this. Net conclusion: at this model size, `pattern_example`
-  and shape validation are worth keeping for opportunistic/low-stakes use
-  under human review, but they aren't a substitute for `exact_code` — the
-  `scaffold` command (above) is the actual lever for cutting down how much
-  JSON a human/Claude has to hand-author, since it needs no model call at
-  all. Full write-up, raw results, and instructions for re-testing this on a
-  GPU with a bigger model: `bench/README.md`.
+  now unescapes this. Re-tested 2026-08-03 once GPU acceleration turned out
+  to already be available on this machine: `qwen3:4b` is no longer
+  practically unusable (every call finishes in seconds), but its accuracy
+  is still 0% exact-match — speed was never the actual problem. A genuinely
+  bigger model (`gemma3:12b`) roughly doubled to quadrupled exact-match
+  (~36% combined) versus the 4B-class models, but `mismatch` (silently
+  wrong, nothing catches it) stayed just as common — still well under the
+  bar for routing real work to the model. A code-specialized 7B
+  (`qwen2.5-coder:7b`) did *not* outperform the general-purpose 12B model.
+  Net conclusion, still holding after the GPU/bigger-model re-test:
+  `pattern_example` and shape validation are worth keeping for
+  opportunistic/low-stakes use under human review, but they aren't a
+  substitute for `exact_code` — the `scaffold` command (above) is the
+  actual lever for cutting down how much JSON a human/Claude has to
+  hand-author, since it needs no model call at all. Full write-up, raw
+  results, and caveats: `bench/README.md`.

@@ -1,0 +1,200 @@
+[
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "gemma3:12b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 47.96900000004098,
+    "detail": "\n    @Delete\n    suspend fun delete(profile: Profile)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "gemma3:12b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 19.156999999890104,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "gemma3:12b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 18.79700000002049,
+    "detail": "    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "gemma3:12b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 16.20299999997951,
+    "detail": "\n    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "gemma3:12b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 17.515000000130385,
+    "detail": "fragment is a single line ('suspend fun deleteById(id: Long) = query(\"DELETE FROM profile WHERE id = :id\").setParameter(:id, id)') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "gemma3:12b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 19.937999999849126,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 18.29700000002049,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 5.702999999979511,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": true,
+    "status": "whitespace_match",
+    "elapsed_seconds": 6.530999999959022,
+    "detail": "@Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int\n"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 6.125,
+    "detail": "\n    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int\n"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 7.452999999979511,
+    "detail": "\n    @Delete\n    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)\n"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 6.797000000020489,
+    "detail": "\n    @Delete\n    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)\n"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "gemma3:12b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 55.28100000019185,
+    "detail": "    def kilometers_to_miles(kilometers: float) -> float:\n        return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "gemma3:12b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 15.343999999808148,
+    "detail": "def kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "gemma3:12b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 15.547000000020489,
+    "detail": "    def miles_to_kilometers(miles: float) -> float:\n        return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "gemma3:12b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 18.54700000002049,
+    "detail": "    def miles_to_kilometers(miles: float) -> float:\n        return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "gemma3:12b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 18.390000000130385,
+    "detail": "KM_TO_MILES_FACTOR = 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 19.640999999828637,
+    "detail": "\n\n\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 6.563000000081956,
+    "detail": "def kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 7.171000000089407,
+    "detail": "    def miles_to_kilometers(miles: float) -> float:\n        return miles * 1.60934\n"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 6.5,
+    "detail": "    def miles_to_kilometers(miles: float) -> float:\n        return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "qwen2.5-coder:7b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 5.328999999910593,
+    "detail": "KM_TO_MILES_FACTOR = 0.621371\n"
+  }
+]
