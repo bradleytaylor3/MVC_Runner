@@ -55,7 +55,7 @@ paraphrase of it).
    below: real benchmarking showed local models aren't reliable enough at
    generation for that to be a good trade).
 
-4. **Run it**: `python -m runner.cli run --work-dir work_docs --model qwen3:4b`
+4. **Run it**: `python -m runner.cli run --work-dir work_docs --model gemma4:12b`
    (add `--repo-root` if it needs to differ from the init doc's,
    `--allow-dirty` if step 2 was resolved that way, `--dry-run` if the user
    wants to preview without writing files).

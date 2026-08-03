@@ -207,7 +207,7 @@ def _build_one_task(work_dir: Path, task_num: int) -> Path:
     return path
 
 
-def run_wizard(work_dir: Path, model: str = "qwen3:4b") -> None:
+def run_wizard(work_dir: Path, model: str = "gemma4:12b") -> None:
     work_dir.mkdir(parents=True, exist_ok=True)
     _load_or_create_init(work_dir)
 

@@ -158,24 +158,27 @@ this tool, so there's no reason to keep them installed. Re-pull only if
 testing a specific new claim about one of them (a fine-tune, a newer
 version of the same tag, etc.), not to re-confirm the number above.
 
-Two poor-on-this-bench models are still installed, but *not* because they
-tested well — because they're wired as CLI defaults for a different task:
+One poor-on-this-bench model is still installed, but *not* because it
+tested well — it's wired as a CLI default for a different task:
 - `qwen2.5:1.5b` — `DEFAULT_ADB_MODEL` for `test-adb` (`runner/cli.py`).
   Weak at code generation (9% exact-match) but that's not what it's used
   for by default; it holds up fine at the classification-shaped action
   selection `test-adb` actually asks of it (see root `README.md`'s
   "Running on small models" section).
-- `qwen3:4b` — `DEFAULT_MODEL` for `run` (`runner/cli.py`), despite scoring
-  **0% exact-match** here, the worst of every model tested. Real batches
-  mostly bypass this via `exact_code` (see `TOKEN_SAVINGS.md`: 844/844
-  completed tasks so far never called a model at all), so the bad default
-  has limited real-world bite today — but it's worth knowing this default
-  is not a reasonable choice if a task actually needs generation.
-  `gemma4:12b` (55% exact-match, see the same-size-class comparison below)
-  is by far the best candidate to replace it, but was judged not to clear
-  this doc's own bar for a confident swap (60-70%+, mismatch rare) — see
-  that section for the fixture-split nuance behind that call, and whether
-  it's since been overridden.
+
+`qwen3:4b` was `DEFAULT_MODEL` for `run` (`runner/cli.py`) despite scoring
+**0% exact-match** here, the worst of every model tested — this has since
+been changed: `DEFAULT_MODEL` is now `gemma4:12b` (55% exact-match, see the
+same-size-class comparison below), even though 55%/27% mismatch doesn't
+clear this doc's own bar for trusting generation over `exact_code` (see
+that section). The reasoning for swapping anyway: `run`'s default is only
+ever exercised by tasks without `exact_code`, where output was never
+trusted unreviewed regardless of which model produced it, so defaulting to
+the best available model is a strict upgrade over defaulting to the worst
+one — `qwen3:4b` and everything else ≤7B tested here scored low enough
+(0-18% exact-match) to be effectively pointless as a default, not just
+imperfect. `qwen3:4b` itself is no longer kept installed for this reason;
+re-pull only to test a specific new claim about it.
 
 ## Same-size-class generation comparison: gemma3:12b vs gemma4:12b
 

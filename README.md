@@ -64,7 +64,7 @@ for *only* the docstring line (resolved automatically to the start of the
 target's body) instead of handing the model a whole function to reproduce.
 
 ```bash
-python -m runner.cli run --work-dir work_docs --model qwen3:4b
+python -m runner.cli run --work-dir work_docs --model gemma4:12b
 ```
 
 - Schema: `work_docs/schema.md` (see also `organizer_work_docs/` for a real,
@@ -85,7 +85,7 @@ python -m runner.cli run --work-dir work_docs --model qwen3:4b
   each task immediately (same rules `run` enforces) instead of surfacing a
   mistake later as a run failure. Loops until you say you're done.
 - Requires: a local Ollama server (`ollama serve`) with the target model
-  pulled (`ollama pull qwen3:4b`). No Android/ADB tooling needed.
+  pulled (`ollama pull gemma4:12b`). No Android/ADB tooling needed.
 - `pytest` (from this directory) runs `tests/`, covering location-resolution
   edge cases (multi-line signatures, brace vs. indentation body bounds,
   marker `occurrence` disambiguation) and work-doc field validation.
@@ -133,7 +133,7 @@ variables, and it expands them into a full batch of validated, ready-to-run
 
 ```bash
 python -m runner.cli scaffold scaffold_examples/profile_dao_methods.json --work-dir work_docs
-python -m runner.cli run --work-dir work_docs --model qwen3:4b
+python -m runner.cli run --work-dir work_docs --model gemma4:12b
 ```
 
 Template fields use `{{double_braces}}`, not `str.format`'s `{single_braces}`
@@ -152,7 +152,7 @@ pipeline `run` uses), and scores the result against the known answer. Never
 touches a real repo.
 
 ```bash
-python -m runner.cli bench --models qwen2.5:1.5b,gemma3:4b,qwen3:4b --report logs/bench/results.json
+python -m runner.cli bench --models qwen2.5:1.5b,qwen3:4b,gemma4:12b --report logs/bench/results.json
 ```
 
 This is how `pattern_example` (below) got evaluated rather than assumed to

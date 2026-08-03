@@ -9,7 +9,13 @@ from runner import adb_agent, adb_client, bench, executor, ollama_client, scaffo
 from runner.adb_task import AdbTaskError, load_adb_batch
 from runner.work_doc import WorkDocError, load_batch
 
-DEFAULT_MODEL = "qwen3:4b"
+# qwen3:4b scored 0/11 exact-match in runner/bench.py's fragment-generation
+# benchmark (bench/README.md) -- the worst of every model tested there --
+# while gemma4:12b scored 55%, the best. run/build's default is only ever
+# used for tasks without exact_code (see executor.py), where output was
+# never trusted unreviewed anyway, so this is a strict upgrade even though
+# 55%/27% mismatch is still short of "trustworthy for unreviewed generation."
+DEFAULT_MODEL = "gemma4:12b"
 # test-adb picks one discrete action per turn from a small enum (closer to
 # classification than free-form generation), which a small model handles
 # comfortably once output is schema-constrained (see adb_agent.ACTION_SCHEMA)

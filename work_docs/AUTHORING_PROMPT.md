@@ -13,7 +13,7 @@ single file block. Save it into `work_docs/` in this repo, using the
 filename given in its `===FILE: ...===` marker. Then run:
 
 ```
-python -m runner.cli run --work-dir work_docs --model qwen3:4b
+python -m runner.cli run --work-dir work_docs --model gemma4:12b
 ```
 
 ---
@@ -73,7 +73,7 @@ Optional on any task: exact_code (see below), context_files (files to show read-
 (If you'd rather produce the older one-file-per-task layout instead — a `work_docs/000-init.json` with `"kind": "init"`, plus one `work_docs/task-NNN-<slug>.json` per task with `"kind": "work"` — the runner still accepts that too. The single-file `"batch"` shape above is just less to type/emit for the same result, so prefer it unless you have a specific reason not to.)
 
 ## exact_code — use this whenever you already know the final code
-If you already know the exact code a task should produce, put it in exact_code and let description stay a short "why." Do NOT paraphrase known code into description and hope the executing model reconstructs it — this skips the model entirely (the runner reindents exact_code deterministically), and that's a feature: a benchmark against real local models (qwen2.5:1.5b, gemma3:4b, qwen3:4b — see runner/bench.py) found roughly 0-15% exact-match on small, well-scoped generation tasks, even with a concrete pattern_example (below). Only omit exact_code when the exact code genuinely isn't decided yet and you're comfortable with the model's output being unreliable and needing review.
+If you already know the exact code a task should produce, put it in exact_code and let description stay a short "why." Do NOT paraphrase known code into description and hope the executing model reconstructs it — this skips the model entirely (the runner reindents exact_code deterministically), and that's a feature: a benchmark against real local models (see runner/bench.py and bench/README.md) found roughly 0-15% exact-match at ≤4B, and even the best model tested so far (gemma4:12b, 55% exact-match, the current default) still misses a large fraction and does so unevenly across task shapes. Only omit exact_code when the exact code genuinely isn't decided yet and you're comfortable with the model's output being unreliable and needing review.
 
 Since nothing (model or runner) reads description or acceptance_criteria for an exact_code task — only a human skimming the diff later might — keep description to one short clause and skip acceptance_criteria entirely unless there's something specific worth flagging for review. Don't spend effort restating what exact_code already shows unambiguously.
 
