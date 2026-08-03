@@ -225,8 +225,9 @@ after `gemma4:12b` (55% exact / 27% mismatch) became champion above.
 | 1 | `qwen3.5:9b` (Alibaba, 2026-03-02, hybrid Gated-DeltaNet+MoE, strong on general/competitive-coding benchmarks e.g. LiveCodeBench v6 82.7%) | 0/11 (0%) | 4/11 (36%) | **lost** — worst `exact_match` of anything tested here; strong competitive-coding benchmarks did not predict this task shape (strict JSON-fragment output against a precise anchor) at all |
 | 2 | `yi-coder:9b` (01.AI) | 3/11 (27%, +3/11 whitespace-only) | 4/11 (36%) | **lost** — same rough kotlin_dao-good/python_converters-bad split as `gemma4:12b` showed, but weaker on both axes |
 | 3 | `deepcoder:14b` (Agentica/Together, RL-trained on a DeepSeek-R1-distill base specifically for coding correctness) | 0/11 (0%, +3/11 whitespace-only) | 5/11 (45%) | **lost** — worst `mismatch` rate of anything tested despite being explicitly RL-tuned for coding correctness; that training target (agentic/test-passing coding benchmarks) apparently doesn't transfer to "reproduce this exact fragment verbatim" |
+| 4 | `qwen2.5-coder:14b` | 5/11 (45%, +2/11 whitespace-only) | 3/11 (27%) | **lost, but closest yet** — its `qwen2.5-coder:7b` sibling scored 18%/55%, so scaling within this family helped a lot (matched champion's mismatch rate exactly), just not enough exact-match to take the belt. 5/6 exact on `kotlin_dao`, 0/5 exact on `python_converters` — the *third* model in a row to show this exact split, increasingly looking like the `python_converters` fixture itself is the harder case, not model-specific luck |
 
-Champion remains **`gemma4:12b`, 55%/27%**, unbeaten through round 3.
+Champion remains **`gemma4:12b`, 55%/27%**, unbeaten through round 4.
 
 ## Trying an even bigger model
 

@@ -1,0 +1,101 @@
+[
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen2.5-coder:14b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 55.53099999995902,
+    "detail": "    @Delete\n    suspend fun delete(profile: Profile)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen2.5-coder:14b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 11.797000000020489,
+    "detail": "\n    @Delete\n    suspend fun delete(profile: Profile)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen2.5-coder:14b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 11.655999999959022,
+    "detail": "    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen2.5-coder:14b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 22.812000000150874,
+    "detail": "    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen2.5-coder:14b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 19.515999999828637,
+    "detail": "    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen2.5-coder:14b",
+    "pattern_example": false,
+    "status": "whitespace_match",
+    "elapsed_seconds": 13.484000000171363,
+    "detail": "    \n    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)\n"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen2.5-coder:14b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 20.109999999869615,
+    "detail": "\n    def kilometers_to_miles(kilometers: float) -> float:\n        return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen2.5-coder:14b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 11.25,
+    "detail": "fragment is a single line ('return kilometers * 0.621371') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen2.5-coder:14b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 15.625,
+    "detail": "\n    def miles_to_kilometers(miles: float) -> float:\n        return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen2.5-coder:14b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 13.655999999959022,
+    "detail": "\n    def miles_to_kilometers(miles: float) -> float:\n        return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "qwen2.5-coder:14b",
+    "pattern_example": false,
+    "status": "whitespace_match",
+    "elapsed_seconds": 10.438000000081956,
+    "detail": "    KM_TO_MILES_FACTOR = 0.621371"
+  }
+]
