@@ -1,0 +1,101 @@
+[
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "yi-coder:9b",
+    "pattern_example": true,
+    "status": "whitespace_match",
+    "elapsed_seconds": 28.937999999849126,
+    "detail": "\n@Delete\nsuspend fun delete(profile: Profile)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "yi-coder:9b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 7.859000000171363,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "yi-coder:9b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 7.077999999979511,
+    "detail": "\n    @Query(\"SELECT COUNT(*) FROM profile\") \n    suspend fun count(): Int"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "yi-coder:9b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 6.484999999869615,
+    "detail": "\n    @Query(\"SELECT COUNT(*) FROM profile\") \n    suspend fun count(): Int"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "yi-coder:9b",
+    "pattern_example": true,
+    "status": "whitespace_match",
+    "elapsed_seconds": 7.437000000150874,
+    "detail": "\n@Query(\"DELETE FROM profile WHERE id = :id\") \n    suspend fun deleteById(id: Long)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "yi-coder:9b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 6.937999999849126,
+    "detail": "\n    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)\n"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "yi-coder:9b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 8.969000000040978,
+    "detail": "\n\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "yi-coder:9b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 7.218000000109896,
+    "detail": "\n\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "yi-coder:9b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 7.656999999890104,
+    "detail": "\n\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "yi-coder:9b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 7.1399999998975545,
+    "detail": "\n    def miles_to_kilometers(miles: float) -> float:\n        return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "yi-coder:9b",
+    "pattern_example": false,
+    "status": "whitespace_match",
+    "elapsed_seconds": 6.7810000001918525,
+    "detail": "\n    KM_TO_MILES_FACTOR = 0.621371"
+  }
+]

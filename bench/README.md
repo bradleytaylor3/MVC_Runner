@@ -212,6 +212,21 @@ Against the decision rubric below (60-70%+ exact-match, mismatch rare):
 **55%/27% is close but doesn't clear it** — meaningfully better than every
 other model tested, not yet at "trust it for unreviewed generation."
 
+## Knockout tournament: further candidates vs. the reigning champion
+
+Same fixtures, same harness, one challenger at a time against whichever
+model currently has the best combined exact-match/mismatch — loser gets
+`ollama rm`'d (its numbers stay here and in `bench/results/`; only the
+weights are removed), winner stays installed and keeps the belt. Started
+after `gemma4:12b` (55% exact / 27% mismatch) became champion above.
+
+| round | challenger | exact | mismatch | result |
+|---|---|---|---|---|
+| 1 | `qwen3.5:9b` (Alibaba, 2026-03-02, hybrid Gated-DeltaNet+MoE, strong on general/competitive-coding benchmarks e.g. LiveCodeBench v6 82.7%) | 0/11 (0%) | 4/11 (36%) | **lost** — worst `exact_match` of anything tested here; strong competitive-coding benchmarks did not predict this task shape (strict JSON-fragment output against a precise anchor) at all |
+| 2 | `yi-coder:9b` (01.AI) | 3/11 (27%, +3/11 whitespace-only) | 4/11 (36%) | **lost** — same rough kotlin_dao-good/python_converters-bad split as `gemma4:12b` showed, but weaker on both axes |
+
+Champion remains **`gemma4:12b`, 55%/27%**, unbeaten through round 2.
+
 ## Trying an even bigger model
 
 12B (partially GPU-resident on this 8GB card) still didn't clear the bar —

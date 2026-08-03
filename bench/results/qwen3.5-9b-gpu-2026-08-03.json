@@ -1,0 +1,101 @@
+[
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen3.5:9b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 24.406999999890104,
+    "detail": "fragment is a single line ('package com.google.code.gapi; public class ProfileDao { // Add a method to delete a profile record private void delete(profile: Profile) {} }') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "qwen3.5:9b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 8.343000000109896,
+    "detail": "class ProfileDao {\n\n\t@Delete\n\tsuspend fun delete(profile: Profile) {\n\n\t"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen3.5:9b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 9.718999999808148,
+    "detail": "fragment is a single line ('<profile ORDER BY name AS> SELECT * FROM profiles WHERE id = :id</SELECT') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "qwen3.5:9b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 6.516000000061467,
+    "detail": "fragment is a single line ('<the replacement content>') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen3.5:9b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 29.20299999997951,
+    "detail": "Instruction: to add a deleteById() method for ProfileDao with its signature and body indented to match\nChange fragment to an empty string as per deletion confirmation\ndontinclude the surrounding read-"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "qwen3.5:9b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 11.5,
+    "detail": "// Add a deleteById query to ProfileDao\n// This method deletes a profile by its ID using a DELETE statement.\n@Query(\"DELETE FROM profile WHERE id = :id\")\nsuspension fun suspend fun deleteById(id: Long"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen3.5:9b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 7.608999999938533,
+    "detail": "fragment is a single line ('<the replacement content>') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "qwen3.5:9b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 7.9850000001024455,
+    "detail": "fragment is a single line ('add kilometers to miles') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen3.5:9b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 7.2810000001918525,
+    "detail": "fragment is a single line ('<replacement content>') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "qwen3.5:9b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 7.781999999890104,
+    "detail": "fragment is a single line ('The replacement content for that location') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "qwen3.5:9b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 8.547000000020489,
+    "detail": "<the constant/variable declaration(s) needed for the km-to-miles conversion factor used elsewhere>"
+  }
+]
