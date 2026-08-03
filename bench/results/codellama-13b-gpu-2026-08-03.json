@@ -1,0 +1,101 @@
+[
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "codellama:13b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 55.688000000081956,
+    "detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "codellama:13b",
+    "pattern_example": false,
+    "status": "whitespace_match",
+    "elapsed_seconds": 17.42199999978766,
+    "detail": "\n\t@Delete\n\tsuspend fun delete(profile: Profile)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "codellama:13b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 21.094000000040978,
+    "detail": "suspend fun count(): Int\n@Query(\"SELECT COUNT(*) FROM profile\")"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "codellama:13b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 18.79700000002049,
+    "detail": "fragment is a single line ('suspend fun count(): Int') \u2014 looks like a bare signature/name with no body; write the complete definition, including its body"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "codellama:13b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 17.375,
+    "detail": ""
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "codellama:13b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 18.030999999959022,
+    "detail": "    @Delete(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "codellama:13b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 22.280999999959022,
+    "detail": "def kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "codellama:13b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 20.29700000002049,
+    "detail": "def kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371\n"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "codellama:13b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 25.062999999849126,
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934\n"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "codellama:13b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 34.75,
+    "detail": "def miles_to_kilometers(miles):\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "codellama:13b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 35.937000000150874,
+    "detail": "KM_TO_MILES_FACTOR = 0.621371\n    return (fahrenheit - 32) * 5 / 9"
+  }
+]

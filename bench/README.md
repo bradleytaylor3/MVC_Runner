@@ -226,8 +226,20 @@ after `gemma4:12b` (55% exact / 27% mismatch) became champion above.
 | 2 | `yi-coder:9b` (01.AI) | 3/11 (27%, +3/11 whitespace-only) | 4/11 (36%) | **lost** — same rough kotlin_dao-good/python_converters-bad split as `gemma4:12b` showed, but weaker on both axes |
 | 3 | `deepcoder:14b` (Agentica/Together, RL-trained on a DeepSeek-R1-distill base specifically for coding correctness) | 0/11 (0%, +3/11 whitespace-only) | 5/11 (45%) | **lost** — worst `mismatch` rate of anything tested despite being explicitly RL-tuned for coding correctness; that training target (agentic/test-passing coding benchmarks) apparently doesn't transfer to "reproduce this exact fragment verbatim" |
 | 4 | `qwen2.5-coder:14b` | 5/11 (45%, +2/11 whitespace-only) | 3/11 (27%) | **lost, but closest yet** — its `qwen2.5-coder:7b` sibling scored 18%/55%, so scaling within this family helped a lot (matched champion's mismatch rate exactly), just not enough exact-match to take the belt. 5/6 exact on `kotlin_dao`, 0/5 exact on `python_converters` — the *third* model in a row to show this exact split, increasingly looking like the `python_converters` fixture itself is the harder case, not model-specific luck |
+| 5 | `codellama:13b` (Meta, 2023 — the oldest model tested) | 0/11 (0%, +1/11 whitespace-only) | 9/11 (82%) | **lost, worst of the entire session** — 82% `mismatch` is the highest of anything benchmarked here (CPU or GPU, any size); age shows |
 
-Champion remains **`gemma4:12b`, 55%/27%**, unbeaten through round 4.
+**Final champion after 5 rounds: `gemma4:12b`, 55% exact-match / 27% mismatch, undefeated.**
+
+**A pattern worth flagging for future fixture work:** `gemma4:12b`,
+`yi-coder:9b`, and `qwen2.5-coder:14b` — three unrelated model
+families/sizes — all did dramatically better on `kotlin_dao` than
+`python_converters`. That consistency across otherwise-very-different
+models points at the fixture, not the models: something about
+`python_converters` (fewer existing examples to pattern-match against —
+2 siblings vs. `kotlin_dao`'s 3 — or the specific unit-conversion logic
+itself) is harder than intended for a "close to best case" fixture. Worth
+investigating/rebalancing before trusting any future exact-match number
+from this harness as representative rather than kotlin_dao-flavored.
 
 ## Trying an even bigger model
 
