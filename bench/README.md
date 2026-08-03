@@ -151,34 +151,35 @@ this is a dead end rather than "needs more scale than fits in 8GB VRAM."
 
 ## Models tested and removed — don't re-pull without new evidence
 
-After benchmarking, `gemma3:4b` and `qwen2.5-coder:7b` were deleted from
-local disk (`ollama rm`) — both scored in line with everything else here
-(well under 50% exact-match) and neither is used as a default anywhere in
-this tool, so there's no reason to keep them installed. Re-pull only if
-testing a specific new claim about one of them (a fine-tune, a newer
-version of the same tag, etc.), not to re-confirm the number above.
+After benchmarking, `gemma3:4b`, `qwen2.5-coder:7b`, `qwen3:4b`, and
+`gemma3:12b` were all deleted from local disk (`ollama rm`) — none of them
+is used as a default anywhere in this tool anymore, and each is either
+outright poor (well under 50% exact-match) or, in `gemma3:12b`'s case,
+directly superseded by `gemma4:12b` at the identical footprint (55%/27%
+mismatch vs. 36%/36%). Their numbers are fully preserved in the tables
+above and in `bench/results/*.json` — nothing is lost by not keeping the
+weights on disk. Re-pull one only to test a specific new claim about it (a
+fine-tune, a newer version of the same tag, a hardware change worth
+isolating), not to re-confirm a number already recorded here.
 
-One poor-on-this-bench model is still installed, but *not* because it
-tested well — it's wired as a CLI default for a different task:
-- `qwen2.5:1.5b` — `DEFAULT_ADB_MODEL` for `test-adb` (`runner/cli.py`).
-  Weak at code generation (9% exact-match) but that's not what it's used
-  for by default; it holds up fine at the classification-shaped action
-  selection `test-adb` actually asks of it (see root `README.md`'s
-  "Running on small models" section).
-
-`qwen3:4b` was `DEFAULT_MODEL` for `run` (`runner/cli.py`) despite scoring
-**0% exact-match** here, the worst of every model tested — this has since
-been changed: `DEFAULT_MODEL` is now `gemma4:12b` (55% exact-match, see the
-same-size-class comparison below), even though 55%/27% mismatch doesn't
-clear this doc's own bar for trusting generation over `exact_code` (see
-that section). The reasoning for swapping anyway: `run`'s default is only
-ever exercised by tasks without `exact_code`, where output was never
-trusted unreviewed regardless of which model produced it, so defaulting to
-the best available model is a strict upgrade over defaulting to the worst
-one — `qwen3:4b` and everything else ≤7B tested here scored low enough
-(0-18% exact-match) to be effectively pointless as a default, not just
-imperfect. `qwen3:4b` itself is no longer kept installed for this reason;
-re-pull only to test a specific new claim about it.
+Only two models are installed at all right now, both because they're wired
+as CLI defaults (`runner/cli.py`), not because every alternative was purged
+indiscriminately:
+- `qwen2.5:1.5b` — `DEFAULT_ADB_MODEL` for `test-adb`. Weak at code
+  generation (9% exact-match) but that's not what it's used for by
+  default; it holds up fine at the classification-shaped action selection
+  `test-adb` actually asks of it (see root `README.md`'s "Running on small
+  models" section).
+- `gemma4:12b` — `DEFAULT_MODEL` for `run`, since 2026-08-03 (previously
+  `qwen3:4b`, which scored **0% exact-match** here, the worst of every
+  model tested). `run`'s default is only ever exercised by tasks without
+  `exact_code`, where output was never trusted unreviewed regardless of
+  which model produced it, so defaulting to the best available model
+  (55% exact-match, still short of the 60-70%-with-rare-mismatch bar for
+  trusting generation outright — see the same-size-class comparison above)
+  is a strict upgrade over defaulting to the worst one. Practically every
+  model ≤7B tested here scored low enough (0-18% exact-match) to be
+  pointless as a default, not just imperfect.
 
 ## Same-size-class generation comparison: gemma3:12b vs gemma4:12b
 
