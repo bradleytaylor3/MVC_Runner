@@ -8,8 +8,8 @@ this prompt is for.
 
 You don't need Claude Code for this part. Copy everything inside the box
 below into any AI chat (Claude, ChatGPT, Gemini, etc.) along with the
-relevant source file(s), answer its questions, and it will hand back one or
-more file blocks. Save each one into `work_docs/` in this repo, using the
+relevant source file(s), answer its questions, and it will hand back a
+single file block. Save it into `work_docs/` in this repo, using the
 filename given in its `===FILE: ...===` marker. Then run:
 
 ```
@@ -29,23 +29,29 @@ Ask, if I haven't already told you:
 4. Whether there are any project conventions to fold in (indentation style, naming, etc.) — optional.
 
 ## Output format
-Produce one JSON file per edit, plus exactly one init file, using this exact block format for each — a marker line, then the file content, then an end marker, with nothing else before/between/after:
+Produce exactly one file, using this exact block format — a marker line, then the file content, then an end marker, with nothing else before/between/after:
 
-===FILE: work_docs/<filename>.json===
+===FILE: work_docs/batch.json===
 <the complete JSON file content>
 ===END FILE===
 
-### Init file (exactly one, name it work_docs/000-init.json)
+Its content is one JSON object holding the init doc plus every task inline — this is the entire point of this format: one file/tool-call instead of N+1, no repeated wrapper boilerplate per task.
+
 {
-  "kind": "init",
-  "batch_id": "<short-label-for-this-batch>",
-  "repo_root": "<path to the repo, from step 1>",
-  "language": "<primary language, from step 1>",
-  "conventions": []
+  "kind": "batch",
+  "init": {
+    "batch_id": "<short-label-for-this-batch>",
+    "repo_root": "<path to the repo, from step 1>",
+    "language": "<primary language, from step 1>",
+    "conventions": []
+  },
+  "tasks": [
+    { "id": "task-001", "title": "...", ... },
+    { "id": "task-002", "title": "...", ... }
+  ]
 }
 
-### One work file per edit (name each work_docs/task-NNN-<slug>.json)
-Every work file needs: id, title, file, structure_type, change_type, description — plus whichever location field(s) that structure_type/change_type combination requires, per this table:
+Each entry in `tasks` is one edit — you don't need `"kind": "work"` on them, it's implied by being inside `tasks`. Every task needs: id, title, file, structure_type, change_type, description — plus whichever location field(s) that structure_type/change_type combination requires, per this table:
 
 | structure_type | change_type | required location field(s) |
 |---|---|---|
@@ -62,7 +68,9 @@ Every work file needs: id, title, file, structure_type, change_type, description
 
 acceptance_criteria (non-empty list of concrete, checkable conditions) is required *unless* exact_code is set (below) — with exact_code the model is never called, so criteria have nothing to constrain and become optional reviewer notes.
 
-Optional on any work file: exact_code (see below), context_files (files to show read-only for reference, never rewritten), new_file: true (change_type "add" only — skips all location fields, authors a brand-new file from scratch), occurrence: N (1-based — only needed if start_anchor's exact text matches more than one line in the file; otherwise resolution fails loudly rather than guessing which one you meant).
+Optional on any task: exact_code (see below), context_files (files to show read-only for reference, never rewritten), new_file: true (change_type "add" only — skips all location fields, authors a brand-new file from scratch), occurrence: N (1-based — only needed if start_anchor's exact text matches more than one line in the file; otherwise resolution fails loudly rather than guessing which one you meant).
+
+(If you'd rather produce the older one-file-per-task layout instead — a `work_docs/000-init.json` with `"kind": "init"`, plus one `work_docs/task-NNN-<slug>.json` per task with `"kind": "work"` — the runner still accepts that too. The single-file `"batch"` shape above is just less to type/emit for the same result, so prefer it unless you have a specific reason not to.)
 
 ## exact_code — use this whenever you already know the final code
 If you already know the exact code a task should produce, put it in exact_code and let description stay a short "why." Do NOT paraphrase known code into description and hope the executing model reconstructs it — this skips the model entirely (the runner reindents exact_code deterministically), and that's a feature: a benchmark against real local models (qwen2.5:1.5b, gemma3:4b, qwen3:4b — see runner/bench.py) found roughly 0-15% exact-match on small, well-scoped generation tasks, even with a concrete pattern_example (below). Only omit exact_code when the exact code genuinely isn't decided yet and you're comfortable with the model's output being unreliable and needing review.
@@ -77,7 +85,7 @@ If you're about to author several work docs that are all the same shape and diff
 
 ## Rules for good tasks
 - Prefer the most specific structure_type that fits (docstring over block for a docstring, constant over block for a new variable) — the more specific the type, the more targeted the framing the executing model gets, and the smaller the blast radius of what it's allowed to touch. Reach for block only when nothing else fits.
-- One work file = one file = one edit. A change touching multiple files or multiple unrelated locations in one file is several work files, not one.
+- One task = one edit. A change touching multiple files or multiple unrelated locations in one file is several entries in `tasks`, not one.
 - Only reference names/anchor text you've actually confirmed exist in the current file content (or that an earlier task in this same batch already adds) — if you're guessing, ask me to paste the file first.
 - The batch runner stops at the first task that fails to resolve/apply, and later tasks may assume earlier ones already landed — order tasks so each one's location still exists given every earlier task in the batch has already been applied.
 - When exact_code is absent, acceptance_criteria should be concrete and checkable — they're a checklist included in the model's prompt, and a human should still skim the resulting diff against them. When exact_code is set, skip acceptance_criteria unless there's something specific worth flagging for review — the model never sees it, so it's not pulling its usual weight.
@@ -85,47 +93,43 @@ If you're about to author several work docs that are all the same shape and diff
 ## Worked example
 Request: "In example_target.py (currently just a one-line comment), add a greet(name) function, then give it a one-line docstring."
 
-===FILE: work_docs/000-init.json===
+===FILE: work_docs/batch.json===
 {
-  "kind": "init",
-  "batch_id": "example-python-demo",
-  "repo_root": ".",
-  "language": "python",
-  "conventions": []
-}
-===END FILE===
-
-===FILE: work_docs/task-001-add-greet.json===
-{
-  "kind": "work",
-  "id": "task-001",
-  "title": "Add a greet function",
-  "file": "work_docs/example_target.py",
-  "structure_type": "function",
-  "change_type": "add",
-  "start_anchor": "# Starter file for work_docs/example_task.json — safe to overwrite/experiment with.",
-  "exact_code": "def greet(name: str) -> str:\n    return f'Hello, {name}!'",
-  "description": "returns a greeting for the given name"
-}
-===END FILE===
-
-===FILE: work_docs/task-002-docstring-greet.json===
-{
-  "kind": "work",
-  "id": "task-002",
-  "title": "Add a docstring to greet",
-  "file": "work_docs/example_target.py",
-  "structure_type": "docstring",
-  "change_type": "add",
-  "target_name": "greet",
-  "description": "explains that it returns a greeting for the given name",
-  "acceptance_criteria": [
-    "greet has a one-line docstring as its first statement"
+  "kind": "batch",
+  "init": {
+    "batch_id": "example-python-demo",
+    "repo_root": ".",
+    "language": "python",
+    "conventions": []
+  },
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "Add a greet function",
+      "file": "work_docs/example_target.py",
+      "structure_type": "function",
+      "change_type": "add",
+      "start_anchor": "# Starter file for work_docs/example_task.json — safe to overwrite/experiment with.",
+      "exact_code": "def greet(name: str) -> str:\n    return f'Hello, {name}!'",
+      "description": "returns a greeting for the given name"
+    },
+    {
+      "id": "task-002",
+      "title": "Add a docstring to greet",
+      "file": "work_docs/example_target.py",
+      "structure_type": "docstring",
+      "change_type": "add",
+      "target_name": "greet",
+      "description": "explains that it returns a greeting for the given name",
+      "acceptance_criteria": [
+        "greet has a one-line docstring as its first statement"
+      ]
+    }
   ]
 }
 ===END FILE===
 
-Note task-002 needs no anchor text at all — target_name alone is enough for a docstring, and the runner inserts it at the correct place (the first line of greet's body) automatically. Also note task-001 has no acceptance_criteria (exact_code is set, so nothing reads it) while task-002 does (no exact_code, so the model needs a checklist).
+Note task-002 needs no anchor text at all — target_name alone is enough for a docstring, and the runner inserts it at the correct place (the first line of greet's body) automatically. Also note task-001 has no acceptance_criteria (exact_code is set, so nothing reads it) while task-002 does (no exact_code, so the model needs a checklist). Neither task repeats `"kind": "work"` — that's implied by living inside `tasks`.
 
 Now ask me anything you still need, then produce the batch.
 ```

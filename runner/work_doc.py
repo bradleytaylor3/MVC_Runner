@@ -180,15 +180,30 @@ def _validate_location(err, structure_type, change_type, name, parent, target_na
 
 
 def load_batch(work_dir: Path) -> tuple[InitTask, list[WorkTask]]:
-    """Load and validate every *.json file in work_dir: exactly one init doc
-    (kind == "init") plus any number of work docs (kind == "work"), sorted by
-    task id."""
+    """Load and validate every *.json file in work_dir. Two doc shapes can
+    appear, freely mixed: the original per-task style (kind == "init" plus
+    any number of kind == "work" files), and the consolidated style (a
+    single file with kind == "batch", holding an inline "init" object plus
+    every task inline in a "tasks" list) -- the latter exists so authoring a
+    batch by hand or via a chat model costs one file/tool-call instead of
+    N+1, without changing what a WorkTask ends up being. Returns every
+    collected task sorted by id."""
     paths = sorted(work_dir.glob("*.json"))
     if not paths:
         raise WorkDocError(f"No work document (*.json) files found in {work_dir}")
 
     init_task: InitTask | None = None
     work_tasks: list[WorkTask] = []
+
+    def set_init(init_data, path: Path) -> None:
+        nonlocal init_task
+        if not isinstance(init_data, dict):
+            raise WorkDocError(f"{path}: 'init' must be an object")
+        if init_task is not None:
+            raise WorkDocError(
+                f"{path}: found a second init doc ({init_task.source_path}); a batch must have exactly one"
+            )
+        init_task = InitTask.from_dict(init_data, path)
 
     for path in paths:
         try:
@@ -198,19 +213,26 @@ def load_batch(work_dir: Path) -> tuple[InitTask, list[WorkTask]]:
 
         kind = data.get("kind")
         if kind == "init":
-            if init_task is not None:
-                raise WorkDocError(
-                    f"{path}: found a second init doc ({init_task.source_path}); a batch must have exactly one"
-                )
-            init_task = InitTask.from_dict(data, path)
+            set_init(data, path)
         elif kind == "work":
             work_tasks.append(WorkTask.from_dict(data, path))
+        elif kind == "batch":
+            set_init(data.get("init"), path)
+            tasks_data = data.get("tasks")
+            if not isinstance(tasks_data, list) or not tasks_data:
+                raise WorkDocError(f"{path}: 'batch' doc's 'tasks' must be a non-empty list")
+            for i, task_data in enumerate(tasks_data):
+                if not isinstance(task_data, dict):
+                    raise WorkDocError(f"{path}: tasks[{i}] must be an object")
+                task_data = dict(task_data)
+                task_data.setdefault("kind", "work")
+                work_tasks.append(WorkTask.from_dict(task_data, path))
         else:
-            raise WorkDocError(f"{path}: 'kind' must be 'init' or 'work', got {kind!r}")
+            raise WorkDocError(f"{path}: 'kind' must be 'init', 'work', or 'batch', got {kind!r}")
 
     if init_task is None:
-        raise WorkDocError(f'{work_dir}: no init doc (kind: "init") found; a batch requires exactly one')
+        raise WorkDocError(f'{work_dir}: no init doc (kind: "init" or "batch") found; a batch requires exactly one')
     if not work_tasks:
-        raise WorkDocError(f'{work_dir}: no work docs (kind: "work") found')
+        raise WorkDocError(f'{work_dir}: no work docs (kind: "work", or inside a "batch" doc\'s "tasks") found')
 
     return init_task, sorted(work_tasks, key=lambda t: t.id)

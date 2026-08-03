@@ -1,7 +1,13 @@
 # Work document schema
 
-A **batch** is a directory of JSON files: exactly one **init doc** plus any
-number of **work docs**. Each work doc names one small, well-defined edit —
+A **batch** is a directory of JSON files, in either (or a mix) of two
+shapes: the per-task style below (one **init doc** plus any number of
+**work docs**), or a single **consolidated batch doc** — see
+"Consolidated batch doc" further down — holding the same init doc and every
+task inline in one file. Prefer the consolidated shape when authoring by
+hand or via a chat model (see `AUTHORING_PROMPT.md`): same fields, same
+validation, just one file/tool-call instead of N+1. Each work doc/task names
+one small, well-defined edit —
 `structure_type` says *what kind* of thing is being added/changed
 (`function`, `class`, `method`, `docstring`, `import`, `constant`, or the
 generic `block` fallback), and together with `change_type` it determines
@@ -136,13 +142,49 @@ or leave both unset and rely on `description` + `acceptance_criteria`.
 Files the model should read for reference but must never rewrite — shown
 in full, read-only, regardless of what the model outputs for them.
 
+## Consolidated batch doc
+
+A single file that holds an init doc plus every task inline, instead of
+spreading them across N+1 files:
+
+```json
+{
+  "kind": "batch",
+  "init": {
+    "batch_id": "example-python-demo",
+    "repo_root": ".",
+    "language": "python",
+    "conventions": []
+  },
+  "tasks": [
+    { "id": "task-001", "title": "...", "file": "...", "structure_type": "...", "change_type": "...", "description": "...", "..." : "..." },
+    { "id": "task-002", "...": "..." }
+  ]
+}
+```
+
+- `init` is the same object as a standalone init doc's fields (`kind` omitted
+  — it's implied).
+- Each entry in `tasks` is the same object as a standalone work doc (`kind`
+  omitted — implied to be `"work"`), validated identically, field for field.
+- `tasks` must be a non-empty list.
+- A directory can hold exactly one init doc total, whether it comes from a
+  standalone `kind: "init"` file or a `"batch"` doc's inline `init` — mixing
+  a `"batch"` doc with standalone `kind: "work"` files (which don't carry
+  their own init) is fine; mixing two sources of `init` is not.
+- This is purely a loading-time convenience — `runner.work_doc.load_batch`
+  expands a `"batch"` doc into the exact same `InitTask`/`WorkTask` objects
+  a per-task-file batch produces. Nothing downstream (anchor resolution,
+  prompting, splicing) knows or cares which shape a task came from.
+
 ## Notes for whoever authors these (e.g. a cloud model at the planning stage)
 
-- One batch = one directory = one init doc + N work docs. Unlike a batch of
-  independent test scenarios, code-edit batches are sequential — the batch
-  stops at the first task that fails, and later tasks may assume earlier
-  ones already landed (e.g. a `docstring` task with `target_name: "foo"`
-  assumes an earlier task already added `foo`).
+- One batch = one directory = one init doc + N tasks (spread across files,
+  or inlined in one `"batch"` doc, or both). Unlike a batch of independent
+  test scenarios, code-edit batches are sequential — the batch stops at the
+  first task that fails, and later tasks may assume earlier ones already
+  landed (e.g. a `docstring` task with `target_name: "foo"` assumes an
+  earlier task already added `foo`).
 - Read the real target file before authoring a task — `name`/`target_name`/
   `start_anchor` must match something that actually exists (or, for the
   first task touching a brand-new symbol, exists once the tasks before it

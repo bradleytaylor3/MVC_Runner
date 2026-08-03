@@ -114,7 +114,8 @@ def main() -> int:
 
     run_parser = subparsers.add_parser("run", help="Execute all work documents in a directory")
     run_parser.add_argument("--work-dir", type=Path, default=Path("work_docs"),
-                             help="Directory containing work document *.json files (default: work_docs/)")
+                             help="Directory containing work document *.json files -- either one init doc plus "
+                                  "N work docs, or a single consolidated 'batch' doc, or a mix (default: work_docs/)")
     run_parser.add_argument("--repo-root", type=Path, default=None,
                              help="Root of the repo whose files will be edited (default: the batch's init "
                                   "doc repo_root; pass this to override it, e.g. for testing)")

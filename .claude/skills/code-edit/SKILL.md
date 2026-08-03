@@ -34,11 +34,13 @@ paraphrase of it).
    gone if you push past it without asking.
 
 3. **Author the batch** in `work_docs/` following
-   `work_docs/AUTHORING_PROMPT.md`: exactly one `000-init.json`
-   (`kind: "init"`) plus one `kind: "work"` file per edit, ordered so each
-   task's location still exists given every earlier task in the batch has
-   already applied. If `work_docs/` already has files from a previous
-   batch, ask before overwriting rather than assuming they're stale.
+   `work_docs/AUTHORING_PROMPT.md`: write one consolidated `batch.json`
+   (`kind: "batch"`, with an inline `init` object and every task inline in
+   `tasks`) rather than a separate file per task — same fields, same
+   validation, but one Write call instead of N+1. Order tasks so each one's
+   location still exists given every earlier task in the batch has already
+   applied. If `work_docs/` already has files from a previous batch, ask
+   before overwriting rather than assuming they're stale.
 
    If several tasks in this batch are the same shape and differ only in a
    name/value/query (a DAO method per query, an entity per field, ...),

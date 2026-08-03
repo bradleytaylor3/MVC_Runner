@@ -4,11 +4,12 @@ existing, migration-tested behavior being restructured, not new behavior,
 so it's worth locking down directly since it previously had no dedicated
 test coverage."""
 
+import json
 from pathlib import Path
 
 import pytest
 
-from runner.work_doc import WorkDocError, WorkTask
+from runner.work_doc import WorkDocError, WorkTask, load_batch
 
 PATH = Path("t.json")
 
@@ -142,3 +143,97 @@ def test_acceptance_criteria_must_be_a_list():
     data["acceptance_criteria"] = "not a list"
     with pytest.raises(WorkDocError):
         WorkTask.from_dict(data, PATH)
+
+
+def _write(path: Path, data: dict) -> None:
+    path.write_text(json.dumps(data), encoding="utf-8")
+
+
+def test_load_batch_consolidated_batch_file(tmp_path: Path):
+    _write(tmp_path / "batch.json", {
+        "kind": "batch",
+        "init": {"batch_id": "b", "repo_root": ".", "language": "python"},
+        "tasks": [
+            dict(id="task-001", title="t1", file="f.py", structure_type="function",
+                 change_type="modify", name="foo", description="d", exact_code="def foo():\n    pass"),
+            dict(id="task-002", title="t2", file="f.py", structure_type="function",
+                 change_type="modify", name="bar", description="d", exact_code="def bar():\n    pass"),
+        ],
+    })
+    init, tasks = load_batch(tmp_path)
+    assert init.batch_id == "b"
+    assert [t.id for t in tasks] == ["task-001", "task-002"]
+    assert tasks[0].exact_code == "def foo():\n    pass"
+
+
+def test_load_batch_consolidated_task_defaults_kind_to_work(tmp_path: Path):
+    _write(tmp_path / "batch.json", {
+        "kind": "batch",
+        "init": {"batch_id": "b", "repo_root": ".", "language": "python"},
+        "tasks": [
+            dict(id="task-001", title="t1", file="f.py", structure_type="function",
+                 change_type="modify", name="foo", description="d", exact_code="def foo():\n    pass"),
+        ],
+    })
+    init, tasks = load_batch(tmp_path)
+    assert len(tasks) == 1
+
+
+def test_load_batch_consolidated_requires_non_empty_tasks(tmp_path: Path):
+    _write(tmp_path / "batch.json", {
+        "kind": "batch",
+        "init": {"batch_id": "b", "repo_root": ".", "language": "python"},
+        "tasks": [],
+    })
+    with pytest.raises(WorkDocError):
+        load_batch(tmp_path)
+
+
+def test_load_batch_consolidated_requires_init_object(tmp_path: Path):
+    _write(tmp_path / "batch.json", {
+        "kind": "batch",
+        "tasks": [dict(id="task-001", title="t1", file="f.py", structure_type="function",
+                       change_type="modify", name="foo", description="d", exact_code="x")],
+    })
+    with pytest.raises(WorkDocError):
+        load_batch(tmp_path)
+
+
+def test_load_batch_rejects_second_init_across_styles(tmp_path: Path):
+    _write(tmp_path / "000-init.json", {"kind": "init", "batch_id": "b", "repo_root": ".", "language": "python"})
+    _write(tmp_path / "batch.json", {
+        "kind": "batch",
+        "init": {"batch_id": "b2", "repo_root": ".", "language": "python"},
+        "tasks": [dict(id="task-001", title="t1", file="f.py", structure_type="function",
+                       change_type="modify", name="foo", description="d", exact_code="x")],
+    })
+    with pytest.raises(WorkDocError):
+        load_batch(tmp_path)
+
+
+def test_load_batch_mixes_batch_file_with_standalone_work_file(tmp_path: Path):
+    # A "batch" doc provides its own init inline; a separate standalone
+    # "work" file (kind == "work") never touches init at all, so it can
+    # coexist and just adds one more task to the same run.
+    _write(tmp_path / "000-batch.json", {
+        "kind": "batch",
+        "init": {"batch_id": "b", "repo_root": ".", "language": "python"},
+        "tasks": [dict(id="task-001", title="t1", file="f.py", structure_type="function",
+                       change_type="modify", name="foo", description="d", exact_code="x")],
+    })
+    _write(tmp_path / "task-002.json", dict(kind="work", id="task-002", title="t2", file="f.py",
+                                             structure_type="function", change_type="modify", name="bar",
+                                             description="d", exact_code="y"))
+    init, tasks = load_batch(tmp_path)
+    assert init.batch_id == "b"
+    assert [t.id for t in tasks] == ["task-001", "task-002"]
+
+
+def test_load_batch_batch_doc_without_init_rejected(tmp_path: Path):
+    _write(tmp_path / "batch.json", {
+        "kind": "batch",
+        "tasks": [dict(id="task-001", title="t1", file="f.py", structure_type="function",
+                       change_type="modify", name="foo", description="d", exact_code="x")],
+    })
+    with pytest.raises(WorkDocError):
+        load_batch(tmp_path)
