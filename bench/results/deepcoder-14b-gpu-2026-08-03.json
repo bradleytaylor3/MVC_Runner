@@ -1,0 +1,101 @@
+[
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "deepcoder:14b",
+    "pattern_example": true,
+    "status": "whitespace_match",
+    "elapsed_seconds": 52.125,
+    "detail": "    \n    @Delete\n    suspend fun delete(profile: Profile)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "deepcoder:14b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 15.625,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "deepcoder:14b",
+    "pattern_example": true,
+    "status": "validation_error",
+    "elapsed_seconds": 13.280999999959022,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "deepcoder:14b",
+    "pattern_example": false,
+    "status": "validation_error",
+    "elapsed_seconds": 16.406000000191852,
+    "detail": "model fragment's last non-blank line duplicates the line immediately after the edit point ('}') \u2014 it likely included read-only context it was told to omit"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "deepcoder:14b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 23.969000000040978,
+    "detail": "    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long): Boolean"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "deepcoder:14b",
+    "pattern_example": false,
+    "status": "whitespace_match",
+    "elapsed_seconds": 15.187000000150874,
+    "detail": "  @Query(\"DELETE FROM profile WHERE id = :id\")\n  suspend fun deleteById(id: Long)"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "deepcoder:14b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 13.875,
+    "detail": "def kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "deepcoder:14b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 17.436999999918044,
+    "detail": "    def kilometers_to_miles(kilometers: float) -> float:\n        return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "deepcoder:14b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 17.57799999997951,
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934\n"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "deepcoder:14b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 15.141000000061467,
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "deepcoder:14b",
+    "pattern_example": false,
+    "status": "whitespace_match",
+    "elapsed_seconds": 10.297000000020489,
+    "detail": "    KM_TO_MILES_FACTOR = 0.621371"
+  }
+]
