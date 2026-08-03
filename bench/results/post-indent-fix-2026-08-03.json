@@ -1,0 +1,450 @@
+[
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": true,
+    "trial": 1,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": true,
+    "trial": 2,
+    "status": "mismatch",
+    "detail": "def kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": true,
+    "trial": 3,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": true,
+    "trial": 4,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": true,
+    "trial": 5,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": true,
+    "trial": 6,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": true,
+    "trial": 7,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": true,
+    "trial": 8,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": true,
+    "trial": 9,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": true,
+    "trial": 10,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": false,
+    "trial": 1,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": false,
+    "trial": 2,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": false,
+    "trial": 3,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": false,
+    "trial": 4,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": false,
+    "trial": 5,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": false,
+    "trial": 6,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": false,
+    "trial": 7,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": false,
+    "trial": 8,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": false,
+    "trial": 9,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "pattern_example": false,
+    "trial": 10,
+    "status": "mismatch",
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": true,
+    "trial": 1,
+    "status": "mismatch",
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": true,
+    "trial": 2,
+    "status": "mismatch",
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": true,
+    "trial": 3,
+    "status": "mismatch",
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": true,
+    "trial": 4,
+    "status": "mismatch",
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": true,
+    "trial": 5,
+    "status": "mismatch",
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": true,
+    "trial": 6,
+    "status": "mismatch",
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": true,
+    "trial": 7,
+    "status": "mismatch",
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": true,
+    "trial": 8,
+    "status": "mismatch",
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": true,
+    "trial": 9,
+    "status": "mismatch",
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": true,
+    "trial": 10,
+    "status": "mismatch",
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": false,
+    "trial": 1,
+    "status": "mismatch",
+    "detail": "\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": false,
+    "trial": 2,
+    "status": "mismatch",
+    "detail": "\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": false,
+    "trial": 3,
+    "status": "mismatch",
+    "detail": "\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.609344"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": false,
+    "trial": 4,
+    "status": "mismatch",
+    "detail": "\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": false,
+    "trial": 5,
+    "status": "mismatch",
+    "detail": "\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": false,
+    "trial": 6,
+    "status": "mismatch",
+    "detail": "\n\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": false,
+    "trial": 7,
+    "status": "mismatch",
+    "detail": "\n\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": false,
+    "trial": 8,
+    "status": "mismatch",
+    "detail": "\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": false,
+    "trial": 9,
+    "status": "mismatch",
+    "detail": "\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "pattern_example": false,
+    "trial": 10,
+    "status": "mismatch",
+    "detail": "\n\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "pattern_example": false,
+    "trial": 1,
+    "status": "whitespace_match",
+    "detail": "\n    KM_TO_MILES_FACTOR = 0.621371\n"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "pattern_example": false,
+    "trial": 2,
+    "status": "mismatch",
+    "detail": "\n    # Constant for conversion from kilometers to miles\n    KM_TO_MILES_FACTOR = 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "pattern_example": false,
+    "trial": 3,
+    "status": "mismatch",
+    "detail": "    \n    KM_TO_MILES_FACTOR = 0.621371\n    return (fahrenheit - 32) * 5 / 9"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "pattern_example": false,
+    "trial": 4,
+    "status": "mismatch",
+    "detail": "\n    KM_TO_MILES_FACTOR = 0.621371\n    return (fahrenheit - 32) * 5 / 9"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "pattern_example": false,
+    "trial": 5,
+    "status": "mismatch",
+    "detail": "\n    KM_TO_MILES_FACTOR = 0.621371\n    return (fahrenheit - 32) * 5 / 9"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "pattern_example": false,
+    "trial": 6,
+    "status": "mismatch",
+    "detail": "\n    KM_TO_MILES_FACTOR = 0.621371\n    return (fahrenheit - 32) * 5 / 9"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "pattern_example": false,
+    "trial": 7,
+    "status": "whitespace_match",
+    "detail": "\n    KM_TO_MILES_FACTOR = 0.621371\n"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "pattern_example": false,
+    "trial": 8,
+    "status": "mismatch",
+    "detail": "\n    KM_TO_MILES_FACTOR = 0.621371\n    return (fahrenheit - 32) * 5 / 9"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "pattern_example": false,
+    "trial": 9,
+    "status": "mismatch",
+    "detail": "\n    KM_TO_MILES_FACTOR = 0.621371\n    return (fahrenheit - 32) * 5 / 9"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "pattern_example": false,
+    "trial": 10,
+    "status": "mismatch",
+    "detail": "    )\n\nKM_TO_MILES_FACTOR = 0.621371"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "pattern_example": true,
+    "trial": 1,
+    "status": "exact_match",
+    "detail": "    @Delete\n    suspend fun delete(profile: Profile)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "pattern_example": false,
+    "trial": 1,
+    "status": "exact_match",
+    "detail": "    @Delete\n    suspend fun delete(profile: Profile)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "pattern_example": true,
+    "trial": 1,
+    "status": "exact_match",
+    "detail": "    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int\n"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "pattern_example": false,
+    "trial": 1,
+    "status": "exact_match",
+    "detail": "\n    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "pattern_example": true,
+    "trial": 1,
+    "status": "exact_match",
+    "detail": "    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "pattern_example": false,
+    "trial": 1,
+    "status": "exact_match",
+    "detail": "\n    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)"
+  }
+]

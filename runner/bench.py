@@ -93,6 +93,7 @@ def run_one(
     host: str,
     think: bool,
     context_lines: int,
+    options: dict | None = None,
 ) -> BenchOutcome:
     start = time.monotonic()
     common = dict(fixture=fixture_dir.name, task_id=task.id, model=model, pattern_example=bool(task.pattern_example))
@@ -105,7 +106,8 @@ def run_one(
 
     prompt = executor.build_prompt(task, init, fixture_dir, lines, resolved, context_lines)
     try:
-        result = ollama_client.generate(prompt, model=model, host=host, think=think, format=executor.FRAGMENT_SCHEMA)
+        result = ollama_client.generate(prompt, model=model, host=host, think=think, format=executor.FRAGMENT_SCHEMA,
+                                         options=options)
     except ollama_client.OllamaError as e:
         return BenchOutcome(**common, status="error", elapsed_seconds=time.monotonic() - start, detail=str(e))
 
@@ -132,7 +134,8 @@ def run_one(
     return BenchOutcome(**common, status=status, elapsed_seconds=elapsed, detail=fragment[:200])
 
 
-def run_bench(models: list[str], host: str, think: bool, context_lines: int, ablate: bool) -> list[BenchOutcome]:
+def run_bench(models: list[str], host: str, think: bool, context_lines: int, ablate: bool,
+              options: dict | None = None) -> list[BenchOutcome]:
     outcomes: list[BenchOutcome] = []
     fixture_dirs = sorted(p for p in FIXTURES_DIR.iterdir() if (p / "tasks.json").is_file())
 
@@ -146,7 +149,8 @@ def run_bench(models: list[str], host: str, think: bool, context_lines: int, abl
                 for variant in variants:
                     print(f"[{fixture_dir.name}/{variant.id}] {model} "
                           f"(pattern_example={'yes' if variant.pattern_example else 'no'}) ...", end=" ", flush=True)
-                    outcome = run_one(variant, ground_truth, init, fixture_dir, model, host, think, context_lines)
+                    outcome = run_one(variant, ground_truth, init, fixture_dir, model, host, think, context_lines,
+                                       options=options)
                     print(outcome.status)
                     outcomes.append(outcome)
 
@@ -177,7 +181,13 @@ def _print_report(outcomes: list[BenchOutcome]) -> None:
 
 def cmd_bench(args: argparse.Namespace) -> int:
     models = [m.strip() for m in args.models.split(",") if m.strip()]
-    outcomes = run_bench(models, args.host, args.think, args.context_lines, ablate=not args.no_ablate)
+    options: dict = {}
+    if args.temperature is not None:
+        options["temperature"] = args.temperature
+    if args.seed is not None:
+        options["seed"] = args.seed
+    outcomes = run_bench(models, args.host, args.think, args.context_lines, ablate=not args.no_ablate,
+                          options=options or None)
     _print_report(outcomes)
 
     if args.report:
@@ -205,6 +215,10 @@ def add_bench_subparser(subparsers) -> None:
                     help="Lines of read-only context shown before/after each anchor (default: 3)")
     p.add_argument("--no-ablate", action="store_true",
                     help="Skip the automatic without-pattern_example comparison run for tasks that have one")
+    p.add_argument("--temperature", type=float, default=None,
+                    help="Ollama sampling temperature to pass via options (default: server/model default, unset)")
+    p.add_argument("--seed", type=int, default=None,
+                    help="Ollama sampling seed to pass via options (default: unset)")
     p.add_argument("--report", type=Path, default=None,
                     help="Optional path to write the full per-task results as JSON")
     p.set_defaults(func=cmd_bench)

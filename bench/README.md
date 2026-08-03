@@ -241,6 +241,80 @@ itself) is harder than intended for a "close to best case" fixture. Worth
 investigating/rebalancing before trusting any future exact-match number
 from this harness as representative rather than kotlin_dao-flavored.
 
+## Chasing the kotlin_dao/python_converters split: prompt vs. generation params vs. a real bug (2026-08-03)
+
+Followed up directly on the split flagged above, specifically on
+`gemma4:12b` (the reigning champion): 2 of the 5 recorded
+`python_converters` failures in `gemma4-12b-gpu-2026-08-03.json` weren't
+plausible-but-wrong code, they were non-sequiturs for a one-line
+function/constant task (`"Theed\nSmall_S"`, `"The quick brown fox jumps
+over the lazy dog."`) — looked more like a decoding artifact than a wording
+problem. Tested both hypotheses directly rather than guessing.
+
+**Sampling temperature is not a lever here.** `ollama_client.generate()`
+previously passed no `options` to Ollama at all. Added an `options`
+passthrough (default `None`, no behavior change unless set) plus
+`bench --temperature`/`--seed`, then ran `python_converters` and
+`kotlin_dao` at default vs. `temperature=0.2`, 10 trials per
+task/`pattern_example` combo, gemma4:12b. **Every one of the 112 paired
+trials produced byte-identical output** — grammar-constrained JSON
+decoding (`format=FRAGMENT_SCHEMA`) likely already leaves little room for
+temperature to matter at this task shape. The two non-sequitur outputs
+also didn't reproduce even once across 40 fresh trials of the exact same
+tasks — treat them as a rare sampling-tail event, not a repeatable failure
+mode worth chasing further (`bench/results/temp-experiment-2026-08-03.json`).
+
+**Real bug found instead: wrong indentation for `function`/`class` `add`
+without `pattern_example`.** `_reference_indent` (`runner/executor.py`)
+derived the new fragment's required indentation from the `start_anchor`
+line's own indentation — correct when inserting a sibling inside the same
+block, but wrong for `structure_type in ("function", "class")`: this
+schema has no `parent` field for those two types (only `method` does), so
+they're always top-level constructs, yet `start_anchor` is frequently the
+*last body line of the previous function* (indented), not a true sibling.
+Without `pattern_example` to visually override it, gemma4:12b faithfully
+followed the wrong "4 leading spaces" instruction and nested the new
+function inside the previous one — reproduced in **20/20** fresh trials
+(`python_converters` task-001/002, `pattern_example=False`).
+
+Fixed by hardcoding indent 0 for any `function`/`class` insert, regardless
+of the anchor line's own depth. Controlled before/after rerun, same tasks
+and settings (`bench/results/temp-experiment-2026-08-03.json` vs.
+`bench/results/post-indent-fix-2026-08-03.json`):
+
+| | before fix (pe=False) | after fix (pe=False) |
+|---|---|---|
+| task-001 (`kilometers_to_miles`) | 10/10 nested at 4 spaces — invalid Python if spliced | 10/10 correctly top-level |
+| task-002 (`miles_to_kilometers`) | 10/10 nested at 4 spaces — invalid Python if spliced | 10/10 correctly top-level |
+
+Post-fix, `pattern_example=True` and `pattern_example=False` now produce
+**identical** output for both tasks — the fix closes the gap
+`pattern_example` was papering over for this specific failure mode, rather
+than `pattern_example` being what made it work.
+
+**This did not move the canonical bench's raw exact-match number** (still
+6/11 combined before and after —
+`bench/results/gemma4-12b-post-indent-fix-2026-08-03.json` vs. the
+original `gemma4-12b-gpu-2026-08-03.json`): the label is still `mismatch`,
+because the model chooses different-but-valid parameter names/formulas
+than the fixture's ground truth (e.g. `kilometers * 0.621371` vs. ground
+truth's `km * 0.621371`; `miles * 1.60934` vs. ground truth's
+`miles / 0.621371`), which exact-match scoring doesn't distinguish from
+genuinely broken output. The verified improvement is real but qualitative:
+previously-reproducible invalid/nested code is now consistently valid
+top-level code — visible in the raw fragments, not in this small-n label.
+`kotlin_dao` stayed 6/6 exact-match throughout every control run, both
+before and after — no regression.
+
+**Not fixed, scoped out deliberately:** `python_converters` task-003 (a
+`constant` add) shows the same wrong-indentation pattern and was left
+alone — unlike `function`/`class`, `import`/`constant`/`block` have no
+schema guarantee of being top-level (a constant can legitimately live
+inside a class body), so the same blanket "always 0" fix isn't safe there
+without actually tracking the anchor's enclosing scope. Worth a follow-up
+if this structure_type keeps showing up ungrounded (no `pattern_example`)
+in real batches.
+
 ## Trying an even bigger model
 
 12B (partially GPU-resident on this 8GB card) still didn't clear the bar —

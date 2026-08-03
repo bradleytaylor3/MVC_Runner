@@ -24,16 +24,23 @@ def generate(
     host: str = DEFAULT_HOST,
     think: bool = False,
     format: dict | str | None = None,
+    options: dict | None = None,
 ) -> GenerateResult:
     """`format` enables Ollama's grammar-constrained structured output: pass a
     JSON Schema dict to force the response to be JSON matching that shape (or
     the literal string "json" for schema-less valid-JSON-only). This makes
     output format reliable even on small models that don't reliably follow
-    prose formatting instructions on their own."""
+    prose formatting instructions on their own.
+
+    `options` is passed through verbatim as Ollama's per-request sampling
+    options (e.g. {"temperature": 0.2, "seed": 0}) — unset by default, which
+    leaves sampling at the model/server's own defaults."""
     url = f"http://{host}/api/generate"
     payload = {"model": model, "prompt": prompt, "stream": False, "think": think}
     if format is not None:
         payload["format"] = format
+    if options is not None:
+        payload["options"] = options
 
     try:
         resp = requests.post(url, json=payload, timeout=600)

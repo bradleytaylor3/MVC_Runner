@@ -1,0 +1,101 @@
+[
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 31.57799999997951,
+    "detail": "    @Delete\n    suspend fun delete(profile: Profile)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-001",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 8.515999999828637,
+    "detail": "\n    @Delete\n    suspend fun delete(profile: Profile)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 11.437000000150874,
+    "detail": "    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int\n"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-002",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 11.703999999910593,
+    "detail": "\n    @Query(\"SELECT COUNT(*) FROM profile\")\n    suspend fun count(): Int\n"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "exact_match",
+    "elapsed_seconds": 13.389999999897555,
+    "detail": "    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)"
+  },
+  {
+    "fixture": "kotlin_dao",
+    "task_id": "task-003",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "exact_match",
+    "elapsed_seconds": 10.656000000191852,
+    "detail": "\n    @Query(\"DELETE FROM profile WHERE id = :id\")\n    suspend fun deleteById(id: Long)"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 13.797000000020489,
+    "detail": "def kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-001",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 25.155999999959022,
+    "detail": "\ndef kilometers_to_miles(kilometers: float) -> float:\n    return kilometers * 0.621371"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "gemma4:12b",
+    "pattern_example": true,
+    "status": "mismatch",
+    "elapsed_seconds": 11.858999999938533,
+    "detail": "def miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-002",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 10.563000000081956,
+    "detail": "\ndef miles_to_kilometers(miles: float) -> float:\n    return miles * 1.60934"
+  },
+  {
+    "fixture": "python_converters",
+    "task_id": "task-003",
+    "model": "gemma4:12b",
+    "pattern_example": false,
+    "status": "mismatch",
+    "elapsed_seconds": 12.186999999918044,
+    "detail": "\n    # Constant for converting kilometers to miles\n    KM_TO_MILES_FACTOR = 0.621371\n"
+  }
+]

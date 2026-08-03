@@ -118,7 +118,20 @@ def _reference_indent(task: WorkTask, lines: list[str], resolved: anchor_mod.Res
     a body_end append). For replace-mode, the sibling is the span's own
     current first line — whatever replaces it keeps the same nesting level.
     Returns None when there's no non-blank line to measure (e.g. inserting
-    into a currently-empty body)."""
+    into a currently-empty body).
+
+    function/class add is a special case of the "sibling is the line right
+    before it" rule: this schema has no `parent` field for function/class
+    (that's what structure_type="method" is for), so they're always
+    top-level constructs regardless of where start_anchor's matched line
+    sits — and that line is very often the *last body statement* of the
+    preceding top-level function, which is indented, not a sibling. Found
+    live via bench: gemma4:12b faithfully followed a wrongly-computed
+    "4 leading spaces" instruction and nested a new top-level function
+    inside the previous one whenever no pattern_example was present to
+    visually override it."""
+    if task.structure_type in ("function", "class") and resolved.mode == "insert":
+        return 0
     if resolved.mode == "replace":
         ref_idx = resolved.start_line
     else:
