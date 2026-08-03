@@ -181,11 +181,14 @@ def _build_one_task(work_dir: Path, task_num: int) -> Path:
         if pattern_example is not None:
             data["pattern_example"] = pattern_example
 
-    acceptance_criteria = _prompt_list("acceptance_criteria")
-    while not acceptance_criteria:
-        print("acceptance_criteria requires at least one entry.")
-        acceptance_criteria = _prompt_list("acceptance_criteria")
-    data["acceptance_criteria"] = acceptance_criteria
+    criteria_required = exact_code is None
+    label = "acceptance_criteria" if criteria_required else "acceptance_criteria (optional)"
+    acceptance_criteria = _prompt_list(label)
+    while criteria_required and not acceptance_criteria:
+        print("acceptance_criteria requires at least one entry unless exact_code is set.")
+        acceptance_criteria = _prompt_list(label)
+    if acceptance_criteria:
+        data["acceptance_criteria"] = acceptance_criteria
 
     context_files = _prompt_list("context_files")
     if context_files:

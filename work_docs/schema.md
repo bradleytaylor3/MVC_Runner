@@ -53,7 +53,7 @@ filename.
   "structure_type": "function | class | method | docstring | import | constant | block",
   "change_type": "add | modify | delete",
   "description": "Plain-English intent — the logic/content, and why.",
-  "acceptance_criteria": ["Concrete, checkable condition"],
+  "acceptance_criteria": ["Concrete, checkable condition — required unless exact_code is set"],
 
   "name": "existing symbol name (modify/delete on function/class/method)",
   "parent": "containing class name (method only)",
@@ -71,8 +71,11 @@ filename.
 
 ### Always required
 
-- `id`, `title`, `file`, `structure_type`, `change_type`, `description`,
-  `acceptance_criteria` (non-empty list).
+- `id`, `title`, `file`, `structure_type`, `change_type`, `description`.
+- `acceptance_criteria` (non-empty list) — required *unless* `exact_code` is
+  set. When `exact_code` is set the model is never called, so criteria have
+  nothing to constrain; they become optional reviewer notes (still fine to
+  include if a human should double-check something specific).
 
 ### Location fields — which ones you need depends on `(structure_type, change_type)`
 
@@ -105,7 +108,10 @@ here instead of relying on `description` prose. This skips the model
 entirely: the runner reindents `exact_code` to fit the splice point and
 writes it deterministically (see `runner.patch.reindent_to`), with no model
 call at all. `description` stays required in all cases as the human-readable
-"why," even when `exact_code` is set. This matters because small/medium
+"why," even when `exact_code` is set — but `acceptance_criteria` becomes
+optional, since there's no model output left for it to constrain; keep
+`description` to a short clause rather than a paragraph, since nothing reads
+it besides a human skimming the diff. This matters because small/medium
 local models turned out to be unreliable even at the mechanical job of
 reindenting known-final code verbatim (a real 75-task batch: 0/75 succeeded
 when the model was asked to just reindent `exact_code`, 75/75 once that step

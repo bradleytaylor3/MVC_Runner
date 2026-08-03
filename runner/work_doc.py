@@ -18,7 +18,7 @@ STRUCTURE_TYPES = ("function", "class", "method", "docstring", "import", "consta
 SYMBOL_STRUCTURE_TYPES = ("function", "class")  # resolvable by name alone, whole-span (anchor.py's symbol resolution)
 
 REQUIRED_INIT_FIELDS = ("batch_id", "repo_root", "language")
-REQUIRED_WORK_FIELDS = ("id", "title", "file", "structure_type", "change_type", "description", "acceptance_criteria")
+REQUIRED_WORK_FIELDS = ("id", "title", "file", "structure_type", "change_type", "description")
 
 # (structure_type, change_type) -> (required location fields, optional location fields).
 # Single source of truth for both _validate_location below and work_builder.py's
@@ -114,9 +114,6 @@ class WorkTask:
         if change_type not in CHANGE_TYPES:
             err(f"change_type must be one of {CHANGE_TYPES}, got {change_type!r}")
 
-        if not isinstance(data["acceptance_criteria"], list) or not data["acceptance_criteria"]:
-            err("'acceptance_criteria' must be a non-empty list")
-
         new_file = data.get("new_file", False)
         name = data.get("name")
         parent = data.get("parent")
@@ -126,6 +123,13 @@ class WorkTask:
         occurrence = data.get("occurrence")
         exact_code = data.get("exact_code")
         pattern_example = data.get("pattern_example")
+
+        acceptance_criteria = data.get("acceptance_criteria", [])
+        if not isinstance(acceptance_criteria, list):
+            err("'acceptance_criteria' must be a list")
+        if exact_code is None and not acceptance_criteria:
+            err("'acceptance_criteria' must be a non-empty list unless 'exact_code' is set — exact_code "
+                "tasks never call the model, so criteria are optional reviewer notes there, not a machine gate")
 
         if change_type == "delete" and new_file:
             err("change_type 'delete' is incompatible with new_file: true")
@@ -148,7 +152,7 @@ class WorkTask:
             structure_type=structure_type,
             change_type=change_type,
             description=data["description"],
-            acceptance_criteria=data["acceptance_criteria"],
+            acceptance_criteria=acceptance_criteria,
             name=name,
             parent=parent,
             target_name=target_name,

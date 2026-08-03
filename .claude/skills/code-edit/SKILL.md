@@ -70,9 +70,10 @@ paraphrase of it).
    error — never that the generated code is correct. Every non-dry-run
    success wrote to a real file, so run `git diff` in the target repo
    (scoped to the touched files) and walk the user through it against each
-   task's `acceptance_criteria` rather than just declaring success. This is
-   the one step adb-test doesn't need — a UI test's pass/fail already *is*
-   the verdict, but a code edit's isn't.
+   task's `acceptance_criteria` (or, for an `exact_code` task that has none,
+   its `description`) rather than just declaring success. This is the one
+   step adb-test doesn't need — a UI test's pass/fail already *is* the
+   verdict, but a code edit's isn't.
 
 7. **Triage a failed task before re-running the whole batch.** If a task's
    failure looks like an authoring problem (anchor text that doesn't

@@ -121,3 +121,24 @@ def test_pattern_example_rejected_alongside_exact_code():
             ),
             PATH,
         )
+
+
+def test_acceptance_criteria_optional_with_exact_code():
+    data = _data(structure_type="function", change_type="modify", name="foo", exact_code="def foo():\n    pass")
+    del data["acceptance_criteria"]
+    task = WorkTask.from_dict(data, PATH)
+    assert task.acceptance_criteria == []
+
+
+def test_acceptance_criteria_required_without_exact_code():
+    data = _data(structure_type="function", change_type="modify", name="foo")
+    del data["acceptance_criteria"]
+    with pytest.raises(WorkDocError):
+        WorkTask.from_dict(data, PATH)
+
+
+def test_acceptance_criteria_must_be_a_list():
+    data = _data(structure_type="function", change_type="modify", name="foo", exact_code="def foo():\n    pass")
+    data["acceptance_criteria"] = "not a list"
+    with pytest.raises(WorkDocError):
+        WorkTask.from_dict(data, PATH)

@@ -45,7 +45,7 @@ Produce one JSON file per edit, plus exactly one init file, using this exact blo
 }
 
 ### One work file per edit (name each work_docs/task-NNN-<slug>.json)
-Every work file needs: id, title, file, structure_type, change_type, description, acceptance_criteria — plus whichever location field(s) that structure_type/change_type combination requires, per this table:
+Every work file needs: id, title, file, structure_type, change_type, description — plus whichever location field(s) that structure_type/change_type combination requires, per this table:
 
 | structure_type | change_type | required location field(s) |
 |---|---|---|
@@ -60,10 +60,14 @@ Every work file needs: id, title, file, structure_type, change_type, description
 | constant | modify / delete | start_anchor (+ end_anchor if it spans multiple lines) |
 | block | modify / delete | start_anchor (+ end_anchor if it spans multiple lines) — use this only when nothing more specific fits |
 
+acceptance_criteria (non-empty list of concrete, checkable conditions) is required *unless* exact_code is set (below) — with exact_code the model is never called, so criteria have nothing to constrain and become optional reviewer notes.
+
 Optional on any work file: exact_code (see below), context_files (files to show read-only for reference, never rewritten), new_file: true (change_type "add" only — skips all location fields, authors a brand-new file from scratch), occurrence: N (1-based — only needed if start_anchor's exact text matches more than one line in the file; otherwise resolution fails loudly rather than guessing which one you meant).
 
 ## exact_code — use this whenever you already know the final code
 If you already know the exact code a task should produce, put it in exact_code and let description stay a short "why." Do NOT paraphrase known code into description and hope the executing model reconstructs it — this skips the model entirely (the runner reindents exact_code deterministically), and that's a feature: a benchmark against real local models (qwen2.5:1.5b, gemma3:4b, qwen3:4b — see runner/bench.py) found roughly 0-15% exact-match on small, well-scoped generation tasks, even with a concrete pattern_example (below). Only omit exact_code when the exact code genuinely isn't decided yet and you're comfortable with the model's output being unreliable and needing review.
+
+Since nothing (model or runner) reads description or acceptance_criteria for an exact_code task — only a human skimming the diff later might — keep description to one short clause and skip acceptance_criteria entirely unless there's something specific worth flagging for review. Don't spend effort restating what exact_code already shows unambiguously.
 
 ## pattern_example — optional, low-confidence help for genuinely-undecided tasks
 If exact_code truly isn't decided yet but a real sibling instance of the same pattern already exists in the file (e.g. the DAO already has three @Query methods and this task adds a fourth), you can paste that sibling into pattern_example as a concrete few-shot example. Don't expect this to make the model reliable, though — it measurably didn't in testing. Only reach for it on low-stakes tasks a human will review anyway, and mutually exclusive with exact_code (pointless together, since exact_code skips the model that would see it).
@@ -76,7 +80,7 @@ If you're about to author several work docs that are all the same shape and diff
 - One work file = one file = one edit. A change touching multiple files or multiple unrelated locations in one file is several work files, not one.
 - Only reference names/anchor text you've actually confirmed exist in the current file content (or that an earlier task in this same batch already adds) — if you're guessing, ask me to paste the file first.
 - The batch runner stops at the first task that fails to resolve/apply, and later tasks may assume earlier ones already landed — order tasks so each one's location still exists given every earlier task in the batch has already been applied.
-- acceptance_criteria should be concrete and checkable, even though they aren't machine-verified — they're a checklist included in the model's prompt, and a human should still skim the resulting diff against them.
+- When exact_code is absent, acceptance_criteria should be concrete and checkable — they're a checklist included in the model's prompt, and a human should still skim the resulting diff against them. When exact_code is set, skip acceptance_criteria unless there's something specific worth flagging for review — the model never sees it, so it's not pulling its usual weight.
 
 ## Worked example
 Request: "In example_target.py (currently just a one-line comment), add a greet(name) function, then give it a one-line docstring."
@@ -101,11 +105,7 @@ Request: "In example_target.py (currently just a one-line comment), add a greet(
   "change_type": "add",
   "start_anchor": "# Starter file for work_docs/example_task.json — safe to overwrite/experiment with.",
   "exact_code": "def greet(name: str) -> str:\n    return f'Hello, {name}!'",
-  "description": "a function that returns a greeting for the given name",
-  "acceptance_criteria": [
-    "The file defines a function named greet taking one argument, name",
-    "greet('World') returns 'Hello, World!'"
-  ]
+  "description": "returns a greeting for the given name"
 }
 ===END FILE===
 
@@ -125,7 +125,7 @@ Request: "In example_target.py (currently just a one-line comment), add a greet(
 }
 ===END FILE===
 
-Note task-002 needs no anchor text at all — target_name alone is enough for a docstring, and the runner inserts it at the correct place (the first line of greet's body) automatically.
+Note task-002 needs no anchor text at all — target_name alone is enough for a docstring, and the runner inserts it at the correct place (the first line of greet's body) automatically. Also note task-001 has no acceptance_criteria (exact_code is set, so nothing reads it) while task-002 does (no exact_code, so the model needs a checklist).
 
 Now ask me anything you still need, then produce the batch.
 ```
