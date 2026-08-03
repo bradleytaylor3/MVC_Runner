@@ -1,7 +1,7 @@
 {
   "kind": "init",
   "batch_id": "organizer-subject-landscape",
-  "repo_root": "/home/bradleyt/media_pipeline",
+  "repo_root": "/path/to/your/media_pipeline",
   "language": "python",
   "conventions": [
     "Procedural top-level functions, no classes",

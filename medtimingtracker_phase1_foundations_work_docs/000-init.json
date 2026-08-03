@@ -1,7 +1,7 @@
 {
   "kind": "init",
   "batch_id": "medtt-phase1-foundations",
-  "repo_root": "C:/Users/bradl/AndroidStudioProjects/medtimingtracker",
+  "repo_root": "C:/path/to/your/AndroidStudioProjects/medtimingtracker",
   "language": "kotlin",
   "conventions": [
     "Package root: com.taylordproductivty.med_timing_tracker",
