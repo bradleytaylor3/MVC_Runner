@@ -27,7 +27,7 @@ MVC_Runner/
 ├── work_docs/                # Example code-edit batch + schema + authoring prompt
 ├── work_docs_adb/            # Example ADB-test batch + schema + authoring prompt
 ├── organizer_work_docs/      # A real 6-task code-edit batch (not a toy example)
-├── medtimingtracker_*_work_docs/  # 12 real batches, 36 tasks, from an actual
+├── medtimingtracker_*_work_docs/  # 18 real batches, 134 tasks, from an actual
 │                                    Android/Kotlin build -- see below
 ├── scaffold_examples/        # Example scaffold spec (see `scaffold` below)
 ├── bench/fixtures/            # Known-answer fixtures for `bench` (see below)
@@ -118,15 +118,16 @@ python -m runner.cli run --work-dir work_docs --model gemma4:12b
 
 ### Real-world example corpus: `medtimingtracker_*_work_docs/`
 
-`organizer_work_docs/` is one real batch; these are twelve, from actually
-building an Android/Kotlin app (a med-timing-tracker) with this tool over
-one session — 36 tasks total, almost entirely `exact_code` (deterministic
-splices, no model call). Kept as tracked examples because they're a much
-larger and more structurally diverse sample than anything else in this
-repo: every `structure_type` this schema supports except `function`/
-`class`/`docstring` shows up somewhere across them, split across Room
+`organizer_work_docs/` is one real batch; these are eighteen, from actually
+building an Android/Kotlin app (a med-timing-tracker) with this tool across
+several sessions as the app grew — 134 tasks total, all `exact_code`
+(deterministic splices, no model call). Kept as tracked examples because
+they're a much larger and more structurally diverse sample than anything
+else in this repo: every `structure_type` this schema supports except
+`docstring` shows up somewhere across them, split across Room
 entities/DAOs/database/repositories, a notification pipeline, ViewModels,
-and a JSON backup layer — real Kotlin, not toy snippets.
+a JSON backup layer, i18n string extraction, and dialog/receiver wiring for
+dose logging and reminders — real Kotlin, not toy snippets.
 
 They're also the origin of two real bugs this tool had (both fixed, see
 `tests/test_anchor.py` and `tests/test_executor.py` for the regression
