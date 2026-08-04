@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-024",
+  "title": "Add stringResource/R imports to NavGraph.kt",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/navigation/NavGraph.kt",
+  "structure_type": "import",
+  "change_type": "add",
+  "start_anchor": "import com.taylordproductivty.med_timing_tracker.ui.screens.SettingsScreen",
+  "description": "Needed for the bottom nav tab labels, which move from raw strings to string-resource ids resolved at render time.",
+  "acceptance_criteria": [
+    "File imports androidx.compose.ui.res.stringResource",
+    "File imports com.taylordproductivty.med_timing_tracker.R"
+  ],
+  "exact_code": "import com.taylordproductivty.med_timing_tracker.ui.screens.SettingsScreen\nimport androidx.compose.ui.res.stringResource\nimport com.taylordproductivty.med_timing_tracker.R"
+}

@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-019",
+  "title": "Use the originally-selected time for the confirmed (too-soon-acknowledged) logDose call",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "                    givenAtEpochMillis = System.currentTimeMillis(),",
+  "description": "By the time this task runs, task-017 has already rewritten the other occurrence of this exact line, so this is now the only remaining match (no occurrence needed). This is the too-soon-confirmed retry path -- it must use the time the user originally picked (now carried on PendingDoseConfirmation, task-013/018), not a fresh 'now' captured at confirm-click time.",
+  "acceptance_criteria": [
+    "The line becomes: givenAtEpochMillis = pending.givenAtEpochMillis,"
+  ],
+  "exact_code": "                    givenAtEpochMillis = pending.givenAtEpochMillis,"
+}

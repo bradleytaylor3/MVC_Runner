@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-015",
+  "title": "Use string resources for Hours/Minutes labels in DurationPicker",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/components/DurationPicker.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "name": "DurationPicker",
+  "description": "The two NumberField label arguments become stringResource() calls instead of literal strings.",
+  "acceptance_criteria": [
+    "The hours NumberField's label argument is stringResource(R.string.hours_label)",
+    "The minutes NumberField's label argument is stringResource(R.string.minutes_label)"
+  ],
+  "exact_code": "@Composable\nfun DurationPicker(\n    hours: Int,\n    minutes: Int,\n    onHoursChange: (Int) -> Unit,\n    onMinutesChange: (Int) -> Unit,\n    modifier: Modifier = Modifier,\n) {\n    Row(\n        horizontalArrangement = Arrangement.spacedBy(12.dp),\n        modifier = modifier.fillMaxWidth(),\n    ) {\n        NumberField(\n            value = hours,\n            onValueChange = onHoursChange,\n            label = stringResource(R.string.hours_label),\n            maxValue = 23,\n            modifier = Modifier.weight(1f),\n        )\n        NumberField(\n            value = minutes,\n            onValueChange = onMinutesChange,\n            label = stringResource(R.string.minutes_label),\n            maxValue = 59,\n            modifier = Modifier.weight(1f),\n        )\n    }\n}"
+}

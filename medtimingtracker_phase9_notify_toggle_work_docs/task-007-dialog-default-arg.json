@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-007",
+  "title": "Pass the settings default into AddDoseDialog",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "            initialProfileId = selectedProfileId,",
+  "description": "AddDoseDialog's new defaultNotifyOnNextDose parameter (task-004) is sourced from the collected settings state (task-006).",
+  "acceptance_criteria": [
+    "The existing initialProfileId argument line is unchanged",
+    "A new argument immediately follows it: defaultNotifyOnNextDose = settings.notificationsEnabled,"
+  ],
+  "exact_code": "            initialProfileId = selectedProfileId,\n            defaultNotifyOnNextDose = settings.notificationsEnabled,"
+}

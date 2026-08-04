@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-014",
+  "title": "Add editingDoseLog state",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "    var showAbout by remember { mutableStateOf(false) }",
+  "description": "Tracks which dose (if any) the user tapped to edit, following the same var ... by remember pattern as the other dialog-visibility flags in this function.",
+  "acceptance_criteria": [
+    "The existing showAbout line is unchanged",
+    "A new line immediately follows it: var editingDoseLog by remember { mutableStateOf<DoseLog?>(null) }"
+  ],
+  "exact_code": "    var showAbout by remember { mutableStateOf(false) }\n    var editingDoseLog by remember { mutableStateOf<DoseLog?>(null) }"
+}

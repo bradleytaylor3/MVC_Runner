@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-020",
+  "title": "Add stringResource/R imports to WarningDialog.kt",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/components/WarningDialog.kt",
+  "structure_type": "import",
+  "change_type": "add",
+  "start_anchor": "import androidx.compose.runtime.Composable",
+  "description": "Needed so the composable can reference the new too_soon_warning_body parameterized resource.",
+  "acceptance_criteria": [
+    "File imports androidx.compose.ui.res.stringResource",
+    "File imports com.taylordproductivty.med_timing_tracker.R"
+  ],
+  "exact_code": "import androidx.compose.runtime.Composable\nimport androidx.compose.ui.res.stringResource\nimport com.taylordproductivty.med_timing_tracker.R"
+}

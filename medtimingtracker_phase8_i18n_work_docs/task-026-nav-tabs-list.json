@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-026",
+  "title": "bottomNavTabs list uses string-resource ids",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/navigation/NavGraph.kt",
+  "structure_type": "constant",
+  "change_type": "modify",
+  "start_anchor": "private val bottomNavTabs = listOf(",
+  "end_anchor": ")",
+  "description": "Each tab's raw label string is replaced with the matching R.string id, to be resolved via stringResource() where the tabs are actually rendered inside MedTimingNavGraph.",
+  "acceptance_criteria": [
+    "Home tab uses R.string.bottom_nav_home",
+    "People tab uses R.string.bottom_nav_people",
+    "Meds tab uses R.string.bottom_nav_meds",
+    "Routes and icons unchanged"
+  ],
+  "exact_code": "private val bottomNavTabs = listOf(\n    BottomNavTab(Routes.DAILY_LIST, R.string.bottom_nav_home, Icons.Default.Home),\n    BottomNavTab(Routes.MANAGE_PROFILES, R.string.bottom_nav_people, Icons.Default.Person),\n    BottomNavTab(Routes.MANAGE_MEDICATIONS, R.string.bottom_nav_meds, Icons.AutoMirrored.Filled.List),\n)"
+}

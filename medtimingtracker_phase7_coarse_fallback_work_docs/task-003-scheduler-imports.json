@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Add WorkManager imports to ExactAlarmScheduler",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ExactAlarmScheduler.kt",
+  "structure_type": "import",
+  "change_type": "add",
+  "description": "Imports needed by the upcoming WorkManager fallback branch in schedule()/cancel().",
+  "acceptance_criteria": [
+    "New import lines are added for: androidx.work.ExistingWorkPolicy, androidx.work.OneTimeWorkRequestBuilder, androidx.work.WorkManager, androidx.work.workDataOf, java.util.concurrent.TimeUnit",
+    "No existing import lines are changed"
+  ],
+  "start_anchor": "import android.os.Build",
+  "exact_code": "import androidx.work.ExistingWorkPolicy\nimport androidx.work.OneTimeWorkRequestBuilder\nimport androidx.work.WorkManager\nimport androidx.work.workDataOf\nimport java.util.concurrent.TimeUnit"
+}

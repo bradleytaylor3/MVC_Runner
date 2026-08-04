@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-016",
+  "title": "onSubmit lambda accepts the givenAtEpochMillis argument",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "            onSubmit = { profileId, medicationId, doseAmount, notifyOnNextDose ->",
+  "description": "Matches AddDoseDialog's new onSubmit signature (task-011), which now passes the dialog-selected time as a new argument.",
+  "acceptance_criteria": [
+    "The lambda parameter list becomes { profileId, medicationId, doseAmount, givenAtEpochMillis, notifyOnNextDose -> }"
+  ],
+  "exact_code": "            onSubmit = { profileId, medicationId, doseAmount, givenAtEpochMillis, notifyOnNextDose ->"
+}

@@ -1,0 +1,20 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Use string resources in AboutDialog composable",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/components/AboutDialog.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "name": "AboutDialog",
+  "description": "Replace every hardcoded string literal in the dialog with a stringResource() call against the resources added in task-001.",
+  "acceptance_criteria": [
+    "Dialog title uses stringResource(R.string.about)",
+    "Body paragraph uses stringResource(R.string.about_dialog_body)",
+    "'Dose reminders' heading and its body paragraph use about_dose_reminders_heading / about_dose_reminders_body",
+    "'AI-assisted setup' heading uses the shared ai_assisted_setup resource, body uses about_ai_setup_body",
+    "'Caregiver phone number' heading and body use about_caregiver_phone_heading / about_caregiver_phone_body",
+    "Close button uses stringResource(R.string.close)",
+    "No hardcoded user-facing string literals remain in this function"
+  ],
+  "exact_code": "@Composable\nfun AboutDialog(onDismiss: () -> Unit) {\n    AlertDialog(\n        onDismissRequest = onDismiss,\n        title = { Text(stringResource(R.string.about)) },\n        text = {\n            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {\n                Text(stringResource(R.string.about_dialog_body))\n\n                Text(\n                    stringResource(R.string.about_dose_reminders_heading),\n                    style = MaterialTheme.typography.titleSmall,\n                    modifier = Modifier.padding(top = 16.dp),\n                )\n                Text(\n                    stringResource(R.string.about_dose_reminders_body),\n                    style = MaterialTheme.typography.bodyMedium,\n                    modifier = Modifier.padding(top = 4.dp),\n                )\n\n                Text(\n                    stringResource(R.string.ai_assisted_setup),\n                    style = MaterialTheme.typography.titleSmall,\n                    modifier = Modifier.padding(top = 16.dp),\n                )\n                Text(\n                    stringResource(R.string.about_ai_setup_body),\n                    style = MaterialTheme.typography.bodyMedium,\n                    modifier = Modifier.padding(top = 4.dp),\n                )\n\n                Text(\n                    stringResource(R.string.about_caregiver_phone_heading),\n                    style = MaterialTheme.typography.titleSmall,\n                    modifier = Modifier.padding(top = 16.dp),\n                )\n                Text(\n                    stringResource(R.string.about_caregiver_phone_body),\n                    style = MaterialTheme.typography.bodyMedium,\n                    modifier = Modifier.padding(top = 4.dp),\n                )\n            }\n        },\n        confirmButton = {\n            TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) }\n        },\n    )\n}"
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-006",
+  "title": "Collect settings state in DailyListScreen",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "    val medications by viewModel.activeMedications.collectAsState()",
+  "description": "Needed to source AddDoseDialog's default notify-on-next-dose value from the Settings toggle.",
+  "acceptance_criteria": [
+    "The existing medications collectAsState line is unchanged",
+    "A new line immediately follows it: val settings by viewModel.settings.collectAsState()"
+  ],
+  "exact_code": "    val medications by viewModel.activeMedications.collectAsState()\n    val settings by viewModel.settings.collectAsState()"
+}

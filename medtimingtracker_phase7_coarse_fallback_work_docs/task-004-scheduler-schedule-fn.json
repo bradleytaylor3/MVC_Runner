@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-004",
+  "title": "Branch ExactAlarmScheduler.schedule() on canScheduleExact",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ExactAlarmScheduler.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "name": "schedule",
+  "description": "When exact alarms aren't permitted, fall back to a best-effort WorkManager one-time work item instead of silently doing nothing. Unique work name keyed to the dose id with ExistingWorkPolicy.REPLACE mirrors the existing cancel-then-reschedule semantics this function already has for the exact-alarm path.",
+  "acceptance_criteria": [
+    "Still starts with cancel(context, doseLogId)",
+    "If canScheduleExact(context) is true, behavior is unchanged: alarmManager.setExactAndAllowWhileIdle(...) as before",
+    "If false, computes delayMillis = (triggerAtMillis - System.currentTimeMillis()).coerceAtLeast(0), builds a OneTimeWorkRequestBuilder<CoarseReminderWorker>() with setInitialDelay(delayMillis, TimeUnit.MILLISECONDS) and setInputData(workDataOf(EXTRA_DOSE_LOG_ID to doseLogId, EXTRA_TITLE to title, EXTRA_TEXT to text))",
+    "Enqueues that request via WorkManager.getInstance(context).enqueueUniqueWork(\"dose_reminder_$doseLogId\", ExistingWorkPolicy.REPLACE, request)",
+    "Function signature (parameters) unchanged"
+  ],
+  "exact_code": "    // Exact path when permitted; otherwise a best-effort WorkManager fallback so a\n    // reminder still eventually fires instead of silently never being scheduled. The\n    // fallback is Doze/App-Standby-deferrable, unlike setExactAndAllowWhileIdle, so it\n    // may fire late.\n    fun schedule(context: Context, doseLogId: Int, triggerAtMillis: Long, title: String, text: String) {\n        cancel(context, doseLogId)\n        if (canScheduleExact(context)) {\n            val alarmManager = context.getSystemService(AlarmManager::class.java)\n            alarmManager.setExactAndAllowWhileIdle(\n                AlarmManager.RTC_WAKEUP,\n                triggerAtMillis,\n                pendingIntent(context, doseLogId, title, text),\n            )\n        } else {\n            val delayMillis = (triggerAtMillis - System.currentTimeMillis()).coerceAtLeast(0)\n            val request = OneTimeWorkRequestBuilder<CoarseReminderWorker>()\n                .setInitialDelay(delayMillis, TimeUnit.MILLISECONDS)\n                .setInputData(\n                    workDataOf(\n                        EXTRA_DOSE_LOG_ID to doseLogId,\n                        EXTRA_TITLE to title,\n                        EXTRA_TEXT to text,\n                    ),\n                )\n                .build()\n            WorkManager.getInstance(context)\n                .enqueueUniqueWork(\"dose_reminder_$doseLogId\", ExistingWorkPolicy.REPLACE, request)\n        }\n    }"
+}

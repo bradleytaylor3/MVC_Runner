@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-007",
+  "title": "pendingIntent() gains profileId/medicationId/defaultDoseAmount parameters",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ExactAlarmScheduler.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "    private fun pendingIntent(context: Context, doseLogId: Int, title: String, text: String): PendingIntent {",
+  "description": "Using structure_type block here (not function-modify-by-name) since pendingIntent(...) is also called as a bare argument on its own line inside schedule()'s multi-line call, which a name-based symbol search would ambiguously match as a second 'declaration'. This task only touches the signature line.",
+  "acceptance_criteria": [
+    "New signature is pendingIntent(context: Context, doseLogId: Int, title: String, text: String, profileId: Int, medicationId: Int, defaultDoseAmount: String): PendingIntent {",
+    "Only this one line changes -- the function body is untouched by this task"
+  ],
+  "exact_code": "    private fun pendingIntent(\n        context: Context,\n        doseLogId: Int,\n        title: String,\n        text: String,\n        profileId: Int,\n        medicationId: Int,\n        defaultDoseAmount: String,\n    ): PendingIntent {"
+}

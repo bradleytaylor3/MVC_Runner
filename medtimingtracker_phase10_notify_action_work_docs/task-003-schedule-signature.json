@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "schedule() gains profileId/medicationId/defaultDoseAmount parameters",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ExactAlarmScheduler.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "    fun schedule(context: Context, doseLogId: Int, triggerAtMillis: Long, title: String, text: String) {",
+  "description": "These three new values are threaded into the alarm/work Intent so the eventual notification's action button (task-011 in NotificationHelper) knows what to log. Using structure_type block (not function-modify-by-name) here since schedule() internally calls cancel(...) and pendingIntent(...) unqualified, which makes a name-based symbol search for those two symbols ambiguous -- this task only touches the signature line itself, which has no such ambiguity.",
+  "acceptance_criteria": [
+    "New signature is schedule(context: Context, doseLogId: Int, triggerAtMillis: Long, title: String, text: String, profileId: Int, medicationId: Int, defaultDoseAmount: String) {",
+    "Only this one line changes -- the function body is untouched by this task"
+  ],
+  "exact_code": "    fun schedule(\n        context: Context,\n        doseLogId: Int,\n        triggerAtMillis: Long,\n        title: String,\n        text: String,\n        profileId: Int,\n        medicationId: Int,\n        defaultDoseAmount: String,\n    ) {"
+}

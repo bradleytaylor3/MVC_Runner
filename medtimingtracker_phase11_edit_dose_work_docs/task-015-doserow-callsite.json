@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-015",
+  "title": "Wire DoseRow's new onClick to open the edit dialog",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "                        DoseRow(medicationName = medicationName, doseLog = doseLog)",
+  "description": "DoseRow now requires an onClick parameter (task-010). Tapping a row opens the edit-dose dialog for that specific dose.",
+  "acceptance_criteria": [
+    "The call becomes DoseRow(medicationName = medicationName, doseLog = doseLog, onClick = { editingDoseLog = doseLog })"
+  ],
+  "exact_code": "                        DoseRow(medicationName = medicationName, doseLog = doseLog, onClick = { editingDoseLog = doseLog })"
+}

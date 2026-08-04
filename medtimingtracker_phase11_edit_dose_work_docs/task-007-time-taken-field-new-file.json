@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-007",
+  "title": "Add shared TimeTakenField composable",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/components/TimeTakenField.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "A compact, embeddable time-of-day picker (Material3's TimeInput, not the full clock-dial TimePicker -- TimeInput is designed for exactly this, embedding inside another dialog) shared by AddDoseDialog and EditDoseDialog. Seeds hour/minute from initialEpochMillis's existing date; as the user changes hour/minute, recombines them with that SAME original date via java.util.Calendar and reports the new full timestamp via onEpochMillisChange -- this only ever adjusts time-of-day, never the date, matching this app's other date/time handling (java.util.Calendar/SimpleDateFormat, no new date library).",
+  "acceptance_criteria": [
+    "@Composable fun TimeTakenField(initialEpochMillis: Long, onEpochMillisChange: (Long) -> Unit, modifier: Modifier = Modifier)",
+    "Uses rememberTimePickerState(initialHour, initialMinute, is24Hour = false) seeded from initialEpochMillis via Calendar.HOUR_OF_DAY/MINUTE",
+    "A LaunchedEffect keyed on the picker state's hour and minute recombines them with initialEpochMillis's original date (year/month/day unchanged) and calls onEpochMillisChange with the resulting epoch millis",
+    "Renders a label (stringResource(R.string.time_taken_label)) above a TimeInput(state = ...)",
+    "Requires @OptIn(ExperimentalMaterial3Api::class) on this composable itself (TimePicker APIs are experimental) -- callers do not need their own opt-in since it's fully contained here"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.ui.components\n\nimport androidx.compose.foundation.layout.Column\nimport androidx.compose.foundation.layout.padding\nimport androidx.compose.material3.ExperimentalMaterial3Api\nimport androidx.compose.material3.MaterialTheme\nimport androidx.compose.material3.Text\nimport androidx.compose.material3.TimeInput\nimport androidx.compose.material3.rememberTimePickerState\nimport androidx.compose.runtime.Composable\nimport androidx.compose.runtime.LaunchedEffect\nimport androidx.compose.runtime.remember\nimport androidx.compose.ui.Modifier\nimport androidx.compose.ui.res.stringResource\nimport androidx.compose.ui.unit.dp\nimport com.taylordproductivty.med_timing_tracker.R\nimport java.util.Calendar\n\n@OptIn(ExperimentalMaterial3Api::class)\n@Composable\nfun TimeTakenField(\n    initialEpochMillis: Long,\n    onEpochMillisChange: (Long) -> Unit,\n    modifier: Modifier = Modifier,\n) {\n    val initialCalendar = remember(initialEpochMillis) {\n        Calendar.getInstance().apply { timeInMillis = initialEpochMillis }\n    }\n    val timePickerState = rememberTimePickerState(\n        initialHour = initialCalendar.get(Calendar.HOUR_OF_DAY),\n        initialMinute = initialCalendar.get(Calendar.MINUTE),\n        is24Hour = false,\n    )\n    LaunchedEffect(timePickerState.hour, timePickerState.minute) {\n        val calendar = Calendar.getInstance().apply {\n            timeInMillis = initialEpochMillis\n            set(Calendar.HOUR_OF_DAY, timePickerState.hour)\n            set(Calendar.MINUTE, timePickerState.minute)\n            set(Calendar.SECOND, 0)\n            set(Calendar.MILLISECOND, 0)\n        }\n        onEpochMillisChange(calendar.timeInMillis)\n    }\n    Column(modifier = modifier) {\n        Text(stringResource(R.string.time_taken_label), style = MaterialTheme.typography.labelLarge)\n        TimeInput(state = timePickerState, modifier = Modifier.padding(top = 4.dp))\n    }\n}\n"
+}

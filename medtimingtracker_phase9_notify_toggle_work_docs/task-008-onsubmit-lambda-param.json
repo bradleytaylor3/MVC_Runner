@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-008",
+  "title": "onSubmit lambda accepts the notifyOnNextDose argument",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "            onSubmit = { profileId, medicationId, doseAmount ->",
+  "description": "Matches AddDoseDialog's new onSubmit signature (task-004), which now passes the dialog's chosen notify-on-next-dose value as a 4th argument.",
+  "acceptance_criteria": [
+    "The lambda parameter list becomes { profileId, medicationId, doseAmount, notifyOnNextDose -> }",
+    "Nothing else on this line changes"
+  ],
+  "exact_code": "            onSubmit = { profileId, medicationId, doseAmount, notifyOnNextDose ->"
+}

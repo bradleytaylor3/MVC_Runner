@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-005",
+  "title": "PendingDoseConfirmation carries the chosen notifyOnNextDose value",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "constant",
+  "change_type": "modify",
+  "start_anchor": "private data class PendingDoseConfirmation(",
+  "end_anchor": ")",
+  "description": "The 'too soon, log anyway?' confirmation path needs to remember the user's notify-on-next-dose choice from the original dialog submission so it can be passed through when they confirm.",
+  "acceptance_criteria": [
+    "PendingDoseConfirmation gains a new field: val notifyOnNextDose: Boolean",
+    "The existing four fields (profileId, medicationId, doseAmount, minutesRemaining) are unchanged"
+  ],
+  "exact_code": "private data class PendingDoseConfirmation(\n    val profileId: Int,\n    val medicationId: Int,\n    val doseAmount: String,\n    val minutesRemaining: Long,\n    val notifyOnNextDose: Boolean,\n)"
+}

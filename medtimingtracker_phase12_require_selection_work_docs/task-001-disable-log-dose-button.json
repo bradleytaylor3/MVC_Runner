@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Disable Log dose button without a selected person and medication",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/components/AddDoseDialog.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "            Button(",
+  "description": "The onClick handler already silently no-ops if selectedProfile/selectedMedication are null (e.g. no profiles or medications exist yet), but the button stays tappable with no visual feedback. Making it explicitly enabled = ... makes 'you can't log a dose without a person and a medication' a visible, enforced UI state instead of a silent failure.",
+  "acceptance_criteria": [
+    "The Button call gains enabled = selectedProfile != null && selectedMedication != null",
+    "The existing onClick logic (including its own null-check before calling onSubmit) is unchanged"
+  ],
+  "exact_code": "            Button(\n                enabled = selectedProfile != null && selectedMedication != null,"
+}

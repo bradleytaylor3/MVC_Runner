@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-036",
+  "title": "Use string resource for importAiSetupJson parse-error fallback",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListViewModel.kt",
+  "structure_type": "method",
+  "change_type": "modify",
+  "name": "importAiSetupJson",
+  "parent": "DailyListViewModel",
+  "description": "The hardcoded 'Failed to parse the pasted JSON' fallback becomes a string resource, resolved via getApplication<Application>() since this is a plain ViewModel method.",
+  "acceptance_criteria": [
+    "The parseError fallback uses getApplication<Application>().getString(R.string.error_failed_parse_ai_json)",
+    "All other logic (validation, profile/medication insertion) is unchanged"
+  ],
+  "exact_code": "    fun importAiSetupJson(json: String, onResult: (errors: List<String>, profilesAdded: Int, medicationsAdded: Int) -> Unit) {\n        viewModelScope.launch {\n            val (payload, parseError) = AiSetupImportValidator.parseJson(json)\n            if (payload == null) {\n                onResult(listOf(parseError ?: getApplication<Application>().getString(R.string.error_failed_parse_ai_json)), 0, 0)\n                return@launch\n            }\n            val validationErrors = AiSetupImportValidator.validate(payload)\n            if (validationErrors.isNotEmpty()) {\n                onResult(validationErrors, 0, 0)\n                return@launch\n            }\n            payload.profiles.forEach {\n                profileRepository.insert(\n                    Profile(name = it.name, kind = ProfileKind.valueOf(it.kind.trim().uppercase()), phoneNumber = it.phoneNumber),\n                )\n            }\n            payload.medications.forEach {\n                val minIntervalMinutes = it.minIntervalHours?.let { hours -> (hours * 60).toInt() }\n                medicationRepository.insert(\n                    Medication(name = it.name, defaultDose = it.defaultDose, minIntervalMinutes = minIntervalMinutes),\n                )\n            }\n            onResult(emptyList(), payload.profiles.size, payload.medications.size)\n        }\n    }"
+}

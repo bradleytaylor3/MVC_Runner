@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Add DoseLogDao.update()",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/DoseLogDao.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DoseLogDao",
+  "start_anchor": "    suspend fun insert(doseLog: DoseLog): Long",
+  "description": "Enables editing a previously-logged dose in place (whole-row update matched by primary key), mirroring MedicationDao.update()/ProfileDao.update() exactly -- Room's generated @Update, not a custom query.",
+  "acceptance_criteria": [
+    "New method: @Update suspend fun update(doseLog: DoseLog)"
+  ],
+  "exact_code": "    @Update\n    suspend fun update(doseLog: DoseLog)"
+}

@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-014",
+  "title": "Pass the new fields into BootReminderReceiver's schedule() call",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/BootReminderReceiver.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "                    ExactAlarmScheduler.schedule(appContext, doseLog.id, nextEligible, title, text)",
+  "description": "ExactAlarmScheduler.schedule's signature now requires profileId/medicationId/defaultDoseAmount (task-003) -- doseLog.profileId, doseLog.medicationId, and medication.defaultDose are already in scope in this loop, so a reminder re-armed after a reboot still carries enough data for its own notification action button.",
+  "acceptance_criteria": [
+    "The call becomes ExactAlarmScheduler.schedule(appContext, doseLog.id, nextEligible, title, text, doseLog.profileId, doseLog.medicationId, medication.defaultDose)"
+  ],
+  "exact_code": "                    ExactAlarmScheduler.schedule(appContext, doseLog.id, nextEligible, title, text, doseLog.profileId, doseLog.medicationId, medication.defaultDose)"
+}

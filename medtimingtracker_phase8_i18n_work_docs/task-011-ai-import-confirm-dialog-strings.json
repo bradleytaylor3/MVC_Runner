@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-011",
+  "title": "Use string resources in AiImportConfirmDialog composable",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/components/AiImportConfirmDialog.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "name": "AiImportConfirmDialog",
+  "description": "Replace hardcoded literals with stringResource() calls. Logic unchanged.",
+  "acceptance_criteria": [
+    "Title uses ai_import_confirm_title, body uses ai_import_confirm_body",
+    "Confirm button uses the shared import_button resource, dismiss uses cancel"
+  ],
+  "exact_code": "@Composable\nfun AiImportConfirmDialog(\n    onConfirm: () -> Unit,\n    onDismiss: () -> Unit,\n) {\n    AlertDialog(\n        onDismissRequest = onDismiss,\n        title = { Text(stringResource(R.string.ai_import_confirm_title)) },\n        text = {\n            Text(stringResource(R.string.ai_import_confirm_body))\n        },\n        confirmButton = {\n            TextButton(onClick = onConfirm) { Text(stringResource(R.string.import_button)) }\n        },\n        dismissButton = {\n            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }\n        },\n    )\n}"
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-004",
+  "title": "Add DoseLogRepository.update() passthrough",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/DoseLogRepository.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DoseLogRepository",
+  "start_anchor": "    suspend fun insert(doseLog: DoseLog): Long = doseLogDao.insert(doseLog)",
+  "description": "One-line passthrough to the new DAO method (task-003), matching this repository's existing style for every other method.",
+  "acceptance_criteria": [
+    "New method: suspend fun update(doseLog: DoseLog) = doseLogDao.update(doseLog)"
+  ],
+  "exact_code": "    suspend fun update(doseLog: DoseLog) = doseLogDao.update(doseLog)"
+}

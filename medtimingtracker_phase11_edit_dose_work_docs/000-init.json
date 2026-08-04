@@ -1,0 +1,12 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase11-edit-dose",
+  "repo_root": "C:/path/to/your/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker",
+    "Avoid structure_type class/function modify-by-name on any declaration whose signature has a brace before its real body (lambda default like = {}) -- DailyListScreen's own signature has this shape, so edits to it use structure_type block/constant with short verified-unique single-line anchors instead.",
+    "For change_type add, exact_code must contain ONLY the new content -- never repeat the anchor line itself, the runner inserts after the anchor automatically.",
+    "TimeInput/rememberTimePickerState (Material3, already available via this project's Compose BOM) are used with is24Hour = false to match the h:mm a format already used throughout the app (DoseRow, ReminderMessage)."
+  ]
+}

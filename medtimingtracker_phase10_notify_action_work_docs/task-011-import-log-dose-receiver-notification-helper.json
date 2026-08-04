@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-011",
+  "title": "sendReminder builds a 'log dose' notification action",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/NotificationHelper.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "name": "sendReminder",
+  "description": "Adds a NotificationCompat.Action targeting the new LogDoseFromNotificationReceiver (task-012, same package -- no import needed), letting the user log the dose directly from the notification without opening the app. The action's PendingIntent reuses notificationId (== doseLogId) as its request code -- safe because it targets a different component than the existing content-tap PendingIntent, so they don't collide despite sharing a request code (PendingIntent identity includes the target component). Nothing about the existing permission check, content-tap intent, or notify() call changes.",
+  "acceptance_criteria": [
+    "Signature gains profileId: Int, medicationId: Int, defaultDoseAmount: String parameters",
+    "A new Intent(context, LogDoseFromNotificationReceiver::class.java) carries EXTRA_DOSE_LOG_ID (= notificationId), EXTRA_PROFILE_ID, EXTRA_MEDICATION_ID, EXTRA_DEFAULT_DOSE_AMOUNT",
+    "A PendingIntent.getBroadcast(context, notificationId, ..., FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE) wraps that intent",
+    "The NotificationCompat.Builder chain gains .addAction(...) with that PendingIntent, labeled with the existing shared R.string.log_dose resource (via context.getString)",
+    "The existing permission check, content-tap PendingIntent, and NotificationManagerCompat.notify(...) call are unchanged"
+  ],
+  "exact_code": "    fun sendReminder(\n        context: Context,\n        notificationId: Int,\n        title: String,\n        text: String,\n        profileId: Int,\n        medicationId: Int,\n        defaultDoseAmount: String,\n    ) {\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&\n            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=\n                PackageManager.PERMISSION_GRANTED\n        ) {\n            return\n        }\n        val contentIntent = PendingIntent.getActivity(\n            context,\n            notificationId,\n            Intent(context, MainActivity::class.java),\n            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,\n        )\n        val logDoseIntent = Intent(context, LogDoseFromNotificationReceiver::class.java).apply {\n            putExtra(ExactAlarmScheduler.EXTRA_DOSE_LOG_ID, notificationId)\n            putExtra(ExactAlarmScheduler.EXTRA_PROFILE_ID, profileId)\n            putExtra(ExactAlarmScheduler.EXTRA_MEDICATION_ID, medicationId)\n            putExtra(ExactAlarmScheduler.EXTRA_DEFAULT_DOSE_AMOUNT, defaultDoseAmount)\n        }\n        val logDosePendingIntent = PendingIntent.getBroadcast(\n            context,\n            notificationId,\n            logDoseIntent,\n            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,\n        )\n        val notification = NotificationCompat.Builder(context, CHANNEL_ID)\n            .setSmallIcon(android.R.drawable.ic_popup_reminder)\n            .setContentTitle(title)\n            .setContentText(text)\n            .setContentIntent(contentIntent)\n            .setAutoCancel(true)\n            .addAction(\n                NotificationCompat.Action.Builder(\n                    android.R.drawable.ic_menu_add,\n                    context.getString(R.string.log_dose),\n                    logDosePendingIntent,\n                ).build(),\n            )\n            .build()\n        NotificationManagerCompat.from(context).notify(notificationId, notification)\n    }"
+}

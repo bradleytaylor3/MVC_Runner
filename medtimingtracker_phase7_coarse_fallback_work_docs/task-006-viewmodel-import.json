@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-006",
+  "title": "Import ReminderMessage into DailyListViewModel",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListViewModel.kt",
+  "structure_type": "import",
+  "change_type": "add",
+  "description": "logDose() will call ReminderMessage.build(), which lives in the notifications package, different from this file's ui package.",
+  "acceptance_criteria": [
+    "New import line: com.taylordproductivty.med_timing_tracker.notifications.ReminderMessage",
+    "No existing import lines are changed"
+  ],
+  "start_anchor": "import com.taylordproductivty.med_timing_tracker.notifications.ExactAlarmScheduler",
+  "exact_code": "import com.taylordproductivty.med_timing_tracker.notifications.ReminderMessage"
+}

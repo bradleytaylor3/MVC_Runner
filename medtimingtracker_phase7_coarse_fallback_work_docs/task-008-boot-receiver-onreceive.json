@@ -1,0 +1,17 @@
+{
+  "kind": "work",
+  "id": "task-008",
+  "title": "Use ReminderMessage in BootReminderReceiver.onReceive()",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/BootReminderReceiver.kt",
+  "structure_type": "method",
+  "change_type": "modify",
+  "name": "onReceive",
+  "parent": "BootReminderReceiver",
+  "description": "Same string-building duplication fix as DailyListViewModel.logDose(): build the reminder title/text via ReminderMessage.build(...) instead of an inline duplicate of the same literal strings. No import needed -- ReminderMessage is in the same notifications package as this file.",
+  "acceptance_criteria": [
+    "Boot-completed action check, goAsync(), and the try/finally with pendingResult.finish() are unchanged",
+    "Inside the for loop, nextEligible is extracted once via doseLog.nextEligibleAtEpochMillis ?: continue, then val (title, text) = ReminderMessage.build(medication.name, nextEligible)",
+    "ExactAlarmScheduler.schedule(appContext, doseLog.id, nextEligible, title, text) replaces the old call with literal strings"
+  ],
+  "exact_code": "    override fun onReceive(context: Context, intent: Intent) {\n        if (intent.action != Intent.ACTION_BOOT_COMPLETED) return\n        val pendingResult = goAsync()\n        val appContext = context.applicationContext\n        CoroutineScope(Dispatchers.IO).launch {\n            try {\n                val database = AppDatabase.getDatabase(appContext)\n                val now = System.currentTimeMillis()\n                val pending = database.doseLogDao().getPendingReminders(now)\n                for (doseLog in pending) {\n                    val medication = database.medicationDao().getById(doseLog.medicationId) ?: continue\n                    val nextEligible = doseLog.nextEligibleAtEpochMillis ?: continue\n                    val (title, text) = ReminderMessage.build(medication.name, nextEligible)\n                    ExactAlarmScheduler.schedule(appContext, doseLog.id, nextEligible, title, text)\n                }\n            } finally {\n                pendingResult.finish()\n            }\n        }\n    }"
+}

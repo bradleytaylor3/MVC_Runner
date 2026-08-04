@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-004",
+  "title": "Pass the new fields into schedule()'s pendingIntent(...) call",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ExactAlarmScheduler.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "                pendingIntent(context, doseLogId, title, text),",
+  "description": "This is the exact-alarm path's call to the private pendingIntent helper (task-007 extends its signature to match).",
+  "acceptance_criteria": [
+    "The call becomes pendingIntent(context, doseLogId, title, text, profileId, medicationId, defaultDoseAmount),"
+  ],
+  "exact_code": "                pendingIntent(context, doseLogId, title, text, profileId, medicationId, defaultDoseAmount),"
+}

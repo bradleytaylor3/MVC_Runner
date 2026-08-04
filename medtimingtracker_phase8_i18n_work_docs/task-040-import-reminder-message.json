@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-040",
+  "title": "Add Context/R imports to ReminderMessage.kt",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ReminderMessage.kt",
+  "structure_type": "import",
+  "change_type": "add",
+  "start_anchor": "import java.util.Locale",
+  "description": "build() gains a Context parameter so its title/body can be resolved from string resources instead of being hardcoded, since this is the actual text shown in the reminder notification.",
+  "acceptance_criteria": [
+    "File imports android.content.Context",
+    "File imports com.taylordproductivty.med_timing_tracker.R"
+  ],
+  "exact_code": "import java.util.Locale\nimport android.content.Context\nimport com.taylordproductivty.med_timing_tracker.R"
+}

@@ -1,0 +1,19 @@
+{
+  "kind": "work",
+  "id": "task-010",
+  "title": "CoarseReminderWorker reads and forwards the new extras",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/CoarseReminderWorker.kt",
+  "structure_type": "method",
+  "change_type": "modify",
+  "name": "doWork",
+  "parent": "CoarseReminderWorker",
+  "description": "Mirrors ReminderAlarmReceiver's change (task-009) for the WorkManager fallback path, so a coarse-scheduled reminder's notification also gets a working 'log dose' action.",
+  "acceptance_criteria": [
+    "Reads profileId via inputData.getInt(ExactAlarmScheduler.EXTRA_PROFILE_ID, -1)",
+    "Reads medicationId via inputData.getInt(ExactAlarmScheduler.EXTRA_MEDICATION_ID, -1)",
+    "Reads defaultDoseAmount via inputData.getString(ExactAlarmScheduler.EXTRA_DEFAULT_DOSE_AMOUNT) ?: \"\"",
+    "Calls NotificationHelper.sendReminder(applicationContext, doseLogId, title, text, profileId, medicationId, defaultDoseAmount)",
+    "The existing doseLogId/title/text extraction and failure returns are unchanged"
+  ],
+  "exact_code": "    override suspend fun doWork(): Result {\n        val doseLogId = inputData.getInt(ExactAlarmScheduler.EXTRA_DOSE_LOG_ID, -1)\n        if (doseLogId == -1) return Result.failure()\n        val title = inputData.getString(ExactAlarmScheduler.EXTRA_TITLE) ?: return Result.failure()\n        val text = inputData.getString(ExactAlarmScheduler.EXTRA_TEXT) ?: return Result.failure()\n        val profileId = inputData.getInt(ExactAlarmScheduler.EXTRA_PROFILE_ID, -1)\n        val medicationId = inputData.getInt(ExactAlarmScheduler.EXTRA_MEDICATION_ID, -1)\n        val defaultDoseAmount = inputData.getString(ExactAlarmScheduler.EXTRA_DEFAULT_DOSE_AMOUNT) ?: \"\"\n        NotificationHelper.sendReminder(applicationContext, doseLogId, title, text, profileId, medicationId, defaultDoseAmount)\n        return Result.success()\n    }"
+}

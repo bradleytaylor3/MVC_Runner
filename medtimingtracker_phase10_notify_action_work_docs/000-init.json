@@ -1,0 +1,11 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase10-notify-action",
+  "repo_root": "C:/path/to/your/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker",
+    "Avoid structure_type class/function/method modify-by-name when the target has an internal unqualified self-call to another symbol with the same name pattern (e.g. schedule() calling cancel()/pendingIntent() internally within the same object) -- the symbol-name regex search isn't scope-aware within a file and can match the call site as a second 'declaration', raising an ambiguous-symbol error. Use structure_type block with a short, verified-unique single-line start_anchor for those instead.",
+    "No DI framework in this codebase -- DB/repository access is always AppDatabase.getDatabase(context) plus manual repository construction, mirrored from BootReminderReceiver's existing pattern."
+  ]
+}

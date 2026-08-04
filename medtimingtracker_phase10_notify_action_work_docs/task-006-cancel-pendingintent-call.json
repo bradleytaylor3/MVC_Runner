@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-006",
+  "title": "Update cancel()'s pendingIntent(...) call for the new signature",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ExactAlarmScheduler.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "        alarmManager.cancel(pendingIntent(context, doseLogId, \"\", \"\"))",
+  "description": "cancel() only needs to match the PendingIntent's request code + component to cancel it -- extras don't factor into PendingIntent identity -- so dummy values for the three new parameters are fine here, exactly like the existing empty-string dummies for title/text.",
+  "acceptance_criteria": [
+    "The call becomes alarmManager.cancel(pendingIntent(context, doseLogId, \"\", \"\", -1, -1, \"\"))"
+  ],
+  "exact_code": "        alarmManager.cancel(pendingIntent(context, doseLogId, \"\", \"\", -1, -1, \"\"))"
+}

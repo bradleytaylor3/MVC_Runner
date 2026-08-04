@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-022",
+  "title": "Add stringResource/R imports to DailyListScreen.kt",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "import",
+  "change_type": "add",
+  "start_anchor": "import androidx.compose.ui.unit.dp",
+  "description": "Needed so the composable can reference the new string resources.",
+  "acceptance_criteria": [
+    "File imports androidx.compose.ui.res.stringResource",
+    "File imports com.taylordproductivty.med_timing_tracker.R"
+  ],
+  "exact_code": "import androidx.compose.ui.res.stringResource\nimport com.taylordproductivty.med_timing_tracker.R"
+}

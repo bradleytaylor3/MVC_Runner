@@ -1,0 +1,17 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Add CoarseReminderWorker",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/CoarseReminderWorker.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "WorkManager CoroutineWorker used as the fallback reminder path when exact-alarm scheduling isn't permitted. Mirrors ReminderAlarmReceiver.onReceive() -- reads the same three extras and calls NotificationHelper.sendReminder directly.",
+  "acceptance_criteria": [
+    "class CoarseReminderWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params)",
+    "doWork() reads doseLogId via inputData.getInt(ExactAlarmScheduler.EXTRA_DOSE_LOG_ID, -1), returning Result.failure() if it's -1",
+    "doWork() reads title and text via inputData.getString(ExactAlarmScheduler.EXTRA_TITLE) / EXTRA_TEXT, returning Result.failure() if either is null",
+    "On success, calls NotificationHelper.sendReminder(applicationContext, doseLogId, title, text) and returns Result.success()"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.notifications\n\nimport android.content.Context\nimport androidx.work.CoroutineWorker\nimport androidx.work.WorkerParameters\n\nclass CoarseReminderWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {\n    override suspend fun doWork(): Result {\n        val doseLogId = inputData.getInt(ExactAlarmScheduler.EXTRA_DOSE_LOG_ID, -1)\n        if (doseLogId == -1) return Result.failure()\n        val title = inputData.getString(ExactAlarmScheduler.EXTRA_TITLE) ?: return Result.failure()\n        val text = inputData.getString(ExactAlarmScheduler.EXTRA_TEXT) ?: return Result.failure()\n        NotificationHelper.sendReminder(applicationContext, doseLogId, title, text)\n        return Result.success()\n    }\n}\n"
+}

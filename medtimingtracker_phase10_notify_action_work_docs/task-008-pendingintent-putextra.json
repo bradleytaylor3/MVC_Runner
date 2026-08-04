@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-008",
+  "title": "pendingIntent()'s Intent carries the three new extras",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ExactAlarmScheduler.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "            putExtra(EXTRA_TEXT, text)",
+  "description": "Completes the extras this Intent puts, matching the new EXTRA_* constants (task-002) and the new schedule()/pendingIntent() parameters.",
+  "acceptance_criteria": [
+    "The existing putExtra(EXTRA_TEXT, text) line is unchanged",
+    "Three new lines immediately follow it inside the same .apply block: putExtra(EXTRA_PROFILE_ID, profileId), putExtra(EXTRA_MEDICATION_ID, medicationId), putExtra(EXTRA_DEFAULT_DOSE_AMOUNT, defaultDoseAmount)"
+  ],
+  "exact_code": "            putExtra(EXTRA_TEXT, text)\n            putExtra(EXTRA_PROFILE_ID, profileId)\n            putExtra(EXTRA_MEDICATION_ID, medicationId)\n            putExtra(EXTRA_DEFAULT_DOSE_AMOUNT, defaultDoseAmount)"
+}

@@ -1,0 +1,10 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase7-coarse-fallback",
+  "repo_root": "C:/path/to/your/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker",
+    "Small, mechanical additions/modifications to already-verified files -- one function per task"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-013",
+  "title": "Use parameterized string resource in DoseRow composable",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/components/DoseRow.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "name": "DoseRow",
+  "description": "The templated \"$doseAmount at $time\" text becomes a stringResource with two %s-style args.",
+  "acceptance_criteria": [
+    "The dose-amount/time line uses stringResource(R.string.dose_at_time, doseLog.doseAmount, formatter.format(...))",
+    "medicationName Text() is unchanged (it's a variable, not a literal)"
+  ],
+  "exact_code": "@Composable\nfun DoseRow(medicationName: String, doseLog: DoseLog, modifier: Modifier = Modifier) {\n    val formatter = remember { SimpleDateFormat(\"MMM d, h:mm a\", Locale.getDefault()) }\n    Row(\n        modifier = modifier\n            .fillMaxWidth()\n            .border(\n                BorderStroke(1.dp, MaterialTheme.colorScheme.outline),\n                RoundedCornerShape(12.dp),\n            )\n            .padding(vertical = 12.dp, horizontal = 16.dp),\n    ) {\n        Column {\n            Text(medicationName, style = MaterialTheme.typography.titleMedium)\n            Text(\n                stringResource(\n                    R.string.dose_at_time,\n                    doseLog.doseAmount,\n                    formatter.format(Date(doseLog.givenAtEpochMillis)),\n                ),\n                style = MaterialTheme.typography.bodyMedium,\n            )\n        }\n    }\n}"
+}

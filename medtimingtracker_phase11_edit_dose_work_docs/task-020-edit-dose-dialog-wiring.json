@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-020",
+  "title": "Wire EditDoseDialog into DailyListScreen",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "    if (showAbout) {",
+  "description": "Inserted right before the existing 'if (showAbout)' block (a single unique anchor line, replaced by itself plus the new content ahead of it, since there's no safe unambiguous anchor for 'insert after the previous block closes' in this function). Shows the edit dialog when editingDoseLog is non-null, looks up the medication name the same way the dose list itself does, and calls the new viewModel.editDose(...) on save.",
+  "acceptance_criteria": [
+    "editingDoseLog?.let { dose -> ... } computes medicationName via medications.firstOrNull { it.id == dose.medicationId }?.name ?: stringResource(R.string.unknown_medication_fallback), same fallback as the dose list itself",
+    "Renders EditDoseDialog(doseLog = dose, medicationName = medicationName, onDismiss = { editingDoseLog = null }, onSave = { doseAmount, givenAtEpochMillis -> viewModel.editDose(dose, doseAmount, givenAtEpochMillis) { editingDoseLog = null } })",
+    "The original 'if (showAbout) { ... }' block is reproduced unchanged immediately after this new block"
+  ],
+  "exact_code": "    editingDoseLog?.let { dose ->\n        val medicationName = medications.firstOrNull { it.id == dose.medicationId }?.name\n            ?: stringResource(R.string.unknown_medication_fallback)\n        EditDoseDialog(\n            doseLog = dose,\n            medicationName = medicationName,\n            onDismiss = { editingDoseLog = null },\n            onSave = { doseAmount, givenAtEpochMillis ->\n                viewModel.editDose(dose, doseAmount, givenAtEpochMillis) {\n                    editingDoseLog = null\n                }\n            },\n        )\n    }\n\n    if (showAbout) {"
+}

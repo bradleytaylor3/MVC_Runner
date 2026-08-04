@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Add time_taken_label and edit_dose_title string resources",
+  "file": "app/src/main/res/values/strings.xml",
+  "structure_type": "constant",
+  "change_type": "add",
+  "start_anchor": "    <string name=\"reminder_text\">Dosage due at: %1$s</string>",
+  "description": "Needed for the new Time Taken field (used by both AddDoseDialog and EditDoseDialog) and the new EditDoseDialog's title.",
+  "acceptance_criteria": [
+    "New string time_taken_label = 'Time taken'",
+    "New string edit_dose_title = 'Edit dose'"
+  ],
+  "exact_code": "    <string name=\"time_taken_label\">Time taken</string>\n    <string name=\"edit_dose_title\">Edit dose</string>"
+}

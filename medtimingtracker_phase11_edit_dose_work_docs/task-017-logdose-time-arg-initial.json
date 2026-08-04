@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-017",
+  "title": "Use the dialog-selected time for the initial logDose call",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "                    givenAtEpochMillis = System.currentTimeMillis(),",
+  "occurrence": 1,
+  "description": "This is the first of two identical lines in the file (the other is in the too-soon-confirmed retry, task-019) -- occurrence 1 is this one, inside the onSubmit callback's logDose call, since it appears first in the file. Now that AddDoseDialog lets the user pick a time (task-011), this call should use that instead of always capturing 'now'.",
+  "acceptance_criteria": [
+    "The line becomes: givenAtEpochMillis = givenAtEpochMillis,"
+  ],
+  "exact_code": "                    givenAtEpochMillis = givenAtEpochMillis,"
+}

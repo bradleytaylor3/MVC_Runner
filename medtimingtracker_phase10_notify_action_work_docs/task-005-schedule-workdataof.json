@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-005",
+  "title": "Carry the new fields through the WorkManager fallback's workDataOf",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ExactAlarmScheduler.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "                        EXTRA_TEXT to text,",
+  "description": "The coarse (WorkManager) fallback path must carry the same new extras as the exact-alarm path so CoarseReminderWorker (task-010) can build the same notification action.",
+  "acceptance_criteria": [
+    "The existing EXTRA_TEXT to text, line is unchanged",
+    "Three new lines immediately follow it: EXTRA_PROFILE_ID to profileId, EXTRA_MEDICATION_ID to medicationId, EXTRA_DEFAULT_DOSE_AMOUNT to defaultDoseAmount,"
+  ],
+  "exact_code": "                        EXTRA_TEXT to text,\n                        EXTRA_PROFILE_ID to profileId,\n                        EXTRA_MEDICATION_ID to medicationId,\n                        EXTRA_DEFAULT_DOSE_AMOUNT to defaultDoseAmount,"
+}

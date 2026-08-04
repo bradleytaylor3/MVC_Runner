@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-038",
+  "title": "Add R import to NotificationHelper.kt",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/NotificationHelper.kt",
+  "structure_type": "import",
+  "change_type": "add",
+  "start_anchor": "import com.taylordproductivty.med_timing_tracker.MainActivity",
+  "description": "Needed so the notification channel name/description can become string resources -- both are visible to the user in system notification settings.",
+  "acceptance_criteria": [
+    "File imports com.taylordproductivty.med_timing_tracker.R"
+  ],
+  "exact_code": "import com.taylordproductivty.med_timing_tracker.MainActivity\nimport com.taylordproductivty.med_timing_tracker.R"
+}

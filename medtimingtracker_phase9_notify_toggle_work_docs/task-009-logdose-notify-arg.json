@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-009",
+  "title": "Pass notifyOnNextDose into the first logDose call",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "                    acknowledgeWarning = false,",
+  "description": "logDose's new notifyOnNextDose parameter (task-002) is threaded through from AddDoseDialog's onSubmit callback (the 'first attempt' logDose call, acknowledgeWarning = false).",
+  "acceptance_criteria": [
+    "The existing acknowledgeWarning = false, line is unchanged",
+    "A new argument immediately follows it: notifyOnNextDose = notifyOnNextDose,"
+  ],
+  "exact_code": "                    acknowledgeWarning = false,\n                    notifyOnNextDose = notifyOnNextDose,"
+}

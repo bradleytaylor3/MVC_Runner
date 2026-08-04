@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-010",
+  "title": "Carry notifyOnNextDose into PendingDoseConfirmation when a too-soon warning is needed",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "                                outcome.minutesRemaining,",
+  "description": "PendingDoseConfirmation now requires a notifyOnNextDose field (task-005) -- this is the constructor call built when logDose reports NeedsConfirmation, so it must supply that new field from the value captured in the onSubmit lambda.",
+  "acceptance_criteria": [
+    "The existing outcome.minutesRemaining, argument is unchanged",
+    "A new argument immediately follows it: notifyOnNextDose,"
+  ],
+  "exact_code": "                                outcome.minutesRemaining,\n                                notifyOnNextDose,"
+}

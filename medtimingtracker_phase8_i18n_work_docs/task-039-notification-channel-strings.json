@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-039",
+  "title": "Use string resources for the notification channel name/description",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/NotificationHelper.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "name": "createNotificationChannel",
+  "description": "These strings surface to the user in the system's per-app notification-channel settings screen, so they're in scope for localization. context is already a parameter of this function.",
+  "acceptance_criteria": [
+    "Channel name uses context.getString(R.string.notification_channel_name)",
+    "Channel description uses context.getString(R.string.notification_channel_description)",
+    "CHANNEL_ID ('dose_reminders', an internal id) is unchanged"
+  ],
+  "exact_code": "    fun createNotificationChannel(context: Context) {\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return\n        val channel = NotificationChannel(\n            CHANNEL_ID,\n            context.getString(R.string.notification_channel_name),\n            NotificationManager.IMPORTANCE_DEFAULT,\n        ).apply {\n            description = context.getString(R.string.notification_channel_description)\n        }\n        context.getSystemService(NotificationManager::class.java).createNotificationChannel(channel)\n    }"
+}

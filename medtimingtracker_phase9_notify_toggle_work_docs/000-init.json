@@ -1,0 +1,10 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase9-notify-toggle",
+  "repo_root": "C:/path/to/your/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker",
+    "Avoid structure_type class/function modify-by-name on any declaration whose signature contains a brace ('{'/'}') before its real body opens (e.g. a lambda default parameter like `onSettings: () -> Unit = {}`, or a brace-less one-line data class) -- the anchor resolver's brace-span scan can walk past the intended declaration into unrelated later code. Use structure_type constant/block with an explicit, verified-unique start_anchor (+end_anchor) instead for those cases."
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "kind": "work",
+  "id": "task-041",
+  "title": "Localize ReminderMessage.build's title/body via string resources",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ReminderMessage.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "name": "build",
+  "description": "This builds the actual notification title/body the user sees, so it needs a Context to resolve the new parameterized reminder_title/reminder_text string resources. Both call sites (DailyListViewModel.logDose, BootReminderReceiver) are updated separately to pass a context.",
+  "acceptance_criteria": [
+    "Signature becomes build(context: Context, medicationName: String, dueAtEpochMillis: Long): Pair<String, String>",
+    "title uses context.getString(R.string.reminder_title, medicationName)",
+    "text uses context.getString(R.string.reminder_text, time)",
+    "The per-call fresh SimpleDateFormat (not cached) is unchanged, per the existing thread-safety comment"
+  ],
+  "exact_code": "object ReminderMessage {\n    // New SimpleDateFormat instance per call, not a cached field -- SimpleDateFormat\n    // isn't thread-safe and this is invoked from both DailyListViewModel's\n    // viewModelScope coroutine and BootReminderReceiver's IO-dispatcher coroutine.\n    fun build(context: Context, medicationName: String, dueAtEpochMillis: Long): Pair<String, String> {\n        val time = SimpleDateFormat(\"h:mm a\", Locale.getDefault()).format(Date(dueAtEpochMillis))\n        val title = context.getString(R.string.reminder_title, medicationName)\n        val text = context.getString(R.string.reminder_text, time)\n        return title to text\n    }\n}"
+}

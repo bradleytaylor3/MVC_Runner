@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-013",
+  "title": "Register LogDoseFromNotificationReceiver in the manifest",
+  "file": "app/src/main/AndroidManifest.xml",
+  "structure_type": "block",
+  "change_type": "add",
+  "start_anchor": "            android:exported=\"false\" />",
+  "description": "Registered exactly like the existing ReminderAlarmReceiver -- not exported, no intent-filter, since it's only ever invoked via this app's own explicit PendingIntent from a notification action.",
+  "acceptance_criteria": [
+    "A new <receiver android:name=\".notifications.LogDoseFromNotificationReceiver\" android:exported=\"false\" /> is added inside <application>"
+  ],
+  "exact_code": "            android:exported=\"false\" />\n\n        <receiver\n            android:name=\".notifications.LogDoseFromNotificationReceiver\"\n            android:exported=\"false\" />"
+}

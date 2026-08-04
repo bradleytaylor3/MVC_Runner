@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-037",
+  "title": "Pass Context into ReminderMessage.build() call in logDose",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListViewModel.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "                val (title, text) = ReminderMessage.build(medication.name, nextEligible)",
+  "description": "ReminderMessage.build's notification title/body are being localized (task-039), which requires a Context to resolve string resources -- this call site now passes getApplication() (already available via AndroidViewModel).",
+  "acceptance_criteria": [
+    "The call is ReminderMessage.build(getApplication(), medication.name, nextEligible)",
+    "Nothing else on this line or around it changes"
+  ],
+  "exact_code": "                val (title, text) = ReminderMessage.build(getApplication(), medication.name, nextEligible)"
+}

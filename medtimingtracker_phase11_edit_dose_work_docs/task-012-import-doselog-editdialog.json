@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-012",
+  "title": "Import DoseLog and EditDoseDialog into DailyListScreen.kt",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "import",
+  "change_type": "add",
+  "start_anchor": "import kotlinx.coroutines.flow.flowOf",
+  "description": "DoseLog is needed for the new editingDoseLog: DoseLog? state; EditDoseDialog is the new dialog being wired in.",
+  "acceptance_criteria": [
+    "File imports com.taylordproductivty.med_timing_tracker.data.DoseLog",
+    "File imports com.taylordproductivty.med_timing_tracker.ui.components.EditDoseDialog"
+  ],
+  "exact_code": "import com.taylordproductivty.med_timing_tracker.data.DoseLog\nimport com.taylordproductivty.med_timing_tracker.ui.components.EditDoseDialog"
+}

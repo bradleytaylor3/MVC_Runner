@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Add new Intent extra-key constants to ExactAlarmScheduler",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ExactAlarmScheduler.kt",
+  "structure_type": "constant",
+  "change_type": "add",
+  "start_anchor": "    const val EXTRA_TEXT = \"text\"",
+  "description": "Needed so a scheduled reminder's Intent/WorkData carries enough info (profile, medication, a default dose amount) for the notification's new 'log dose' action button to actually log something.",
+  "acceptance_criteria": [
+    "Three new const vals are added: EXTRA_PROFILE_ID = \"profile_id\", EXTRA_MEDICATION_ID = \"medication_id\", EXTRA_DEFAULT_DOSE_AMOUNT = \"default_dose_amount\""
+  ],
+  "exact_code": "    const val EXTRA_PROFILE_ID = \"profile_id\"\n    const val EXTRA_MEDICATION_ID = \"medication_id\"\n    const val EXTRA_DEFAULT_DOSE_AMOUNT = \"default_dose_amount\""
+}

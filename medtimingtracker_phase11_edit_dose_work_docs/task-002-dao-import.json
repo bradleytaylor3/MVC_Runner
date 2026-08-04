@@ -1,0 +1,14 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "Import Room's @Update into DoseLogDao",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/DoseLogDao.kt",
+  "structure_type": "import",
+  "change_type": "add",
+  "start_anchor": "import androidx.room.Query",
+  "description": "Needed for the new update() method (task-003) -- mirrors MedicationDao/ProfileDao, which already import and use @Update.",
+  "acceptance_criteria": [
+    "File imports androidx.room.Update"
+  ],
+  "exact_code": "import androidx.room.Update"
+}

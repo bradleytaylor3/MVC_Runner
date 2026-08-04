@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-010",
+  "title": "DoseRow becomes tappable",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/components/DoseRow.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "name": "DoseRow",
+  "description": "DoseRow has no tap handling at all today. Adds an onClick parameter and a clickable modifier so tapping a dose opens the new edit flow (wired in DailyListScreen).",
+  "acceptance_criteria": [
+    "New parameter: onClick: () -> Unit, placed after doseLog and before the existing modifier parameter",
+    "The Row's modifier chain gains .clickable(onClick = onClick)",
+    "Everything else (border, padding, Column/Text content) is unchanged"
+  ],
+  "exact_code": "@Composable\nfun DoseRow(medicationName: String, doseLog: DoseLog, onClick: () -> Unit, modifier: Modifier = Modifier) {\n    val formatter = remember { SimpleDateFormat(\"MMM d, h:mm a\", Locale.getDefault()) }\n    Row(\n        modifier = modifier\n            .fillMaxWidth()\n            .clickable(onClick = onClick)\n            .border(\n                BorderStroke(1.dp, MaterialTheme.colorScheme.outline),\n                RoundedCornerShape(12.dp),\n            )\n            .padding(vertical = 12.dp, horizontal = 16.dp),\n    ) {\n        Column {\n            Text(medicationName, style = MaterialTheme.typography.titleMedium)\n            Text(\n                stringResource(\n                    R.string.dose_at_time,\n                    doseLog.doseAmount,\n                    formatter.format(Date(doseLog.givenAtEpochMillis)),\n                ),\n                style = MaterialTheme.typography.bodyMedium,\n            )\n        }\n    }\n}"
+}

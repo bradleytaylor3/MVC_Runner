@@ -1,0 +1,9 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase12-require-selection",
+  "repo_root": "C:/path/to/your/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker"
+  ]
+}

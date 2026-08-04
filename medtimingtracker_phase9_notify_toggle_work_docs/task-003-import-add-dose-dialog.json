@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-003",
+  "title": "Add Switch/Alignment imports to AddDoseDialog.kt",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/components/AddDoseDialog.kt",
+  "structure_type": "import",
+  "change_type": "add",
+  "start_anchor": "import com.taylordproductivty.med_timing_tracker.data.Profile",
+  "description": "Needed for the new notify-on-next-dose Switch row.",
+  "acceptance_criteria": [
+    "File imports androidx.compose.material3.Switch",
+    "File imports androidx.compose.ui.Alignment"
+  ],
+  "exact_code": "import androidx.compose.material3.Switch\nimport androidx.compose.ui.Alignment"
+}

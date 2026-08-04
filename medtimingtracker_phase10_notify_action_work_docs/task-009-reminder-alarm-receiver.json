@@ -1,0 +1,19 @@
+{
+  "kind": "work",
+  "id": "task-009",
+  "title": "ReminderAlarmReceiver reads and forwards the new extras",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ReminderAlarmReceiver.kt",
+  "structure_type": "method",
+  "change_type": "modify",
+  "name": "onReceive",
+  "parent": "ReminderAlarmReceiver",
+  "description": "Reads the profileId/medicationId/defaultDoseAmount extras ExactAlarmScheduler now attaches, and passes them through to NotificationHelper.sendReminder's extended signature (task-011) so it can build the notification's 'log dose' action.",
+  "acceptance_criteria": [
+    "Reads profileId via intent.getIntExtra(ExactAlarmScheduler.EXTRA_PROFILE_ID, -1)",
+    "Reads medicationId via intent.getIntExtra(ExactAlarmScheduler.EXTRA_MEDICATION_ID, -1)",
+    "Reads defaultDoseAmount via intent.getStringExtra(ExactAlarmScheduler.EXTRA_DEFAULT_DOSE_AMOUNT) ?: \"\"",
+    "Calls NotificationHelper.sendReminder(context, doseLogId, title, text, profileId, medicationId, defaultDoseAmount)",
+    "The existing doseLogId/title/text extraction and early returns are unchanged"
+  ],
+  "exact_code": "    override fun onReceive(context: Context, intent: Intent) {\n        val doseLogId = intent.getIntExtra(ExactAlarmScheduler.EXTRA_DOSE_LOG_ID, -1)\n        if (doseLogId == -1) return\n        val title = intent.getStringExtra(ExactAlarmScheduler.EXTRA_TITLE) ?: return\n        val text = intent.getStringExtra(ExactAlarmScheduler.EXTRA_TEXT) ?: return\n        val profileId = intent.getIntExtra(ExactAlarmScheduler.EXTRA_PROFILE_ID, -1)\n        val medicationId = intent.getIntExtra(ExactAlarmScheduler.EXTRA_MEDICATION_ID, -1)\n        val defaultDoseAmount = intent.getStringExtra(ExactAlarmScheduler.EXTRA_DEFAULT_DOSE_AMOUNT) ?: \"\"\n        NotificationHelper.sendReminder(context, doseLogId, title, text, profileId, medicationId, defaultDoseAmount)\n    }"
+}

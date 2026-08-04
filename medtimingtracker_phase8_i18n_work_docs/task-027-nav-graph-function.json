@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-027",
+  "title": "Resolve nav tab labels via stringResource in MedTimingNavGraph",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/navigation/NavGraph.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "name": "MedTimingNavGraph",
+  "description": "Now that BottomNavTab.label is labelRes: Int, the two render-time usages (icon contentDescription, Text label) resolve it via stringResource(tab.labelRes) instead of using tab.label directly. Everything else in the function (nav wiring, routes) is unchanged.",
+  "acceptance_criteria": [
+    "Icon's contentDescription uses stringResource(tab.labelRes)",
+    "NavigationBarItem's label Text uses stringResource(tab.labelRes)",
+    "All navigation/route wiring is unchanged from before"
+  ],
+  "exact_code": "@Composable\nfun MedTimingNavGraph(navController: NavHostController = rememberNavController()) {\n    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route\n\n    Scaffold(\n        bottomBar = {\n            if (currentRoute != Routes.SETTINGS) {\n                NavigationBar {\n                    bottomNavTabs.forEach { tab ->\n                        NavigationBarItem(\n                            selected = currentRoute == tab.route,\n                            onClick = {\n                                navController.navigate(tab.route) {\n                                    popUpTo(Routes.DAILY_LIST) { saveState = true }\n                                    launchSingleTop = true\n                                    restoreState = true\n                                }\n                            },\n                            icon = { Icon(tab.icon, contentDescription = stringResource(tab.labelRes)) },\n                            label = { Text(stringResource(tab.labelRes)) },\n                        )\n                    }\n                }\n            }\n        },\n    ) { innerPadding ->\n        NavHost(\n            navController = navController,\n            startDestination = Routes.DAILY_LIST,\n            modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),\n        ) {\n            composable(Routes.DAILY_LIST) {\n                DailyListScreen(\n                    onSettings = { navController.navigate(Routes.SETTINGS) },\n                )\n            }\n            composable(Routes.MANAGE_PROFILES) {\n                ManageProfilesScreen(\n                    onSettings = { navController.navigate(Routes.SETTINGS) },\n                )\n            }\n            composable(Routes.MANAGE_MEDICATIONS) {\n                ManageMedicationsScreen(\n                    onSettings = { navController.navigate(Routes.SETTINGS) },\n                )\n            }\n            composable(Routes.SETTINGS) { SettingsScreen() }\n        }\n    }\n}"
+}

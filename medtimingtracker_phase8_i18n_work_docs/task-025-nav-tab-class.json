@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-025",
+  "title": "BottomNavTab holds a string-resource id instead of a raw label",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/navigation/NavGraph.kt",
+  "structure_type": "class",
+  "change_type": "modify",
+  "name": "BottomNavTab",
+  "description": "The nav-tab label needs to be a string resource so it can be localized, but the list that constructs these (bottomNavTabs) is a plain top-level val, not inside a @Composable -- so it must hold a resource id (resolved later, at render time inside the Composable), not a resolved String.",
+  "acceptance_criteria": [
+    "The 'label: String' field becomes 'labelRes: Int'",
+    "route and icon fields are unchanged"
+  ],
+  "exact_code": "private data class BottomNavTab(val route: String, val labelRes: Int, val icon: ImageVector)"
+}

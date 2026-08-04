@@ -1,0 +1,11 @@
+{
+  "kind": "init",
+  "batch_id": "medtt-phase8-i18n",
+  "repo_root": "C:/path/to/your/AndroidStudioProjects/medtimingtracker",
+  "language": "kotlin",
+  "conventions": [
+    "Package root: com.taylordproductivty.med_timing_tracker",
+    "R class import: com.taylordproductivty.med_timing_tracker.R",
+    "Compose call sites use androidx.compose.ui.res.stringResource(R.string.x); non-Composable call sites (ViewModel callbacks, BroadcastReceiver/notification code, click-handler lambdas that already have a Context in scope) use context.getString(R.string.x) or getApplication<Application>().getString(R.string.x)"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Note that notificationsEnabled is now load-bearing",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/data/SettingsRepository.kt",
+  "structure_type": "constant",
+  "change_type": "modify",
+  "start_anchor": "data class AppSettings(val notificationsEnabled: Boolean = true)",
+  "description": "Previously this field was stored/displayed but never consulted before scheduling a reminder. It now gates whether logDose() schedules the next-dose reminder (default source for the per-dose notify-on-next-dose toggle) -- worth a comment so a future reader doesn't assume it's still decorative.",
+  "acceptance_criteria": [
+    "A short comment precedes the AppSettings data class explaining it's now load-bearing",
+    "The data class declaration itself (name, field, default) is unchanged"
+  ],
+  "exact_code": "// notificationsEnabled now gates whether logDose() schedules a reminder for the\n// next dose (see DailyListViewModel.logDose) -- previously stored but unused.\ndata class AppSettings(val notificationsEnabled: Boolean = true)"
+}

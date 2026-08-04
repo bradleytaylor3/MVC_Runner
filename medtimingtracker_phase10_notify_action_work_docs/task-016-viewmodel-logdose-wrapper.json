@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-016",
+  "title": "logDose delegates to the shared DoseLogging function",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListViewModel.kt",
+  "structure_type": "method",
+  "change_type": "modify",
+  "name": "logDose",
+  "parent": "DailyListViewModel",
+  "description": "Replaces the inline timing/insert/schedule logic (now duplicated in DoseLogging.logDose, task-001) with a thin call into it, so the ViewModel path and the notification-action path (LogDoseFromNotificationReceiver, task-012) share one implementation instead of two copies of the same business logic.",
+  "acceptance_criteria": [
+    "Signature (parameter list) is unchanged from the phase9 version, including notifyOnNextDose: Boolean",
+    "The body calls DoseLogging.logDose(...) inside viewModelScope.launch, passing context = getApplication(), the three repositories already held as fields, and notifyOnNextDoseOverride = notifyOnNextDose",
+    "onResult(outcome) is called with whatever DoseLogging.logDose returns",
+    "No timing/insert/scheduling logic is duplicated here anymore"
+  ],
+  "exact_code": "    fun logDose(\n        profileId: Int,\n        medicationId: Int,\n        givenAtEpochMillis: Long,\n        doseAmount: String,\n        acknowledgeWarning: Boolean,\n        notifyOnNextDose: Boolean,\n        onResult: (LogDoseOutcome) -> Unit,\n    ) {\n        viewModelScope.launch {\n            val outcome = DoseLogging.logDose(\n                context = getApplication(),\n                doseLogRepository = doseLogRepository,\n                medicationRepository = medicationRepository,\n                settingsRepository = settingsRepository,\n                profileId = profileId,\n                medicationId = medicationId,\n                givenAtEpochMillis = givenAtEpochMillis,\n                doseAmount = doseAmount,\n                acknowledgeWarning = acknowledgeWarning,\n                notifyOnNextDoseOverride = notifyOnNextDose,\n            )\n            onResult(outcome)\n        }\n    }"
+}

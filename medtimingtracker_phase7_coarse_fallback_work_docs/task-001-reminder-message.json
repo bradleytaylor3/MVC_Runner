@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-001",
+  "title": "Add ReminderMessage",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ReminderMessage.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Single shared builder for the dose-reminder notification title/text, replacing the two independent copies of this string previously in DailyListViewModel.logDose() and BootReminderReceiver.onReceive() -- resolves the 'Reminder title/text is duplicated' tech debt item.",
+  "acceptance_criteria": [
+    "object ReminderMessage with a build(medicationName: String, dueAtEpochMillis: Long): Pair<String, String> function",
+    "Formats dueAtEpochMillis as a time-of-day string (e.g. h:mm a pattern) using a new SimpleDateFormat instance per call, not a cached/shared field, since SimpleDateFormat isn't thread-safe and this is called from multiple coroutine contexts",
+    "Returns a title of the form \"<medicationName> dose due\" and text of the form \"Dosage due at: <formatted time>\""
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.notifications\n\nimport java.text.SimpleDateFormat\nimport java.util.Date\nimport java.util.Locale\n\nobject ReminderMessage {\n    // New SimpleDateFormat instance per call, not a cached field -- SimpleDateFormat\n    // isn't thread-safe and this is invoked from both DailyListViewModel's\n    // viewModelScope coroutine and BootReminderReceiver's IO-dispatcher coroutine.\n    fun build(medicationName: String, dueAtEpochMillis: Long): Pair<String, String> {\n        val time = SimpleDateFormat(\"h:mm a\", Locale.getDefault()).format(Date(dueAtEpochMillis))\n        val title = \"$medicationName dose due\"\n        val text = \"Dosage due at: $time\"\n        return title to text\n    }\n}\n"
+}

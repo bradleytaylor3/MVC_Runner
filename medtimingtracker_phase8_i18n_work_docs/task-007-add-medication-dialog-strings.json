@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-007",
+  "title": "Use string resources in AddMedicationDialog composable",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/components/AddMedicationDialog.kt",
+  "structure_type": "function",
+  "change_type": "modify",
+  "name": "AddMedicationDialog",
+  "description": "Replace hardcoded literals with stringResource() calls. Logic/state unchanged.",
+  "acceptance_criteria": [
+    "Dialog title uses add_a_medication (shared with the FAB contentDescription elsewhere)",
+    "Name field uses name_label, dose field uses default_dose_label",
+    "'Minimum time between doses' label uses min_interval_label",
+    "Confirm button uses the shared add resource, dismiss uses cancel",
+    "onSubmit signature and logic unchanged"
+  ],
+  "exact_code": "@Composable\nfun AddMedicationDialog(\n    onDismiss: () -> Unit,\n    onSubmit: (name: String, defaultDose: String, minIntervalMinutes: Int?) -> Unit,\n) {\n    var name by remember { mutableStateOf(\"\") }\n    var defaultDose by remember { mutableStateOf(\"\") }\n    var intervalHours by remember { mutableStateOf(0) }\n    var intervalMinutes by remember { mutableStateOf(0) }\n\n    AlertDialog(\n        onDismissRequest = onDismiss,\n        title = { Text(stringResource(R.string.add_a_medication)) },\n        text = {\n            Column {\n                OutlinedTextField(\n                    value = name,\n                    onValueChange = { name = it },\n                    label = { Text(stringResource(R.string.name_label)) },\n                    modifier = Modifier.fillMaxWidth(),\n                )\n                OutlinedTextField(\n                    value = defaultDose,\n                    onValueChange = { defaultDose = it },\n                    label = { Text(stringResource(R.string.default_dose_label)) },\n                    modifier = Modifier\n                        .fillMaxWidth()\n                        .padding(top = 8.dp),\n                )\n                Text(\n                    stringResource(R.string.min_interval_label),\n                    style = MaterialTheme.typography.labelLarge,\n                    modifier = Modifier.padding(top = 16.dp),\n                )\n                DurationPicker(\n                    hours = intervalHours,\n                    minutes = intervalMinutes,\n                    onHoursChange = { intervalHours = it },\n                    onMinutesChange = { intervalMinutes = it },\n                    modifier = Modifier.padding(top = 4.dp),\n                )\n            }\n        },\n        confirmButton = {\n            TextButton(\n                onClick = {\n                    if (name.isNotBlank() && defaultDose.isNotBlank()) {\n                        val minIntervalMinutes = (intervalHours * 60 + intervalMinutes).takeIf { it > 0 }\n                        onSubmit(name, defaultDose, minIntervalMinutes)\n                    }\n                },\n            ) {\n                Text(stringResource(R.string.add))\n            }\n        },\n        dismissButton = {\n            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }\n        },\n    )\n}"
+}

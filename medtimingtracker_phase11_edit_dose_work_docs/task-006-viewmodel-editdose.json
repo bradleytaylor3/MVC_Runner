@@ -1,0 +1,16 @@
+{
+  "kind": "work",
+  "id": "task-006",
+  "title": "Add DailyListViewModel.editDose()",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListViewModel.kt",
+  "structure_type": "method",
+  "change_type": "add",
+  "parent": "DailyListViewModel",
+  "description": "Thin wrapper mirroring logDose()'s existing viewModelScope.launch pattern, delegating to the new shared DoseLogging.editDose. No start_anchor -- appends at the end of the class body.",
+  "acceptance_criteria": [
+    "fun editDose(doseLog: DoseLog, doseAmount: String, givenAtEpochMillis: Long, onResult: () -> Unit)",
+    "Launches DoseLogging.editDose(...) in viewModelScope, passing context = getApplication(), the existing doseLogRepository/medicationRepository/settingsRepository fields, and the given doseLog/doseAmount/givenAtEpochMillis",
+    "Calls onResult() after it completes"
+  ],
+  "exact_code": "    fun editDose(doseLog: DoseLog, doseAmount: String, givenAtEpochMillis: Long, onResult: () -> Unit) {\n        viewModelScope.launch {\n            DoseLogging.editDose(\n                context = getApplication(),\n                doseLogRepository = doseLogRepository,\n                medicationRepository = medicationRepository,\n                settingsRepository = settingsRepository,\n                doseLog = doseLog,\n                doseAmount = doseAmount,\n                givenAtEpochMillis = givenAtEpochMillis,\n            )\n            onResult()\n        }\n    }"
+}

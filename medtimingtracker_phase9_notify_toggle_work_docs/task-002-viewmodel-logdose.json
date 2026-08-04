@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-002",
+  "title": "logDose gates next-dose scheduling behind a notifyOnNextDose parameter",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListViewModel.kt",
+  "structure_type": "method",
+  "change_type": "modify",
+  "name": "logDose",
+  "parent": "DailyListViewModel",
+  "description": "Adds a notifyOnNextDose: Boolean parameter (the caller's per-dose toggle choice). The existing ExactAlarmScheduler.schedule call -- previously unconditional whenever nextEligible/medication were non-null -- now also requires notifyOnNextDose to be true. All other logic (timing evaluation, DoseLog insert, outcome callback) is unchanged.",
+  "acceptance_criteria": [
+    "Signature gains notifyOnNextDose: Boolean as a new parameter, placed after acknowledgeWarning and before onResult",
+    "The DoseLog insert always happens regardless of notifyOnNextDose (it only gates the reminder, not the log itself)",
+    "ExactAlarmScheduler.schedule(...) is now called only when notifyOnNextDose && nextEligible != null && medication != null",
+    "Everything else in the function body is byte-for-byte unchanged"
+  ],
+  "exact_code": "    fun logDose(\n        profileId: Int,\n        medicationId: Int,\n        givenAtEpochMillis: Long,\n        doseAmount: String,\n        acknowledgeWarning: Boolean,\n        notifyOnNextDose: Boolean,\n        onResult: (LogDoseOutcome) -> Unit,\n    ) {\n        viewModelScope.launch {\n            val medication = medicationRepository.getById(medicationId)\n            val mostRecentDose = doseLogRepository.getMostRecentDoseSnapshot(profileId, medicationId)\n            val timing = DoseTimingCalculator.evaluateTiming(\n                givenAtEpochMillis,\n                mostRecentDose,\n                medication?.minIntervalMinutes,\n            )\n            if (timing is DoseTimingResult.TooSoon && !acknowledgeWarning) {\n                onResult(LogDoseOutcome.NeedsConfirmation(timing.minutesRemaining))\n                return@launch\n            }\n            val nextEligible = DoseTimingCalculator.computeNextEligible(\n                givenAtEpochMillis,\n                medication?.minIntervalMinutes,\n            )\n            val doseLogId = doseLogRepository.insert(\n                DoseLog(\n                    profileId = profileId,\n                    medicationId = medicationId,\n                    givenAtEpochMillis = givenAtEpochMillis,\n                    doseAmount = doseAmount,\n                    nextEligibleAtEpochMillis = nextEligible,\n                    wasOverrideWarningAcknowledged = timing is DoseTimingResult.TooSoon,\n                ),\n            )\n            if (notifyOnNextDose && nextEligible != null && medication != null) {\n                val (title, text) = ReminderMessage.build(getApplication(), medication.name, nextEligible)\n                ExactAlarmScheduler.schedule(\n                    getApplication<Application>(),\n                    doseLogId.toInt(),\n                    nextEligible,\n                    title,\n                    text,\n                )\n            }\n            onResult(LogDoseOutcome.Logged)\n        }\n    }"
+}

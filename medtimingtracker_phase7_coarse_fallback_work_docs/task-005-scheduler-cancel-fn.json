@@ -1,0 +1,18 @@
+{
+  "kind": "work",
+  "id": "task-005",
+  "title": "Cancel the WorkManager fallback job in ExactAlarmScheduler.cancel()",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/notifications/ExactAlarmScheduler.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "description": "cancel() must also cancel any pending WorkManager fallback job for this dose id, not just the AlarmManager alarm, since a dose may have been scheduled via either path. Uses block/start_anchor+end_anchor instead of function+name because the file-wide name resolver treats the bare 'cancel(context, doseLogId)' call inside schedule() as an ambiguous second match for the symbol name 'cancel'.",
+  "acceptance_criteria": [
+    "Still cancels the AlarmManager pending intent exactly as before",
+    "Also calls WorkManager.getInstance(context).cancelUniqueWork(\"dose_reminder_$doseLogId\")",
+    "Still calls NotificationHelper.cancel(context, doseLogId) last, as before",
+    "Function signature (parameters) unchanged"
+  ],
+  "start_anchor": "fun cancel(context: Context, doseLogId: Int) {",
+  "end_anchor": "NotificationHelper.cancel(context, doseLogId)",
+  "exact_code": "    fun cancel(context: Context, doseLogId: Int) {\n        val alarmManager = context.getSystemService(AlarmManager::class.java)\n        alarmManager.cancel(pendingIntent(context, doseLogId, \"\", \"\"))\n        WorkManager.getInstance(context).cancelUniqueWork(\"dose_reminder_$doseLogId\")\n        NotificationHelper.cancel(context, doseLogId)\n    }"
+}

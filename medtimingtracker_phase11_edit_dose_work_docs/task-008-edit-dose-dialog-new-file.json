@@ -1,0 +1,20 @@
+{
+  "kind": "work",
+  "id": "task-008",
+  "title": "Add EditDoseDialog",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/components/EditDoseDialog.kt",
+  "structure_type": "block",
+  "change_type": "add",
+  "new_file": true,
+  "description": "Lets the user correct a previously-logged dose's amount and time. Mirrors EditMedicationDialog/EditProfileDialog's AlertDialog + Save/Cancel structure, but with no Delete button (only editing was requested; doses have no archive/delete concept). Shows the medication name as read-only context since DoseRow doesn't otherwise display it inline with editing.",
+  "acceptance_criteria": [
+    "@Composable fun EditDoseDialog(doseLog: DoseLog, medicationName: String, onDismiss: () -> Unit, onSave: (doseAmount: String, givenAtEpochMillis: Long) -> Unit)",
+    "Local state for doseAmount and givenAtEpochMillis seeded from doseLog's existing values",
+    "Shows medicationName as a read-only Text for context, an OutlinedTextField for dose amount (label: dose_given_label), and a TimeTakenField seeded from givenAtEpochMillis",
+    "Title uses edit_dose_title",
+    "Confirm button (label: save) only calls onSave(doseAmount, givenAtEpochMillis) if doseAmount is not blank",
+    "Dismiss button (label: cancel) calls onDismiss",
+    "No delete button"
+  ],
+  "exact_code": "package com.taylordproductivty.med_timing_tracker.ui.components\n\nimport androidx.compose.foundation.layout.Column\nimport androidx.compose.foundation.layout.fillMaxWidth\nimport androidx.compose.foundation.layout.padding\nimport androidx.compose.material3.AlertDialog\nimport androidx.compose.material3.MaterialTheme\nimport androidx.compose.material3.OutlinedTextField\nimport androidx.compose.material3.Text\nimport androidx.compose.material3.TextButton\nimport androidx.compose.runtime.Composable\nimport androidx.compose.runtime.getValue\nimport androidx.compose.runtime.mutableStateOf\nimport androidx.compose.runtime.remember\nimport androidx.compose.runtime.setValue\nimport androidx.compose.ui.Modifier\nimport androidx.compose.ui.res.stringResource\nimport androidx.compose.ui.unit.dp\nimport com.taylordproductivty.med_timing_tracker.R\nimport com.taylordproductivty.med_timing_tracker.data.DoseLog\n\n@Composable\nfun EditDoseDialog(\n    doseLog: DoseLog,\n    medicationName: String,\n    onDismiss: () -> Unit,\n    onSave: (doseAmount: String, givenAtEpochMillis: Long) -> Unit,\n) {\n    var doseAmount by remember { mutableStateOf(doseLog.doseAmount) }\n    var givenAtEpochMillis by remember { mutableStateOf(doseLog.givenAtEpochMillis) }\n\n    AlertDialog(\n        onDismissRequest = onDismiss,\n        title = { Text(stringResource(R.string.edit_dose_title)) },\n        text = {\n            Column(modifier = Modifier.fillMaxWidth()) {\n                Text(medicationName, style = MaterialTheme.typography.titleMedium)\n                OutlinedTextField(\n                    value = doseAmount,\n                    onValueChange = { doseAmount = it },\n                    label = { Text(stringResource(R.string.dose_given_label)) },\n                    modifier = Modifier\n                        .fillMaxWidth()\n                        .padding(top = 16.dp),\n                )\n                TimeTakenField(\n                    initialEpochMillis = givenAtEpochMillis,\n                    onEpochMillisChange = { givenAtEpochMillis = it },\n                    modifier = Modifier.padding(top = 16.dp),\n                )\n            }\n        },\n        confirmButton = {\n            TextButton(\n                onClick = {\n                    if (doseAmount.isNotBlank()) {\n                        onSave(doseAmount, givenAtEpochMillis)\n                    }\n                },\n            ) {\n                Text(stringResource(R.string.save))\n            }\n        },\n        dismissButton = {\n            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }\n        },\n    )\n}\n"
+}

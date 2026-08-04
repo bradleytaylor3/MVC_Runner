@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-018",
+  "title": "Carry givenAtEpochMillis into PendingDoseConfirmation",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "                                doseAmount,",
+  "description": "PendingDoseConfirmation now requires a givenAtEpochMillis field (task-013) -- this is the constructor call built when logDose reports NeedsConfirmation, so it must supply the time the user originally picked.",
+  "acceptance_criteria": [
+    "The existing doseAmount, argument is unchanged",
+    "A new argument immediately follows it: givenAtEpochMillis,"
+  ],
+  "exact_code": "                                doseAmount,\n                                givenAtEpochMillis,"
+}

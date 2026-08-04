@@ -1,0 +1,15 @@
+{
+  "kind": "work",
+  "id": "task-011",
+  "title": "Pass notifyOnNextDose into the confirmed (too-soon-acknowledged) logDose call",
+  "file": "app/src/main/java/com/taylordproductivty/med_timing_tracker/ui/DailyListScreen.kt",
+  "structure_type": "block",
+  "change_type": "modify",
+  "start_anchor": "                    acknowledgeWarning = true,",
+  "description": "This is the second logDose call site, fired when the user confirms the TooSoonWarningDialog. It must pass through the notifyOnNextDose value that was captured in the original PendingDoseConfirmation (task-005/task-010), not a fresh default.",
+  "acceptance_criteria": [
+    "The existing acknowledgeWarning = true, line is unchanged",
+    "A new argument immediately follows it: notifyOnNextDose = pending.notifyOnNextDose,"
+  ],
+  "exact_code": "                    acknowledgeWarning = true,\n                    notifyOnNextDose = pending.notifyOnNextDose,"
+}
