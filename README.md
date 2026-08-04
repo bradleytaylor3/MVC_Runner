@@ -22,7 +22,8 @@ MVC_Runner/
 │   ├── adb_task.py            # ADB-test batch schema (init doc + work docs)
 │   ├── adb_client.py          # subprocess wrapper around the `adb` CLI
 │   ├── ui_dump.py             # Parses `uiautomator dump` XML into elements
-│   └── adb_agent.py           # `test-adb`: ADB UI-testing agent loop
+│   ├── adb_agent.py           # `test-adb`: ADB UI-testing agent loop
+│   └── adb_replay.py          # `test-adb`: selector-based replay of a recorded scenario
 ├── work_docs/                # Example code-edit batch + schema + authoring prompt
 ├── work_docs_adb/            # Example ADB-test batch + schema + authoring prompt
 ├── organizer_work_docs/      # A real 6-task code-edit batch (not a toy example)
@@ -169,7 +170,7 @@ fails. Scenarios are defined in a batch of JSON task files in
 `work_docs_adb/`.
 
 ```bash
-python -m runner.cli test-adb --work-dir work_docs_adb --model qwen2.5:1.5b
+python -m runner.cli test-adb --work-dir work_docs_adb
 ```
 
 - Schema: `work_docs_adb/schema.md`.
@@ -198,12 +199,21 @@ commentary or drift from the delimiter format the parser expects.
 
 That said, schema-constrained output only fixes *shape*, not *judgment* or
 *content quality* — tested here with `qwen2.5:1.5b`:
-- `test-adb` picks one discrete action per turn from a 6-item enum, closer
-  to classification than generation — this held up well at 1.5B: valid,
-  schema-conforming actions referencing real on-screen elements. It won't
-  always make the *right* choice (e.g. it may keep exploring instead of
-  emitting `done` once the goal is already met), so treat `inconclusive`
-  results as normal at this size, not a bug.
+- `test-adb`'s *per-step* action picks one discrete action per turn from a
+  6-item enum, closer to classification than generation — this held up well
+  at 1.5B: valid, schema-conforming actions referencing real on-screen
+  elements. It won't always make the *right* choice (e.g. it may keep
+  exploring instead of emitting `done` once the goal is already met), so
+  treat `inconclusive` results as normal at this size, not a bug. That
+  doesn't extend to replay's one-shot final judgment
+  (`adb_replay.replay_adb_task`) though — that's free-form reasoning over
+  acceptance criteria, not classification, and 1.5B was unreliable at it:
+  confirmed live against a real device, it hallucinated a `fail` verdict
+  against an unambiguous on-screen `4`, twice in a row, while `gemma4:12b`
+  got it right immediately on the same prompt. That's why `DEFAULT_ADB_MODEL`
+  now reuses `DEFAULT_MODEL` (`gemma4:12b`) instead of a smaller model —
+  replay only pays that model's extra latency on one call per scenario, not
+  per step.
 - `run` requires generating a correct code fragment — early testing hit two
   real failures at this size, both since fixed structurally rather than by
   prompting harder: (1) a docstring inserted as its own statement *outside*
@@ -256,3 +266,12 @@ That said, schema-constrained output only fixes *shape*, not *judgment* or
   actual lever for cutting down how much JSON a human/Claude has to
   hand-author, since it needs no model call at all. Full write-up, raw
   results, and caveats: `bench/README.md`.
+
+## License
+
+[PolyForm Noncommercial License 1.0.0](LICENSE) — free for any noncommercial
+purpose (personal use, research, hobby projects, nonprofits, education,
+etc.); commercial use, including internal use at a for-profit company,
+requires a separate license from the copyright holder. This is a
+source-available license, not an OSI-approved open source license (OSI's
+definition requires no restriction on commercial use).

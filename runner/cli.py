@@ -16,11 +16,18 @@ from runner.work_doc import WorkDocError, load_batch
 # never trusted unreviewed anyway, so this is a strict upgrade even though
 # 55%/27% mismatch is still short of "trustworthy for unreviewed generation."
 DEFAULT_MODEL = "gemma4:12b"
-# test-adb picks one discrete action per turn from a small enum (closer to
-# classification than free-form generation), which a small model handles
-# comfortably once output is schema-constrained (see adb_agent.ACTION_SCHEMA)
-# — so it defaults to something smaller/faster than code-editing's `run`.
-DEFAULT_ADB_MODEL = "qwen2.5:1.5b"
+# Per-step actions during authoring are schema-constrained picks from a
+# small enum (see adb_agent.ACTION_SCHEMA), which a small/fast model like
+# qwen2.5:1.5b handles fine. But replay's one-shot final judgment (see
+# adb_replay.replay_adb_task) is free-form reasoning over acceptance
+# criteria, not classification -- confirmed live against a real device,
+# qwen2.5:1.5b hallucinated a "fail" verdict against an unambiguous
+# on-screen "4" two runs in a row, while gemma4:12b got it right
+# immediately on the same prompt. Since --model drives both, and replay
+# only spends the larger model's extra latency on that one call per
+# scenario (not per step), it defaults to the same capable model as `run`
+# rather than adding a second model flag just for the judgment call.
+DEFAULT_ADB_MODEL = DEFAULT_MODEL
 
 
 def _is_worktree_dirty(repo_root: Path) -> bool:

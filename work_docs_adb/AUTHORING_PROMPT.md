@@ -12,7 +12,7 @@ into `work_docs_adb/` in this repo, using the filename given in its
 `===FILE: ...===` marker. Then run:
 
 ```
-python -m runner.cli test-adb --work-dir work_docs_adb --model qwen2.5:1.5b
+python -m runner.cli test-adb --work-dir work_docs_adb
 ```
 
 ---

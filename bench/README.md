@@ -162,16 +162,27 @@ weights on disk. Re-pull one only to test a specific new claim about it (a
 fine-tune, a newer version of the same tag, a hardware change worth
 isolating), not to re-confirm a number already recorded here.
 
-Only two models are installed at all right now, both because they're wired
-as CLI defaults (`runner/cli.py`), not because every alternative was purged
-indiscriminately:
-- `qwen2.5:1.5b` — `DEFAULT_ADB_MODEL` for `test-adb`. Weak at code
-  generation (9% exact-match) but that's not what it's used for by
-  default; it holds up fine at the classification-shaped action selection
-  `test-adb` actually asks of it (see root `README.md`'s "Running on small
-  models" section).
-- `gemma4:12b` — `DEFAULT_MODEL` for `run`, since 2026-08-03 (previously
-  `qwen3:4b`, which scored **0% exact-match** here, the worst of every
+Only two models are installed at all right now, not because every
+alternative was purged indiscriminately -- `gemma4:12b` is the only one
+still wired as a CLI default (`runner/cli.py`):
+- `qwen2.5:1.5b` — was `DEFAULT_ADB_MODEL` for `test-adb` until
+  2026-08-04, when it was replaced by `gemma4:12b`. It's weak at code
+  generation (9% exact-match) but that was never what it was used for; it
+  held up fine at the classification-shaped per-step action selection
+  `test-adb` asks of it (see root `README.md`'s "Running on small models"
+  section) -- the problem was replay's one-shot final judgment call
+  (`adb_replay.replay_adb_task`), a free-form-reasoning task, not a
+  classification one. Confirmed live against a real device: it hallucinated
+  a "fail" verdict against an unambiguous on-screen "4" two runs in a row,
+  while `gemma4:12b` got it right immediately on the same prompt. Since
+  replay only spends the judgment model's extra latency on one call per
+  scenario, `DEFAULT_ADB_MODEL` was simplified to reuse `DEFAULT_MODEL`
+  rather than juggle two model flags for one command. Still installed and
+  still a reasonable `--model` override for authoring-only runs where
+  speed matters more than replay ever kicking in.
+- `gemma4:12b` — `DEFAULT_MODEL` for `run` and, since 2026-08-04,
+  `DEFAULT_ADB_MODEL` for `test-adb` too. `DEFAULT_MODEL` itself dates to
+  2026-08-03 (previously `qwen3:4b`, which scored **0% exact-match** here, the worst of every
   model tested). `run`'s default is only ever exercised by tasks without
   `exact_code`, where output was never trusted unreviewed regardless of
   which model produced it, so defaulting to the best available model

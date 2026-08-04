@@ -33,6 +33,14 @@ TERMINAL_STATUSES = ("pass", "fail", "inconclusive", "error")
 # formatting instructions on their own. It only constrains *shape*: which
 # fields besides "action" are actually required still depends on which action
 # was picked, so validate_action() below still does the semantic checking.
+#
+# "reason" is deliberately listed before "result": under grammar-constrained
+# decoding the model fills object keys in schema-declared order, so with
+# "result" first it can commit to a verdict *before* generating any
+# reasoning about the screen -- confirmed live on a real device, where a
+# "done" action reported result="pass" with a reason that didn't match what
+# was actually tapped. Putting "reason" first forces the explanation (and
+# whatever it implies) to exist before the verdict does.
 ACTION_SCHEMA = {
     "type": "object",
     "properties": {
@@ -42,8 +50,8 @@ ACTION_SCHEMA = {
         "text": {"type": "string"},
         "name": {"type": "string", "enum": list(KEY_NAMES)},
         "seconds": {"type": "number"},
-        "result": {"type": "string", "enum": list(RESULTS)},
         "reason": {"type": "string"},
+        "result": {"type": "string", "enum": list(RESULTS)},
     },
     "required": ["action"],
 }
@@ -59,11 +67,14 @@ Valid actions:
 {"action": "input_text", "text": "<text to type into the currently focused field>"}
 {"action": "key", "name": "back"|"home"|"enter"}
 {"action": "wait", "seconds": <number, for content that loads asynchronously>}
-{"action": "done", "result": "pass"|"fail", "reason": "<short explanation>"}
+{"action": "done", "reason": "<what the current elements actually show, stated plainly>", "result": "pass"|"fail"}
 
 Only emit "done" once you can tell from the current elements whether the acceptance criteria are met \
-(pass) or clearly cannot be met / something is broken (fail). Tap only indices that appear in the current \
-element list — it changes every turn, so re-check it rather than reusing an index from history."""
+(pass) or clearly cannot be met / something is broken (fail). Write "reason" first and base it only on \
+elements actually present in the current list, not on what you intended earlier turns to accomplish — \
+then "result" must follow from what "reason" says, not the other way around. Tap only indices that appear \
+in the current element list — it changes every turn, so re-check it rather than reusing an index from \
+history."""
 
 
 class ActionError(ValueError):

@@ -35,9 +35,14 @@ not your own paraphrase of it).
    scenarios" section. If `work_docs_adb/` already has files from a
    previous run, ask before overwriting rather than assuming they're stale.
 
-4. **Run it**: `python -m runner.cli test-adb --work-dir work_docs_adb --model qwen2.5:1.5b`
+4. **Run it**: `python -m runner.cli test-adb --work-dir work_docs_adb`
    (add `--device <serial>` if multiple devices are connected and the user
-   cares which one). A scenario that's run before and has a saved recording
+   cares which one). The default model (`gemma4:12b`) drives both per-step
+   authoring and replay's one-shot final judgment; don't override it to a
+   smaller model like `qwen2.5:1.5b` for `test-adb` -- confirmed live against
+   a real device, it hallucinates verdicts on replay's judgment call even
+   when the screen is unambiguous. A scenario that's run before and has a
+   saved recording
    (`work_docs_adb/recordings/<id>.json`) replays it by default instead of
    re-authoring from scratch — see the "Recordings and replay" section of
    `schema.md` for when that recording is trusted versus discarded. Pass

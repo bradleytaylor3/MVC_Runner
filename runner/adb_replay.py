@@ -18,19 +18,31 @@ from runner import adb_client, ollama_client
 from runner.adb_task import AdbInitTask, AdbWorkTask
 from runner.ui_dump import UiDumpError, UiElement, element_by_index, format_elements_for_prompt, parse_elements
 
+# "reason" is listed before "result" deliberately: under grammar-constrained
+# decoding the model fills object keys in schema-declared order, so with
+# "result" first it can commit to a verdict *before* generating any
+# reasoning about the screen. Confirmed live on a real device: with "result"
+# first, the model's "reason" text correctly worked out that the screen
+# showed "6" and should fail, while the "result" field it had already
+# committed to still said "pass" -- the two were generated independently
+# rather than the second following from the first. Putting "reason" first
+# forces the explanation to exist before the verdict does, so the verdict
+# can actually follow from it.
 JUDGMENT_SCHEMA = {
     "type": "object",
     "properties": {
-        "result": {"type": "string", "enum": ["pass", "fail"]},
         "reason": {"type": "string"},
+        "result": {"type": "string", "enum": ["pass", "fail"]},
     },
     "required": ["result"],
 }
 
 JUDGMENT_PREAMBLE = """You are an Android UI testing agent reviewing the screen after a previously-recorded \
 action sequence was replayed. Judge whether the acceptance criteria are met by the current screen. Reply \
-with ONLY a single JSON object — no commentary before, between, or after it:
-{"result": "pass"|"fail", "reason": "<short explanation>"}"""
+with ONLY a single JSON object — no commentary before, between, or after it. Write "reason" first, stating \
+plainly what the relevant on-screen element(s) actually show; then "result" must follow from that -- if \
+your own "reason" doesn't satisfy the acceptance criteria, "result" must be "fail":
+{"reason": "<what the screen actually shows, and whether that satisfies the acceptance criteria>", "result": "pass"|"fail"}"""
 
 
 class ReplayError(ValueError):
@@ -165,7 +177,15 @@ def replay_adb_task(
     acceptance_criteria. Returns status "drift" (with a "drift" reason of
     "selector_missing" or "verdict_changed") if the recording could not be
     safely replayed to its recorded conclusion — the caller should fall back
-    to `adb_agent.run_adb_task` in that case, not trust this entry as final."""
+    to `adb_agent.run_adb_task` in that case, not trust this entry as final.
+
+    Judging free-form acceptance criteria in prose is a harder task than
+    picking a tap target from a numbered list, so this is worth a capable
+    model even though it costs more per call -- confirmed live against a
+    real device: qwen2.5:1.5b hallucinated a "fail" verdict against an
+    unambiguous on-screen "4" two runs in a row, while gemma4:12b (this
+    module's default, see cli.py) got it right immediately on the same
+    prompt."""
     from runner import adb_agent  # deferred: adb_agent imports this module at load time
 
     entry = {"id": task.id, "title": task.title}
