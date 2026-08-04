@@ -33,12 +33,37 @@ MVC_Runner/
 ├── bench/fixtures/            # Known-answer fixtures for `bench` (see below)
 ├── .claude/skills/adb-test/   # Claude Code skill: /adb-test
 ├── .claude/skills/code-edit/  # Claude Code skill: /code-edit
+├── scripts/install.ps1        # Registers the skills globally (Windows)
+├── scripts/install.sh         # Registers the skills globally (macOS/Linux)
 ├── tests/                    # pytest suite (anchor resolution, work-doc validation)
 ├── logs/                     # JSON run logs (gitignored)
 ├── requirements.txt
 ├── pytest.ini
 └── README.md
 ```
+
+## Installation
+
+The `/code-edit` and `/adb-test` Claude Code skills only need to be
+*discovered* from wherever you run `claude` — they don't need this repo to
+be your current project. After cloning, run once:
+
+```powershell
+# Windows
+.\scripts\install.ps1
+```
+
+```bash
+# macOS/Linux
+./scripts/install.sh
+```
+
+This links both skills into `~/.claude/skills/` (so they load in any
+project) and sets the `MVC_RUNNER_HOME` environment variable to this
+checkout (so the skills know where to find `work_docs/`, `logs/`, etc.
+regardless of which project you're actually editing). Restart your terminal
+/ Claude Code session afterward for both to take effect. Safe to re-run —
+it skips anything already correctly linked/set.
 
 ## Comparator
 

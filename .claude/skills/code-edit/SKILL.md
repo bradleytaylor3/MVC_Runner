@@ -16,15 +16,30 @@ Don't re-derive or duplicate the schema here; if this skill and that file
 ever disagree, `AUTHORING_PROMPT.md` wins (update it, not your own
 paraphrase of it).
 
+MVC_Runner's install directory is given by the `MVC_RUNNER_HOME` environment
+variable (set by `scripts/install.ps1`/`install.sh` when this skill was
+linked into `~/.claude/skills/` — see the repo's `README.md`). Every path in
+this skill (`work_docs/`, `logs/`, `AUTHORING_PROMPT.md`) is relative to
+*that* directory, not to whatever project you're currently working in — this
+skill is available from any project via a link in `~/.claude/skills/`, but
+the `runner` package and its `work_docs/` only exist at `$MVC_RUNNER_HOME`.
+Run every `python -m runner.cli` command with that directory as cwd (e.g.
+`cd "$MVC_RUNNER_HOME" && python -m runner.cli ...` in one shell call —
+PowerShell: `cd "$env:MVC_RUNNER_HOME"`), and always set `repo_root` to an
+**absolute path** to the project actually being edited (your current
+project, unless the user says otherwise) — a relative `repo_root` resolves
+against the install directory, not your project. If `MVC_RUNNER_HOME` isn't
+set, ask the user where MVC_Runner is installed rather than guessing.
+
 ## Steps
 
 1. **Understand the request.** Get from the user (or infer from context)
    exactly what should change and in which file(s), and the repo root the
-   edits apply to. Read the actual current content of every file being
-   edited yourself — don't ask the user to paste it, and don't guess at
-   anchor text or symbol names. If you already know the exact final code
-   for a task, use it (`exact_code`) rather than describing it in prose —
-   `AUTHORING_PROMPT.md` explains why.
+   edits apply to (its absolute path — see note above). Read the actual
+   current content of every file being edited yourself — don't ask the
+   user to paste it, and don't guess at anchor text or symbol names. If
+   you already know the exact final code for a task, use it (`exact_code`)
+   rather than describing it in prose — `AUTHORING_PROMPT.md` explains why.
 
 2. **Check the target repo is clean before doing anything else.** Run
    `git status --porcelain` in the target repo root. If it's dirty, tell
@@ -55,10 +70,10 @@ paraphrase of it).
    below: real benchmarking showed local models aren't reliable enough at
    generation for that to be a good trade).
 
-4. **Run it**: `python -m runner.cli run --work-dir work_docs --model gemma4:12b`
-   (add `--repo-root` if it needs to differ from the init doc's,
-   `--allow-dirty` if step 2 was resolved that way, `--dry-run` if the user
-   wants to preview without writing files).
+4. **Run it**: `cd "$MVC_RUNNER_HOME" && python -m runner.cli run --work-dir work_docs --model gemma4:12b`
+   (add `--allow-dirty` if step 2 was resolved that way, `--dry-run` if the
+   user wants to preview without writing files; `--repo-root <absolute
+   path>` only if it needs to override the init doc's own `repo_root`).
 
 5. **Report results**, not raw JSON. Read the log written to `logs/`, and
    give a one-line verdict per task (`success` / `error` / `parse_error` /

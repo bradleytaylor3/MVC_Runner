@@ -14,6 +14,19 @@ the batch format. Don't re-derive or duplicate the schema here; if this
 skill and that file ever disagree, `AUTHORING_PROMPT.md` wins (update it,
 not your own paraphrase of it).
 
+MVC_Runner's install directory is given by the `MVC_RUNNER_HOME` environment
+variable (set by `scripts/install.ps1`/`install.sh` when this skill was
+linked into `~/.claude/skills/` — see the repo's `README.md`). Every path in
+this skill (`work_docs_adb/`, `logs/`, `AUTHORING_PROMPT.md`) is relative to
+*that* directory, not to whatever project you're currently working in — this
+skill is available from any project via a link in `~/.claude/skills/`, but
+the `runner` package and its `work_docs_adb/` only exist at
+`$MVC_RUNNER_HOME`. Run every `python -m runner.cli` command with that
+directory as cwd (e.g. `cd "$MVC_RUNNER_HOME" && python -m runner.cli ...`
+in one shell call — PowerShell: `cd "$env:MVC_RUNNER_HOME"`). If
+`MVC_RUNNER_HOME` isn't set, ask the user where MVC_Runner is installed
+rather than guessing.
+
 ## Steps
 
 1. **Understand the request.** Get from the user (or infer from context: a
@@ -35,7 +48,7 @@ not your own paraphrase of it).
    scenarios" section. If `work_docs_adb/` already has files from a
    previous run, ask before overwriting rather than assuming they're stale.
 
-4. **Run it**: `python -m runner.cli test-adb --work-dir work_docs_adb`
+4. **Run it**: `cd "$MVC_RUNNER_HOME" && python -m runner.cli test-adb --work-dir work_docs_adb`
    (add `--device <serial>` if multiple devices are connected and the user
    cares which one). The default model (`gemma4:12b`) drives both per-step
    authoring and replay's one-shot final judgment; don't override it to a
