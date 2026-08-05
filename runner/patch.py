@@ -17,16 +17,35 @@ def reindent_to(content: str, target_indent: int) -> str:
     means the content itself is already fully decided; the only remaining
     unknown is how deep the surrounding file nests at the splice point, and
     that's measured directly from the file (see executor._reference_indent),
-    not guessed by a model doing a verbatim copy."""
+    not guessed by a model doing a verbatim copy.
+
+    The base shift (target_indent) is always spaces, matching the "N leading
+    spaces" contract stated everywhere else this value is used (prompts,
+    docs). Each line's *relative* indentation beyond the fragment's own
+    first line, though, is preserved as literal whitespace characters, not
+    recomputed as a space count — otherwise a tab used for relative nesting
+    inside the fragment (e.g. a Kconfig/Makefile-style file, or any
+    tab-indented source) silently collapses to a single space. Found live:
+    reindenting a Kconfig `config` block's tab-indented body lines
+    (`tristate`/`depends`/`help`) turned each leading tab into one space.
+    Falls back to the old character-count behavior when a line's leading
+    whitespace doesn't literally start with the first line's (e.g. a
+    dedented line, or tabs/spaces that don't share a common prefix) —
+    there's no single unambiguous "same relative width" answer in that case
+    either way, so this keeps prior behavior instead of guessing new."""
     lines = content.split("\n")
-    first_indent = len(lines[0]) - len(lines[0].lstrip())
+    first_ws = lines[0][:len(lines[0]) - len(lines[0].lstrip())]
     out = []
     for line in lines:
         if line.strip() == "":
             out.append("")
             continue
-        relative = max(len(line) - len(line.lstrip()) - first_indent, 0)
-        out.append(" " * (target_indent + relative) + line.lstrip())
+        line_ws = line[:len(line) - len(line.lstrip())]
+        if line_ws.startswith(first_ws):
+            relative_ws = line_ws[len(first_ws):]
+        else:
+            relative_ws = " " * max(len(line_ws) - len(first_ws), 0)
+        out.append(" " * target_indent + relative_ws + line.lstrip())
     return "\n".join(out)
 
 

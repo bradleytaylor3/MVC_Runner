@@ -85,6 +85,34 @@ def test_replace_mode_still_matches_the_spans_own_first_line_indent():
     assert _reference_indent(task, lines, resolved) == 4
 
 
+def test_heuristic_misreads_indent_when_anchor_is_a_nested_sibling_line():
+    # Reproduces the real failure: a block/add anchored on the last (nested)
+    # line of a preceding Kconfig-style entry's help text. The anchor's own
+    # indent (3) isn't the new top-level entry's indent (0) -- this is what
+    # `indent` exists to override (see the next test).
+    lines = [
+        "config LEDS_GPIO",
+        "\ttristate \"...\"",
+        "\thelp",
+        "\t  The code to use these bindings can be selected below.",
+    ]
+    resolved = anchor_mod.ResolvedAnchor(mode="insert", start_line=4)
+    task = _task(structure_type="block", change_type="add", start_anchor=lines[3])
+    assert _reference_indent(task, lines, resolved) == 3
+
+
+def test_explicit_indent_overrides_the_heuristic():
+    lines = [
+        "config LEDS_GPIO",
+        "\ttristate \"...\"",
+        "\thelp",
+        "\t  The code to use these bindings can be selected below.",
+    ]
+    resolved = anchor_mod.ResolvedAnchor(mode="insert", start_line=4)
+    task = _task(structure_type="block", change_type="add", start_anchor=lines[3], indent=0)
+    assert _reference_indent(task, lines, resolved) == 0
+
+
 def test_validate_fragment_shape_flags_bare_signature_with_no_body():
     task = _task(structure_type="function", change_type="add", start_anchor="# marker")
     issue = _validate_fragment_shape(task, "def greet(name):")

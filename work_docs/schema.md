@@ -72,7 +72,8 @@ filename.
   "pattern_example": "optional: a real sibling instance of this same pattern, for the model to follow",
   "contract": "optional: a declarative in/out spec the model's fragment must satisfy (see below) — the model chooses the implementation",
   "new_file": false,
-  "context_files": ["optional/relative/path/for_reference_only.py"]
+  "context_files": ["optional/relative/path/for_reference_only.py"],
+  "indent": "optional: override the computed insertion indent (see below)"
 }
 ```
 
@@ -173,6 +174,22 @@ any non-`exact_code` task.
 
 Files the model should read for reference but must never rewrite — shown
 in full, read-only, regardless of what the model outputs for them.
+
+### `indent` (optional, non-negative integer)
+
+Overrides the runner's computed insertion indent for `add`/`insert`-mode
+tasks (both the deterministic `exact_code` reindent and the "required
+indentation" line in the model's prompt). By default the indent is inferred
+from the anchor line itself — the line right before the insertion point —
+which assumes that line sits at the same nesting level as the new content.
+That assumption holds for ordinary brace/indentation source, but not for
+indentation-sensitive marker-anchored text (e.g. Kconfig) where the anchor
+is the *last, deeply-nested* line of a preceding entry (its help text) and
+the new content is actually a top-level sibling of that whole entry, not of
+its last line. Set `indent` explicitly whenever the anchor line's own
+indentation isn't representative of where the new content belongs —
+`indent: 0` for a new top-level Kconfig `config`/Makefile `obj-y` line
+anchored on another entry's nested body, for instance.
 
 ## Consolidated batch doc
 

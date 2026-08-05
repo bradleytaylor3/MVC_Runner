@@ -170,6 +170,15 @@ def _build_one_task(work_dir: Path, task_num: int) -> Path:
             occurrence = _prompt("occurrence (only if start_anchor matches multiple lines)", required=False)
             if occurrence:
                 data["occurrence"] = int(occurrence)
+        if change_type == "add":
+            indent = _prompt(
+                "indent (optional: override the computed insertion indent, e.g. 0 — "
+                "only needed if the anchor line's own nesting isn't representative, "
+                "as in Kconfig/Makefile-style files)",
+                required=False,
+            )
+            if indent:
+                data["indent"] = int(indent)
 
     data["description"] = _prompt("description")
 

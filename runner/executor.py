@@ -137,7 +137,20 @@ def _reference_indent(task: WorkTask, lines: list[str], resolved: anchor_mod.Res
     live via bench: gemma4:12b faithfully followed a wrongly-computed
     "4 leading spaces" instruction and nested a new top-level function
     inside the previous one whenever no pattern_example was present to
-    visually override it."""
+    visually override it.
+
+    An explicit `task.indent` always wins over this heuristic. The "sibling
+    is the line right before it" rule assumes the anchor line sits at the
+    same nesting level as the new content, which holds for brace/indentation
+    source but not for indentation-sensitive marker-anchored text like
+    Kconfig: a `block`/`add` task anchored on the last (deeply-nested) line
+    of a preceding entry's help text would otherwise compute that nested
+    indent as the new entry's level too. Found live running a real batch
+    against drivers/misc/Kconfig-shaped content: a new top-level `config`
+    block landed at 3-space indent instead of column 0, because its anchor
+    was the previous entry's indented help text, not a true sibling."""
+    if task.indent is not None:
+        return task.indent
     if task.structure_type in ("function", "class") and resolved.mode == "insert":
         return 0
     if resolved.mode == "replace":

@@ -94,6 +94,7 @@ class WorkTask:
     contract: dict | None = None
     new_file: bool = False
     context_files: list[str] = field(default_factory=list)
+    indent: int | None = None
     source_path: Path | None = None
 
     @classmethod
@@ -125,6 +126,7 @@ class WorkTask:
         exact_code = data.get("exact_code")
         pattern_example = data.get("pattern_example")
         contract = data.get("contract")
+        indent = data.get("indent")
 
         acceptance_criteria = data.get("acceptance_criteria", [])
         if not isinstance(acceptance_criteria, list):
@@ -145,6 +147,8 @@ class WorkTask:
                 "nothing to check its output against")
         if contract is not None and not isinstance(contract, dict):
             err("'contract' must be an object")
+        if indent is not None and (not isinstance(indent, int) or isinstance(indent, bool) or indent < 0):
+            err("'indent' must be a non-negative integer")
 
         if new_file:
             if change_type != "add":
@@ -171,6 +175,7 @@ class WorkTask:
             contract=contract,
             new_file=new_file,
             context_files=data.get("context_files", []),
+            indent=indent,
             source_path=source_path,
         )
 

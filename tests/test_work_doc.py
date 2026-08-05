@@ -145,6 +145,23 @@ def test_acceptance_criteria_must_be_a_list():
         WorkTask.from_dict(data, PATH)
 
 
+def test_indent_parses_when_a_non_negative_int():
+    task = WorkTask.from_dict(
+        _data(structure_type="block", change_type="add", start_anchor="# marker", indent=0),
+        PATH,
+    )
+    assert task.indent == 0
+
+
+def test_indent_rejects_negative_or_non_int():
+    for bad in (-1, "0", 1.5, True):
+        with pytest.raises(WorkDocError):
+            WorkTask.from_dict(
+                _data(structure_type="block", change_type="add", start_anchor="# marker", indent=bad),
+                PATH,
+            )
+
+
 def _write(path: Path, data: dict) -> None:
     path.write_text(json.dumps(data), encoding="utf-8")
 
